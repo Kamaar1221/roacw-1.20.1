@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "catergory": "misc",
+  "pattern": [
+    "TWT",
+    "PEP",
+    "LIL"
+  ],
+  "key": {
+    "T": {
+      "item": "cataclysm_spellbooks:technomancy_rune"
+    },
+    "W": {
+      "item": "cataclysm:witherite_ingot"
+    },
+    "P": {
+      "item": "traveloptics:plasma_power_cell"
+    },
+    "L": {
+      "item": "irons_spellbooks:lightning_rune"
+    },
+    "E": {
+      "item": "cataclysm_spellbooks:excelsius_power_chestplate"
+    },
+    "I": {
+      "item": "irons_spellbooks:pyrium_ingot"
+    }
+  },
+
+  "result": {
+    "item": "mars_armor:mars_engine"
+  }
+}

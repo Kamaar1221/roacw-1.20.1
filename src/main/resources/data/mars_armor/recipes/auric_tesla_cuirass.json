@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "catergory": "misc",
+  "pattern": [
+    "N N",
+    "ISC",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "I": {
+      "item": "cataclysm:ignitium_chestplate"
+    },
+    "C": {
+      "item": "cataclysm:cursium_chestplate"
+    },
+    "S": {
+      "item": "traveloptics:last_glow"
+    }
+  },
+
+  "result": {
+    "item": "mars_armor:auric_tesla_cuirass"
+  }
+}

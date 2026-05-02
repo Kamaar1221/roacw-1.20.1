@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "catergory": "misc",
+  "pattern": [
+    "   ",
+    "ISC",
+    "N N"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "I": {
+      "item": "cataclysm:ignitium_boots"
+    },
+    "C": {
+      "item": "cataclysm:cursium_boots"
+    },
+    "S": {
+      "item": "traveloptics:last_glow"
+    }
+  },
+
+  "result": {
+    "item": "mars_armor:auric_tesla_greaves"
+  }
+}

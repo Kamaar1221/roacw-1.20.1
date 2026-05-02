@@ -1,0 +1,49 @@
+package net.rev.marsarmor.registeries;
+
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import net.rev.marsarmor.MarsArmor;
+import net.rev.marsarmor.auricteslaarmorset.AuricTeslaArmorItem;
+import net.rev.marsarmor.marsarmorset.MarsArmorItem;
+
+public class MarsItems {
+    public static final DeferredRegister<Item> ITEMS =
+            DeferredRegister.create(ForgeRegistries.ITEMS, MarsArmor.MODID);
+
+    public static final Rarity EXO_ENGINEERED = Rarity.create("mars_armor:exo_engineered", (style) -> style.withColor(16711722));
+    public static final Rarity GOD_FORGED = Rarity.create("mars_armor:god_forged", (style) -> style.withColor(0x6d2dc8));
+
+    public static final RegistryObject<Item> MARS_VISOR = ITEMS.register("mars_visor", () -> new MarsArmorItem
+            (ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(EXO_ENGINEERED).fireResistant()));
+    public static final RegistryObject<Item> MARS_ENGINE = ITEMS.register("mars_engine", () -> new MarsArmorItem
+            (ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment().rarity(EXO_ENGINEERED).fireResistant()));
+    public static final RegistryObject<Item> MARS_LEG_GUARDS = ITEMS.register("mars_leg_guards", () -> new MarsArmorItem
+            (ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment().rarity(EXO_ENGINEERED).fireResistant()));
+    public static final RegistryObject<Item> MARS_BOOSTERS = ITEMS.register("mars_boosters", () -> new MarsArmorItem
+            (ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(EXO_ENGINEERED).fireResistant()));
+
+    public static final RegistryObject<Item> AURIC_TESLA_ROYAL_HELM = ITEMS.register("auric_tesla_royal_helm", () -> new AuricTeslaArmorItem
+            (ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
+    public static final RegistryObject<Item> AURIC_TESLA_CUIRASS = ITEMS.register("auric_tesla_cuirass", () -> new AuricTeslaArmorItem
+            (ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
+    public static final RegistryObject<Item> AURIC_TESLA_LEGGINGS = ITEMS.register("auric_tesla_leggings", () -> new AuricTeslaArmorItem
+            (ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
+    public static final RegistryObject<Item> AURIC_TESLA_GREAVES = ITEMS.register("auric_tesla_greaves", () -> new AuricTeslaArmorItem
+            (ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
+
+    public static final RegistryObject<Item> RAW_AURIC_INGOT = ITEMS.register("raw_auric_ingot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> AURIC_INGOT = ITEMS.register("auric_ingot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CHARGED_AURIC_INGOT = ITEMS.register("charged_auric_ingot", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> FRIED_CHICKEN = ITEMS.register("fried_chicken", () -> new Item(new Item.Properties()));
+
+
+    public static void register(IEventBus eventBus) {
+        ITEMS.register(eventBus);
+    }
+}

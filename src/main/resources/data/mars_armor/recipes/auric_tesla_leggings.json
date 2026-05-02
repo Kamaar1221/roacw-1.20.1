@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "catergory": "misc",
+  "pattern": [
+    "NNN",
+    "ISC",
+    "N N"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "I": {
+      "item": "cataclysm:ignitium_leggings"
+    },
+    "C": {
+      "item": "cataclysm:cursium_leggings"
+    },
+    "S": {
+      "item": "traveloptics:last_glow"
+    }
+  },
+
+  "result": {
+    "item": "mars_armor:auric_tesla_leggings"
+  }
+}
