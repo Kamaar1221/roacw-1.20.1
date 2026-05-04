@@ -1,0 +1,27 @@
+{
+  "feature": "roacw:raw_auric_block",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 9
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": -56
+        },
+        "min_inclusive": {
+          "absolute": -61
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
