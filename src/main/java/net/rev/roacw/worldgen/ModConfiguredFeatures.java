@@ -1,4 +1,4 @@
-package net.rev.marsarmor.worldgen;
+package net.rev.roacw.worldgen;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -11,8 +11,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfigur
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.rev.marsarmor.ROACW;
-import net.rev.marsarmor.registeries.ROACWBlocks;
+import net.rev.roacw.ROACW;
+import net.rev.roacw.registeries.ROACWBlocks;
 
 import java.util.List;
 

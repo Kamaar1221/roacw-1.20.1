@@ -1,4 +1,4 @@
-package net.rev.marsarmor.registeries;
+package net.rev.roacw.registeries;
 
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.armor.IronsExtendedArmorMaterial;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.rev.marsarmor.ROACW;
+import net.rev.roacw.ROACW;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             (Attribute)AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
             (Attribute)CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Technomancy Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
             (Attribute)AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            (Attribute)AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.05, AttributeModifier.Operation.MULTIPLY_BASE)
+            (Attribute)AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
 
     AURIC_TESLA_ARMOR("auric_tesla_armor", 45, auricTeslaArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 10f, 0,

@@ -1,4 +1,4 @@
-package net.rev.marsarmor.datagen;
+package net.rev.roacw.datagen;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -7,7 +7,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.rev.marsarmor.ROACW;
+import net.rev.roacw.ROACW;
 
 import java.util.concurrent.CompletableFuture;
 

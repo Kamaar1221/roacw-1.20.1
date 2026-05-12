@@ -1,4 +1,4 @@
-package net.rev.marsarmor.registeries;
+package net.rev.roacw.registeries;
 
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import net.acetheeldritchking.cataclysm_spellbooks.registries.CSPotionEffectRegistry;

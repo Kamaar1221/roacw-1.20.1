@@ -1,4 +1,4 @@
-package net.rev.marsarmor;
+package net.rev.roacw;
 
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
@@ -11,9 +11,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.rev.marsarmor.registeries.ROACWBlocks;
-import net.rev.marsarmor.registeries.ROACWItems;
-import net.rev.marsarmor.registeries.RoaCWCreativeTab;
+import net.rev.roacw.registeries.ROACWBlocks;
+import net.rev.roacw.registeries.ROACWItems;
+import net.rev.roacw.registeries.RoaCWCreativeTab;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file

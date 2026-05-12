@@ -1,4 +1,4 @@
-package net.rev.marsarmor.marsarmorset;
+package net.rev.roacw.marsarmorset;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

@@ -1,7 +1,7 @@
-package net.rev.marsarmor.marsarmorset;
+package net.rev.roacw.marsarmorset;
 
 import net.minecraft.resources.ResourceLocation;
-import net.rev.marsarmor.ROACW;
+import net.rev.roacw.ROACW;
 import software.bernie.geckolib.model.GeoModel;
 
 public class MarsArmorModel extends GeoModel<MarsArmorItem> {

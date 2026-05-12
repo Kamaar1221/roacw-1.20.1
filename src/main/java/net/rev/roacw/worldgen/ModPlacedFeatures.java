@@ -1,4 +1,4 @@
-package net.rev.marsarmor.worldgen;
+package net.rev.roacw.worldgen;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -11,7 +11,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
-import net.rev.marsarmor.ROACW;
+import net.rev.roacw.ROACW;
 
 import java.util.List;
 

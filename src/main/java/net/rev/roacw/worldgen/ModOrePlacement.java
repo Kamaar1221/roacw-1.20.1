@@ -1,4 +1,4 @@
-package net.rev.marsarmor.worldgen;
+package net.rev.roacw.worldgen;
 
 import net.minecraft.world.level.levelgen.placement.*;
 

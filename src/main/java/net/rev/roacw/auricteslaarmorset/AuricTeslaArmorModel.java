@@ -1,7 +1,7 @@
-package net.rev.marsarmor.auricteslaarmorset;
+package net.rev.roacw.auricteslaarmorset;
 
 import net.minecraft.resources.ResourceLocation;
-import net.rev.marsarmor.ROACW;
+import net.rev.roacw.ROACW;
 import software.bernie.geckolib.model.GeoModel;
 
 public class AuricTeslaArmorModel extends GeoModel<AuricTeslaArmorItem> {

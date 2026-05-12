@@ -1,4 +1,4 @@
-package net.rev.marsarmor.auricteslaarmorset;
+package net.rev.roacw.auricteslaarmorset;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;
@@ -9,7 +9,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.rev.marsarmor.registeries.ROACWArmorMaterials;
+import net.rev.roacw.registeries.ROACWArmorMaterials;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import javax.annotation.Nullable;

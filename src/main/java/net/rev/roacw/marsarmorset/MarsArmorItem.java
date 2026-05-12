@@ -1,4 +1,4 @@
-package net.rev.marsarmor.marsarmorset;
+package net.rev.roacw.marsarmorset;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;
@@ -13,8 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.rev.marsarmor.registeries.ROACWArmorMaterials;
-import net.rev.marsarmor.registeries.MarsRarityColorHelp;
+import net.rev.roacw.registeries.ROACWArmorMaterials;
+import net.rev.roacw.registeries.MarsRarityColorHelp;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 

@@ -1,4 +1,4 @@
-package net.rev.marsarmor.worldgen;
+package net.rev.roacw.worldgen;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -10,7 +10,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.rev.marsarmor.ROACW;
+import net.rev.roacw.ROACW;
 
 public class ModBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_AURIC_ORE = registerKey("add_auric_ore");

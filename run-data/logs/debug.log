@@ -877,7 +877,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [03May2026 23:23:58.203] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider/LOADING]: Loading FMLModContainer from classloader cpw.mods.modlauncher.TransformingClassLoader@de7e193 - got cpw.mods.cl.ModuleClassLoader@5e39850
 [03May2026 23:23:58.205] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for dev.shadowsoffire.attributeslib.AttributesLib
 [03May2026 23:23:58.207] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider/LOADING]: Loading FMLModContainer from classloader cpw.mods.modlauncher.TransformingClassLoader@de7e193 - got cpw.mods.cl.ModuleClassLoader@5e39850
-[03May2026 23:23:58.207] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for net.rev.marsarmor.ROACW
+[03May2026 23:23:58.207] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for net.rev.roacw.ROACW
 [03May2026 23:23:58.208] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider/LOADING]: Loading FMLModContainer from classloader cpw.mods.modlauncher.TransformingClassLoader@de7e193 - got cpw.mods.cl.ModuleClassLoader@5e39850
 [03May2026 23:23:58.208] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for com.llamalad7.mixinextras.platform.forge.MixinExtrasMod
 [03May2026 23:23:58.208] [main/DEBUG] [net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider/LOADING]: Loading FMLModContainer from classloader cpw.mods.modlauncher.TransformingClassLoader@de7e193 - got cpw.mods.cl.ModuleClassLoader@5e39850
@@ -942,13 +942,13 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [03May2026 23:23:58.379] [modloading-worker-0/DEBUG] [mixin/]: Mixing GameTypeMixin from attributeslib.mixins.json into net.minecraft.world.level.GameType
 [03May2026 23:23:58.381] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file jei-server.toml for jei tracking
 [03May2026 23:23:58.389] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for roacw
-[03May2026 23:23:58.389] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing net.rev.marsarmor.datagen.DataGenerators to MOD
+[03May2026 23:23:58.389] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing net.rev.roacw.datagen.DataGenerators to MOD
 [03May2026 23:23:58.391] [modloading-worker-0/DEBUG] [mixin/]: Mixing ServerResourcesMixin from placebo.mixins.json into net.minecraft.server.ReloadableServerResources
 [03May2026 23:23:58.391] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing dev.shadowsoffire.placebo.patreon.PatreonPreview to FORGE
 [03May2026 23:23:58.398] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing dev.shadowsoffire.placebo.PlaceboClient to MOD
 [03May2026 23:23:58.399] [modloading-worker-0/DEBUG] [mixin/]: Mixing GuiMixin from mixins.irons_spellbooks.json into net.minecraft.client.gui.Gui
 [03May2026 23:23:58.415] [modloading-worker-0/DEBUG] [mixin/]: Mixing AttributeInstanceAccessor from attributeslib.mixins.json into net.minecraft.world.entity.ai.attributes.AttributeInstance
-[03May2026 23:23:58.415] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing net.rev.marsarmor.ROACW$ClientModEvents to MOD
+[03May2026 23:23:58.415] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing net.rev.roacw.ROACW$ClientModEvents to MOD
 [03May2026 23:23:58.420] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file cataclysm.toml for cataclysm tracking
 [03May2026 23:23:58.422] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.config.ConfigTracker/CONFIG]: Config file curios-client.toml for curios tracking
 [03May2026 23:23:58.425] [modloading-worker-0/DEBUG] [mixin/]: Mixing client.OptionsMixin from alexscaves.mixins.json into net.minecraft.client.Options

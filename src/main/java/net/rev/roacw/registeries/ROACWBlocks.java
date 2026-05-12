@@ -1,4 +1,4 @@
-package net.rev.marsarmor.registeries;
+package net.rev.roacw.registeries;
 
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
@@ -12,7 +12,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.rev.marsarmor.ROACW;
+import net.rev.roacw.ROACW;
 
 import java.util.function.Supplier;
 

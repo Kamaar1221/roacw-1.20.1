@@ -1,4 +1,4 @@
-package net.rev.marsarmor.registeries;
+package net.rev.roacw.registeries;
 
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.world.item.ArmorItem;
@@ -8,9 +8,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.rev.marsarmor.ROACW;
-import net.rev.marsarmor.auricteslaarmorset.AuricTeslaArmorItem;
-import net.rev.marsarmor.marsarmorset.MarsArmorItem;
+import net.rev.roacw.ROACW;
+import net.rev.roacw.auricteslaarmorset.AuricTeslaArmorItem;
+import net.rev.roacw.marsarmorset.MarsArmorItem;
 
 public class ROACWItems {
     public static final DeferredRegister<Item> ITEMS =
@@ -37,7 +37,7 @@ public class ROACWItems {
     public static final RegistryObject<Item> AURIC_TESLA_GREAVES = ITEMS.register("auric_tesla_greaves", () -> new AuricTeslaArmorItem
             (ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
 
-    public static final RegistryObject<Item> RAW_AURIC = ITEMS.register("raw_auric", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> RAW_AURIC_CHUNK = ITEMS.register("raw_auric_chunk", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> AURIC_INGOT = ITEMS.register("auric_ingot", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> CHARGED_AURIC_INGOT = ITEMS.register("charged_auric_ingot", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FRIED_CHICKEN = ITEMS.register("fried_chicken", () -> new Item(new Item.Properties().food(ROACWFood.FRIED_CHICKEN).rarity(GOD_FORGED)));
