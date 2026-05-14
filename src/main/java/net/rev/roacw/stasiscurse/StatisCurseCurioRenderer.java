@@ -1,6 +1,7 @@
 package net.rev.roacw.stasiscurse;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -10,9 +11,10 @@ import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
+
 public class StatisCurseCurioRenderer implements ICurioRenderer {
     public StatisCurseCurioRenderer() {
-        super(new StatisCurseModel());
+        net.minecraft.client.renderer.entity.ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
     }
 
     @Override

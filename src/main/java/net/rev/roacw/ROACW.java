@@ -70,7 +70,7 @@ public class ROACW
 
             CuriosRendererRegistry.register(
                     ROACWItems.STATIS_CURSE.get(),
-                    StatisCurseCurioRenderer::new
+                    StatisCurseCurioRenderer::new);
         }
     }
 }

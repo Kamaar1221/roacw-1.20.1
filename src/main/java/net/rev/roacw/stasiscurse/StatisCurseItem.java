@@ -1,6 +1,6 @@
 package net.rev.roacw.stasiscurse;
 
-import net.minecraft.world.item.Item;
+import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -8,7 +8,7 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-public class StatisCurseItem extends Item implements ICurioItem, GeoAnimatable {
+public class StatisCurseItem extends CurioBaseItem implements ICurioItem, GeoAnimatable {
 
     public StatisCurseItem(Properties properties) {
         super(properties);
