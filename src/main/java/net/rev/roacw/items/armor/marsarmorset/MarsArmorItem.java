@@ -1,4 +1,4 @@
-package net.rev.roacw.marsarmorset;
+package net.rev.roacw.items.armor.marsarmorset;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;

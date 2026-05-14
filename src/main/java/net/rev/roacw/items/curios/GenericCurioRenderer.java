@@ -1,4 +1,4 @@
-package net.rev.roacw.stasiscurse;
+package net.rev.roacw.items.curios;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

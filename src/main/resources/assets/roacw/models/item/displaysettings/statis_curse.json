@@ -1,6 +1,0 @@
-{
-  "parent": "roacw:item/displaysettings/statis_curse_display",
-  "textures": {
-    "layer0": "roacw:item/statis_curse"
-  }
-}

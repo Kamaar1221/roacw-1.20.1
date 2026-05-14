@@ -1,4 +1,4 @@
-package net.rev.roacw.auricteslaarmorset;
+package net.rev.roacw.items.armor.auricteslaarmorset;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;

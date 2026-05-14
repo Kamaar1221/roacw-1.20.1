@@ -1,4 +1,4 @@
-package net.rev.roacw.auricteslaarmorset;
+package net.rev.roacw.items.armor.auricteslaarmorset;
 
 import net.minecraft.resources.ResourceLocation;
 import net.rev.roacw.ROACW;

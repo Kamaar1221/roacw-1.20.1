@@ -1,4 +1,4 @@
-package net.rev.roacw.marsarmorset;
+package net.rev.roacw.items.armor.marsarmorset;
 
 import net.minecraft.resources.ResourceLocation;
 import net.rev.roacw.ROACW;

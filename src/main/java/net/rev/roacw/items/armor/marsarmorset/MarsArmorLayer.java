@@ -1,4 +1,4 @@
-package net.rev.roacw.marsarmorset;
+package net.rev.roacw.items.armor.marsarmorset;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

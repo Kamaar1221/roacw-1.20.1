@@ -11,11 +11,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.rev.roacw.items.curios.GenericCurioRenderer;
+import net.rev.roacw.items.curios.stasis_curse.StatisCurse;
 import net.rev.roacw.registeries.ROACWBlocks;
 import net.rev.roacw.registeries.ROACWItems;
 import net.rev.roacw.registeries.RoaCWCreativeTab;
-import net.rev.roacw.stasiscurse.StatisCurseCurioRenderer;
-import net.rev.roacw.stasiscurse.StatisCurseItem;
 import org.slf4j.Logger;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -69,7 +69,8 @@ public class ROACW
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
-            ROACWItems.getROACWItems().stream().filter(item -> item.get() instanceof StatisCurseItem).forEach((item) -> CuriosRendererRegistry.register(item.get(), StatisCurseCurioRenderer::new));
+            ROACWItems.getROACWItems().stream().filter(item -> item.get() instanceof StatisCurse)
+                    .forEach((item) -> CuriosRendererRegistry.register(item.get(), GenericCurioRenderer::new));
         }
     }
 }

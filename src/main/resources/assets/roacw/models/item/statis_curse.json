@@ -1,5 +1,5 @@
 {
-  "credit": "Made with Blockbench",
+  "credit": "Made by Hazen",
   "parent": "builtin/entity",
   "texture_size": [
     64,
@@ -64,7 +64,7 @@
     "gui": {
       "rotation": [
         0,
-        -180,
+        180,
         0
       ],
       "translation": [

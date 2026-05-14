@@ -10,8 +10,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.rev.roacw.ROACW;
 import net.rev.roacw.auricteslaarmorset.AuricTeslaArmorItem;
+import net.rev.roacw.items.curios.stasis_curse.StatisCurse;
 import net.rev.roacw.marsarmorset.MarsArmorItem;
-import net.rev.roacw.stasiscurse.StatisCurseItem;
 
 import java.util.Collection;
 
@@ -45,9 +45,8 @@ public class ROACWItems {
     public static final RegistryObject<Item> CHARGED_AURIC_INGOT = ITEMS.register("charged_auric_ingot", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FRIED_CHICKEN = ITEMS.register("fried_chicken", () -> new Item(new Item.Properties().food(ROACWFood.FRIED_CHICKEN).rarity(GOD_FORGED)));
 
-    public static final RegistryObject<Item> STATIS_CURSE =
-            ITEMS.register("statis_curse",
-                    () -> new StatisCurseItem(new Item.Properties().stacksTo(1)));
+    // Statis Curse
+    public static final RegistryObject<Item> STATIS_CURSE = ITEMS.register("statis_curse", StatisCurse::new);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

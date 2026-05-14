@@ -1,4 +1,4 @@
-package net.rev.roacw.auricteslaarmorset;
+package net.rev.roacw.items.armor.auricteslaarmorset;
 
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
