@@ -13,7 +13,7 @@ public class StatisCurseModel extends GeoModel<StatisCurseItem> {
     }
 
     public ResourceLocation getTextureResource(StatisCurseItem object) {
-        return ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "textures/item/armor/statis_curse.png");
+        return ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "textures/item/curio/statis_curse.png");
     }
 
     public ResourceLocation getAnimationResource(StatisCurseItem animatable) {

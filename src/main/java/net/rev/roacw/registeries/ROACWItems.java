@@ -13,6 +13,8 @@ import net.rev.roacw.auricteslaarmorset.AuricTeslaArmorItem;
 import net.rev.roacw.marsarmorset.MarsArmorItem;
 import net.rev.roacw.stasiscurse.StatisCurseItem;
 
+import java.util.Collection;
+
 public class ROACWItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, ROACW.MODID);
@@ -49,5 +51,9 @@ public class ROACWItems {
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
+    }
+    public static Collection<RegistryObject<Item>> getROACWItems()
+    {
+        return ITEMS.getEntries();
     }
 }

@@ -15,6 +15,7 @@ import net.rev.roacw.registeries.ROACWBlocks;
 import net.rev.roacw.registeries.ROACWItems;
 import net.rev.roacw.registeries.RoaCWCreativeTab;
 import net.rev.roacw.stasiscurse.StatisCurseCurioRenderer;
+import net.rev.roacw.stasiscurse.StatisCurseItem;
 import org.slf4j.Logger;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -68,9 +69,7 @@ public class ROACW
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
-            CuriosRendererRegistry.register(
-                    ROACWItems.STATIS_CURSE.get(),
-                    StatisCurseCurioRenderer::new);
+            ROACWItems.getROACWItems().stream().filter(item -> item.get() instanceof StatisCurseItem).forEach((item) -> CuriosRendererRegistry.register(item.get(), StatisCurseCurioRenderer::new));
         }
     }
 }
