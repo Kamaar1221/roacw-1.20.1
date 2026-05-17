@@ -19,23 +19,57 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 @OnlyIn(Dist.CLIENT)
 public class ElementalGauntletCurioRenderer implements ICurioRenderer {
-    ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+    private final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
     @Override
-    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (renderLayerParent.getModel() instanceof HumanoidModel<?>)
-        {
-            var humanoidModel = (HumanoidModel<LivingEntity>) renderLayerParent.getModel();
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(
+            ItemStack stack,
+            SlotContext slotContext,
+            PoseStack poseStack,
+            RenderLayerParent<T, M> renderLayerParent,
+            MultiBufferSource renderTypeBuffer,
+            int light,
+            float limbSwing,
+            float limbSwingAmount,
+            float partialTicks,
+            float ageInTicks,
+            float netHeadYaw,
+            float headPitch) {
 
-            poseStack.pushPose();
-            humanoidModel.rightArm.translateAndRotate(poseStack);
-            // x = sideways, y = up/down, z = forward/back
-            poseStack.translate(0.0D, 0.5D, 0.0D);
-            poseStack.scale(1.1f, 1.1f, 1.1f);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+        if (renderLayerParent.getModel() instanceof HumanoidModel<?>) {
+            @SuppressWarnings("unchecked")
+            HumanoidModel<LivingEntity> humanoidModel = (HumanoidModel<LivingEntity>) renderLayerParent.getModel();
 
-            itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
-            poseStack.popPose();
+            // Check the slot index assigned by Curios (typically 0 for right hand, 1 for left hand)
+            int slotIndex = slotContext.index();
+
+            if (slotIndex == 0) {
+                // --- RIGHT ARM RENDERING ---
+                poseStack.pushPose();
+                humanoidModel.rightArm.translateAndRotate(poseStack);
+                poseStack.translate(0.0D, 0.5D, 0.0D);
+                poseStack.scale(1.1f, 1.1f, 1.1f);
+                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+
+                itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
+                poseStack.popPose();
+
+            } else if (slotIndex == 1) {
+                // --- LEFT ARM RENDERING (ROTATED WORKAROUND) ---
+                poseStack.pushPose();
+                humanoidModel.leftArm.translateAndRotate(poseStack);
+
+                // Keep the scale entirely positive so textures do not flip inside-out
+                poseStack.translate(0.0D, 0.5D, 0.0D);
+                poseStack.scale(1.1f, 1.1f, 1.1f);
+
+                // Spin it to face outward on the left arm without turning polygons inside-out
+                poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+
+                itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
+                poseStack.popPose();
+            }
         }
     }
 }

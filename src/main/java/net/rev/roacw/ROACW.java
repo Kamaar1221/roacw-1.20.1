@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.rev.roacw.items.curios.GenericCurioRenderer;
 import net.rev.roacw.items.curios.elemental_gauntlet.ElementalGauntlet;
 import net.rev.roacw.items.curios.elemental_gauntlet.ElementalGauntletCurioRenderer;
 import net.rev.roacw.items.curios.evasion_scarf.EvasionScarf;

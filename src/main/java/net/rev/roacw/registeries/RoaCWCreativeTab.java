@@ -32,6 +32,9 @@ public class RoaCWCreativeTab {
                 output.accept(ROACWItems.AURIC_INGOT.get());
                 output.accept(ROACWItems.CHARGED_AURIC_INGOT.get());
                 output.accept(ROACWItems.FRIED_CHICKEN.get());
+                output.accept(ROACWItems.STATIS_CURSE.get());
+                output.accept(ROACWItems.EVASION_SCARF.get());
+                output.accept(ROACWItems.ELEMENTAL_GAUNTLET.get());
             })
             .build());
 
