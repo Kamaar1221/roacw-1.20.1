@@ -3,6 +3,7 @@ package net.kamaarion.roacw;
 import com.github.L_Ender.cataclysm.init.ModEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -35,7 +36,7 @@ public class ServerEvents {
 
     private boolean tryAuricTeslaRevive(LivingEntity living) {
         ItemStack chestplate = living.getItemBySlot(EquipmentSlot.CHEST);
-        if ((living.level() instanceof ServerLevel serverLevel)&& chestplate.getItem() == ROACWItemRegistry.AURIC_TESLA_CUIRASS.get() && !living.hasEffect(ModEffect.EFFECTGHOST_SICKNESS.get()) && !living.hasEffect(ModEffect.EFFECTGHOST_FORM.get())) {
+        if ((living.level() instanceof ServerLevel serverLevel)&& chestplate.getItem() == ROACWItemRegistry.AURIC_TESLA_CUIRASS.get() && !living.hasEffect(ROACWEffectRegistry.AURIC_EXHAUSTION.get()) && !living.hasEffect(ModEffect.EFFECTGHOST_SICKNESS.get())) {
             living.setHealth(10.0F);
             serverLevel.playSound(
                     null,
@@ -46,7 +47,8 @@ public class ServerEvents {
                     1.0F
             );
             living.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 0));
-            living.addEffect(new MobEffectInstance(ModEffect.EFFECTGHOST_FORM.get(), 100, 0, false, true, true));
+            living.addEffect(new MobEffectInstance(ROACWEffectRegistry.AURIC_EXHAUSTION.get(), 1000, 0, false, true, true));
+            living.addEffect(new MobEffectInstance(ROACWEffectRegistry.AURIC_CHARGE.get(), 300, 0, false, true, true));
             double d0 = living.getX();
             double d1 = living.getY() + 3F;
             double d2 = living.getZ();

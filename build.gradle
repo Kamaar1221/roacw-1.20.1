@@ -168,6 +168,11 @@ dependencies {
     implementation fg.deobf("curse.maven:mowzies-mobs-250498:7815705")
     runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
     runtimeOnly fg.deobf("curse.maven:ydms-mobhealthbar-mod-559894:4818965")
+    runtimeOnly fg.deobf("curse.maven:selene-499980:7664875")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
+    runtimeOnly fg.deobf("curse.maven:cloth-config-348521:5729105")
+    runtimeOnly fg.deobf("curse.maven:better-combat-by-daedelus-639842:5625757")
+
 
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings

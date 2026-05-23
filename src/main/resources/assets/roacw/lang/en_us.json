@@ -9,13 +9,35 @@
   "item.roacw.auric_tesla_leggings": "Auric Tesla Leggings",
   "item.roacw.auric_tesla_greaves": "Auric Tesla Greaves",
   "item.roacw.auric_tesla_cuirass.desc": "After finding all of the components to forge such a masterpiece, this armor makes you feel unstoppable, as if the entire world will bow to you.",
+
+  "item.roacw.statis_curse": "Statis' Curse",
+  "item.roacw.evasion_scarf": "Evasion Scarf",
+  "item.roacw.elemental_gauntlet": "Elemental Gauntlet",
+  "item.roacw.burst_sheath": "Burst Sheath",
+
+  "item.roacw.murasama_blade": "Muramasa",
+  "item.roacw.murasama_blade.desc": "The Only Thing I Know For Real...",
+
+
   "item.roacw.raw_auric_chunk": "Raw Auric Chunk",
   "item.roacw.auric_ingot": "Auric Ingot",
   "item.roacw.charged_auric_ingot": "Charged Auric Ingot",
   "item.roacw.fried_chicken": "Fried Chicken",
+
+  "school.roacw.exo": "Exo",
+
+  "attribute.roacw.exo_magic_resist": "Exo Magic resist",
+  "attribute.roacw.exo_spell_power": "Exo Magic Power",
+
+  "spell.roacw.quick_strike": "Burst Strike",
+  "spell.roacw.quick_strike.guide": "Slash at your target multiple times, inflicting Disabled and Severed on hit, and heals you for 35% of the damage dealt",
+  "spell.roacw.final_rend": "Final Rend",
+  "spell.roacw.final_rend.guide": "Charge up a powerful slash obliterating nearby entities caught within. Inflicts Disabled and Severed on hit, and healing you for all damage dealt.",
+
   "block.roacw.raw_auric_block": "Block of Raw Auric Ore",
   "block.roacw.auric_ore": "Auric Ore",
   "block.roacw.deepslate_auric_ore": "Deepslate Auric Ore",
   "block.roacw.auric_block": "Auric Block",
+
   "creativetab.roacw": "RoaCW Items"
 }

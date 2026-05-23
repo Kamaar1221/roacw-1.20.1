@@ -1,6 +1,10 @@
 package net.kamaarion.roacw;
 
 import com.mojang.logging.LogUtils;
+import mod.azure.azurelib.render.item.AzItemRendererRegistry;
+import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheathCurioRenderer;
+import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheathRenderer;
+import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
 import net.kamaarion.roacw.registeries.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,6 +49,7 @@ public class ROACW
         ROACWSpellRegistries.register(modEventBus);
         ROACWEntityRegistry.register(modEventBus);
         ROACWSoundRegistry.register(modEventBus);
+        ROACWEffectRegistry.register(modEventBus);
 
 
         // Register the commonSetup method for modloading
@@ -90,7 +95,8 @@ public class ROACW
                     .forEach((item) -> CuriosRendererRegistry.register(item.get(), EvasionScarfCurioRenderer::new));
             ROACWItemRegistry.getROACWItems().stream().filter(item -> item.get() instanceof ElementalGauntlet)
                     .forEach((item) -> CuriosRendererRegistry.register(item.get(), ElementalGauntletCurioRenderer::new));
-
+            ROACWItemRegistry.getROACWItems().stream().filter(item -> item.get() instanceof BurstSheath)
+                    .forEach((item) -> CuriosRendererRegistry.register(item.get(), BurstSheathCurioRenderer::new));
         }
     }
     public static ResourceLocation id(@NotNull String path)

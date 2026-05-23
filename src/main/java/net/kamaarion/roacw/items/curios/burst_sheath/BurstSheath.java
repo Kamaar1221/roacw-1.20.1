@@ -1,10 +1,12 @@
-package net.kamaarion.roacw.items.curios.stasis_curse;
+package net.kamaarion.roacw.items.curios.burst_sheath;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheathRenderer;
+import net.kamaarion.roacw.registeries.ROACWAttributeRegistry;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -25,10 +27,10 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
+public class BurstSheath extends CurioBaseItem implements ICurioItem, GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public StatisCurse() {
+    public BurstSheath() {
         super(ItemPropertiesHelper
                 .equipment()
                 .stacksTo(1)
@@ -39,11 +41,11 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
 
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
-            private StatisCurseRenderer renderer;
+            private BurstSheathRenderer renderer;
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null) {
-                    this.renderer = new StatisCurseRenderer();
+                    this.renderer = new BurstSheathRenderer();
                 }
 
                 return this.renderer;
@@ -69,7 +71,7 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
         return true;
     }
 
-    private PlayState idlePredicate(AnimationState<StatisCurse> event) {
+    private PlayState idlePredicate(AnimationState<net.kamaarion.roacw.items.curios.stasis_curse.StatisCurse> event) {
         event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
         return PlayState.CONTINUE;
     }
@@ -90,8 +92,8 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
-        attr.put(AttributeRegistry.SPELL_POWER.get(),
-                new AttributeModifier(uuid, "Abyssal Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
+        attr.put(ROACWAttributeRegistry.EXO_MAGIC_POWER.get(),
+                new AttributeModifier(uuid, "Exo Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
         attr.put(AttributeRegistry.SUMMON_DAMAGE.get(),
                 new AttributeModifier(uuid, "Summon Damage", 0.30, AttributeModifier.Operation.MULTIPLY_BASE));
         attr.put(AttributeRegistry.MAX_MANA.get(),

@@ -1,0 +1,129 @@
+{
+  "credit": "Made by Ai_myh",
+  "parent": "builtin/entity",
+  "texture_size": [
+    64,
+    64
+  ],
+   "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        -105.5,
+        0,
+        -180
+      ],
+      "translation": [
+        0,
+        -3.25,
+        4.5
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        -105.5,
+        0,
+        -180
+      ],
+      "translation": [
+        0,
+        -3.25,
+        4.5
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        -105.5,
+        0,
+        -180
+      ],
+      "translation": [
+        0,
+        -1.1,
+        4.5
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        -105.5,
+        0,
+        -180
+      ],
+      "translation": [
+        0,
+        -1.1,
+        4.5
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        90
+      ],
+      "translation": [
+        -5.5,
+        -1.5,
+        3.75
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "gui": {
+      "rotation": [
+        -90,
+        -70.25,
+        -90
+      ],
+      "translation": [
+        -2.25,
+        5.75,
+        0.25
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        -90,
+        -70.25,
+        -90
+      ],
+      "translation": [
+        -2.25,
+        5.75,
+        0.25
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    }
+  }
+}

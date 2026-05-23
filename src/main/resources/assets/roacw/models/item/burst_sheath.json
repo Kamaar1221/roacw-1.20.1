@@ -2,15 +2,15 @@
   "parent": "minecraft:item/handheld",
   "loader": "forge:separate_transforms",
   "base": {
-    "parent": "roacw:item/statis_curse_model"
+    "parent": "roacw:item/burst_sheath_handheld"
   },
   "perspectives": {
     "gui": {
-      "parent": "roacw:item/statis_curse_gui"
+      "parent": "roacw:item/burst_sheath_gui"
     },
     "fixed":
     {
-      "parent": "roacw:item/statis_curse_model"
+      "parent": "roacw:item/burst_sheath_fixed"
     }
   }
 }

@@ -14,12 +14,19 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix4f;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
-@OnlyIn(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT) // Don't do this
 public class ElementalGauntletCurioRenderer implements ICurioRenderer {
     private final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+    private final Matrix4f reflectionMatrix = new Matrix4f(
+            -1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+    );
 
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> void render(
@@ -60,10 +67,11 @@ public class ElementalGauntletCurioRenderer implements ICurioRenderer {
                 poseStack.pushPose();
                 humanoidModel.leftArm.translateAndRotate(poseStack);
 
+                poseStack.translate(0.5D, 0.0D, 0.0D);
+                poseStack.mulPoseMatrix(reflectionMatrix);
+                poseStack.translate(0.5D, 0.0D, 0.0D);
                 poseStack.translate(0.0D, 0.5D, 0.0D);
                 poseStack.scale(1.1f, 1.1f, 1.1f);
-
-                // Changed from 270.0F to 90.0F to keep it facing forward
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 
                 itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);

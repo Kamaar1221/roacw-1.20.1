@@ -30,4 +30,8 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add(Component.translatable("item.roacw.auric_tesla_cuirass.desc").withStyle(ChatFormatting.GRAY));
     }
+    @Override
+    public boolean isDamageable(ItemStack stack) {
+        return false;
+    }
 }

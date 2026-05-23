@@ -68,4 +68,8 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
                 super.getName(stack).getString()
         );
     }
+    @Override
+    public boolean isDamageable(ItemStack stack) {
+        return false;
+    }
 }

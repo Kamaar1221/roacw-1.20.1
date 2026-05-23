@@ -34,7 +34,7 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
     )),
 
     AURIC_TESLA_ARMOR("auric_tesla_armor", 45, auricTeslaArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 10f, 0,
-            () -> Ingredient.of(Items.IRON_INGOT), Map.of(
+            () -> Ingredient.of(ROACWItemRegistry.AURIC_INGOT .get()), Map.of(
             (Attribute) Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 350,AttributeModifier.Operation.ADDITION),
             AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),

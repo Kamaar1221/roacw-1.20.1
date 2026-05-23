@@ -1,4 +1,4 @@
-package net.kamaarion.roacw.items.curios.stasis_curse;
+package net.kamaarion.roacw.items.curios.burst_sheath;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +20,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 @OnlyIn(Dist.CLIENT)
-public class StatisCurseCurioRenderer implements ICurioRenderer {
+public class BurstSheathCurioRenderer implements ICurioRenderer {
     ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
     @Override
@@ -29,12 +31,12 @@ public class StatisCurseCurioRenderer implements ICurioRenderer {
 
             poseStack.pushPose();
             humanoidModel.body.translateAndRotate(poseStack);
-            // x = sideways, y = up/down, z = forward/back
-            poseStack.translate(0.0D, 0.2D, 0.0D);
-            poseStack.scale(1.1f, 1.1f, 1.3f);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
-
+            // Looking at how spellbooks are done, but we're going to the left side instead of the right
+            poseStack.translate((slotContext.entity() != null && !slotContext.entity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? 5.5 : 4.5) * .0625f, 16 * .0625f, 0);
+            poseStack.mulPose(Axis.YP.rotation(Mth.PI));
+            poseStack.mulPose(Axis.ZP.rotation(Mth.PI - 5 * Mth.DEG_TO_RAD));
+            poseStack.scale(1f, 1f, 1f);
             itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
             poseStack.popPose();
         }

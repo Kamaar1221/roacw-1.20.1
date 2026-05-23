@@ -5,19 +5,25 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.kamaarion.roacw.items.weapons.ROACWWeaponTiers;
+import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.kamaarion.roacw.registeries.ROACWSpellRegistries;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class MurasamaBladeItem extends StaffItem implements GeoItem, IPresetSpellContainer, GeoAnimatable {
@@ -25,7 +31,7 @@ public class MurasamaBladeItem extends StaffItem implements GeoItem, IPresetSpel
     private static final RawAnimation CAST = RawAnimation.begin().thenPlay("cast");
 
     public MurasamaBladeItem() {
-        super(ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.EPIC), ROACWWeaponTiers.MURASAMABLADE);
+        super(ItemPropertiesHelper.equipment().stacksTo(1).rarity(ROACWItemRegistry.GOD_FORGED), ROACWWeaponTiers.MURASAMABLADE);
     }
 
 
@@ -64,5 +70,9 @@ public class MurasamaBladeItem extends StaffItem implements GeoItem, IPresetSpel
         spellContainer.addSpell(ROACWSpellRegistries.QUICK_STRIKE.get(), 5, true);
         spellContainer.addSpell(ROACWSpellRegistries.FINAL_REND.get(), 1, true);
         ISpellContainer.set(itemStack, spellContainer.toImmutable());
+    }
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        pTooltipComponents.add(Component.translatable("item.roacw.murasama_blade.desc").withStyle(ChatFormatting.DARK_PURPLE));
     }
 }

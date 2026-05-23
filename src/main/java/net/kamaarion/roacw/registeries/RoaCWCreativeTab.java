@@ -36,6 +36,7 @@ public class RoaCWCreativeTab {
                 output.accept(ROACWItemRegistry.EVASION_SCARF.get());
                 output.accept(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get());
                 output.accept(ROACWItemRegistry.MURASAMA_BLADE.get());
+                output.accept(ROACWItemRegistry.BURST_SHEATH.get());
             })
             .build());
 

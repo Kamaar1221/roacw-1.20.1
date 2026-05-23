@@ -2,6 +2,7 @@ package net.kamaarion.roacw.registeries;
 
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
 import net.kamaarion.roacw.items.weapons.murasama_blade.MurasamaBladeItem;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.ArmorItem;
@@ -57,8 +58,9 @@ public abstract class ROACWItemRegistry {
     public static final RegistryObject<Item> EVASION_SCARF = ITEMS.register("evasion_scarf", EvasionScarf::new);
     public static final RegistryObject<Item> ELEMENTAL_GAUNTLET = ITEMS.register("elemental_gauntlet", ElementalGauntlet::new);
 
-    //Murasama!
+    //Murasama and Sheath
     public static final RegistryObject<Item> MURASAMA_BLADE = ITEMS.register("murasama_blade",MurasamaBladeItem::new);
+    public static final RegistryObject<Item> BURST_SHEATH = ITEMS.register("burst_sheath", BurstSheath::new);
 
 
 

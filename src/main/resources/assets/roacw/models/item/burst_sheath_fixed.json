@@ -1,0 +1,22 @@
+{
+  "credit": "Made by Ai_myh",
+  "parent": "builtin/entity",
+  "texture_size": [
+    64,
+    64
+  ],
+  "display": {
+    "fixed": {
+      "translation": [
+        0,
+        9,
+        0
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    }
+  }
+}
