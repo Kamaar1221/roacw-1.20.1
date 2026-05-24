@@ -42,6 +42,18 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Spell Power", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
+
+    FEARMONGER_ARMOR("fearmonger_armor", 45, fearmongerArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 10f, 0,
+            () -> Ingredient.of(ROACWItemRegistry.AURIC_INGOT .get()), Map.of(
+            (Attribute) Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 250,AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Spell Power", 0.3, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier("Ice Spell Power", 0.3, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.ELDRITCH_SPELL_POWER.get(), new AttributeModifier("Eldritch Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SUMMON_DAMAGE.get(), new AttributeModifier("Summon Damage", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
     ));
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
@@ -88,10 +100,13 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             });
 
     static public EnumMap<ArmorItem.Type, Integer> marsArmorMap() {
-        return makeArmorMap(8, 13, 11, 8);
+        return makeArmorMap(10, 14, 11, 9);
     }
     static public EnumMap<ArmorItem.Type, Integer> auricTeslaArmorMap() {
         return makeArmorMap(13, 18, 16, 13);
+    }
+    static public EnumMap<ArmorItem.Type, Integer> fearmongerArmorMap() {
+        return makeArmorMap(10, 15, 13, 10);
     }
 
     @Override

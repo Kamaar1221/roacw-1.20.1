@@ -1,9 +1,9 @@
 package net.kamaarion.roacw;
 
 import com.mojang.logging.LogUtils;
-import mod.azure.azurelib.render.item.AzItemRendererRegistry;
+import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.render.SpellBookCurioRenderer;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheathCurioRenderer;
-import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheathRenderer;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
 import net.kamaarion.roacw.registeries.*;
 import net.minecraft.resources.ResourceLocation;
@@ -88,15 +88,11 @@ public class ROACW
     {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-
-            ROACWItemRegistry.getROACWItems().stream().filter(item -> item.get() instanceof StatisCurse)
-                    .forEach((item) -> CuriosRendererRegistry.register(item.get(), StatisCurseCurioRenderer::new));
-            ROACWItemRegistry.getROACWItems().stream().filter(item -> item.get() instanceof EvasionScarf)
-                    .forEach((item) -> CuriosRendererRegistry.register(item.get(), EvasionScarfCurioRenderer::new));
-            ROACWItemRegistry.getROACWItems().stream().filter(item -> item.get() instanceof ElementalGauntlet)
-                    .forEach((item) -> CuriosRendererRegistry.register(item.get(), ElementalGauntletCurioRenderer::new));
-            ROACWItemRegistry.getROACWItems().stream().filter(item -> item.get() instanceof BurstSheath)
-                    .forEach((item) -> CuriosRendererRegistry.register(item.get(), BurstSheathCurioRenderer::new));
+            CuriosRendererRegistry.register(ROACWItemRegistry.STATIS_CURSE.get(), StatisCurseCurioRenderer::new);
+            CuriosRendererRegistry.register(ROACWItemRegistry.EVASION_SCARF.get(), EvasionScarfCurioRenderer::new);
+            CuriosRendererRegistry.register(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get(), ElementalGauntletCurioRenderer::new);
+            CuriosRendererRegistry.register(ROACWItemRegistry.BURST_SHEATH.get(), BurstSheathCurioRenderer::new);
+            CuriosRendererRegistry.register(ROACWItemRegistry.NIGHTMARE_TOME.get(), SpellBookCurioRenderer::new);
         }
     }
     public static ResourceLocation id(@NotNull String path)

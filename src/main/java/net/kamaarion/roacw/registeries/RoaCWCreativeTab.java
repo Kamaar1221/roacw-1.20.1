@@ -22,8 +22,12 @@ public class RoaCWCreativeTab {
                 output.accept(ROACWItemRegistry.MARS_BOOSTERS.get());
                 output.accept(ROACWItemRegistry.AURIC_TESLA_ROYAL_HELM.get());
                 output.accept(ROACWItemRegistry.AURIC_TESLA_CUIRASS.get());
-                output.accept(ROACWItemRegistry.AURIC_TESLA_LEGGINGS.get());
-                output.accept(ROACWItemRegistry.AURIC_TESLA_GREAVES.get());
+                output.accept(ROACWItemRegistry.AURIC_TESLA_CUISSES.get());
+                output.accept(ROACWItemRegistry.AURIC_TESLA_BOOTS.get());
+                output.accept(ROACWItemRegistry.FEARMONGER_GREATHELM.get());
+                output.accept(ROACWItemRegistry.FEARMONGER_PLATEMAIL.get());
+                output.accept(ROACWItemRegistry.FEARMONGER_LEGPLATES.get());
+                output.accept(ROACWItemRegistry.FEARMONGER_GREAVES.get());
                 output.accept(ROACWBlocks.AURIC_ORE.get());
                 output.accept(ROACWBlocks.DEEPSLATE_AURIC_ORE.get());
                 output.accept(ROACWBlocks.RAW_AURIC_BLOCK.get());
@@ -37,6 +41,7 @@ public class RoaCWCreativeTab {
                 output.accept(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get());
                 output.accept(ROACWItemRegistry.MURASAMA_BLADE.get());
                 output.accept(ROACWItemRegistry.BURST_SHEATH.get());
+                output.accept(ROACWItemRegistry.NIGHTMARE_TOME.get());
             })
             .build());
 

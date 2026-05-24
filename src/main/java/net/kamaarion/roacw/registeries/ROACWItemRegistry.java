@@ -1,8 +1,9 @@
 package net.kamaarion.roacw.registeries;
 
-import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.kamaarion.roacw.items.armor.fearmongerarmorset.FearmongerArmorItem;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
+import net.kamaarion.roacw.items.curios.nightmare_tome.NightmareTome;
 import net.kamaarion.roacw.items.weapons.murasama_blade.MurasamaBladeItem;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.ArmorItem;
@@ -29,6 +30,7 @@ public abstract class ROACWItemRegistry {
 
     public static final Rarity EXO_ENGINEERED = Rarity.create("roacw:exo_engineered", (style) -> style.withColor(16711722));
     public static final Rarity GOD_FORGED = Rarity.create("roacw:god_forged", (style) -> style.withColor(0x6d2dc8));
+    public static final Rarity OTHERWORLDLY = Rarity.create("roacw:otherworldly", (style) -> style.withColor(0xce84ff));
 
     public static final RegistryObject<Item> MARS_VISOR = ITEMS.register("mars_visor", () -> new MarsArmorItem
             (ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(EXO_ENGINEERED).fireResistant()));
@@ -43,10 +45,19 @@ public abstract class ROACWItemRegistry {
             (ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
     public static final RegistryObject<Item> AURIC_TESLA_CUIRASS = ITEMS.register("auric_tesla_cuirass", () -> new AuricTeslaArmorItem
             (ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
-    public static final RegistryObject<Item> AURIC_TESLA_LEGGINGS = ITEMS.register("auric_tesla_leggings", () -> new AuricTeslaArmorItem
+    public static final RegistryObject<Item> AURIC_TESLA_CUISSES = ITEMS.register("auric_tesla_cuisses", () -> new AuricTeslaArmorItem
             (ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
-    public static final RegistryObject<Item> AURIC_TESLA_GREAVES = ITEMS.register("auric_tesla_greaves", () -> new AuricTeslaArmorItem
+    public static final RegistryObject<Item> AURIC_TESLA_BOOTS = ITEMS.register("auric_tesla_boots", () -> new AuricTeslaArmorItem
             (ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(GOD_FORGED).fireResistant()));
+
+    public static final RegistryObject<Item> FEARMONGER_GREATHELM = ITEMS.register("fearmonger_greathelm", () -> new FearmongerArmorItem
+            (ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> FEARMONGER_PLATEMAIL = ITEMS.register("fearmonger_platemail", () -> new FearmongerArmorItem
+            (ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> FEARMONGER_LEGPLATES = ITEMS.register("fearmonger_legplates", () -> new FearmongerArmorItem
+            (ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> FEARMONGER_GREAVES = ITEMS.register("fearmonger_greaves", () -> new FearmongerArmorItem
+            (ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
 
     public static final RegistryObject<Item> RAW_AURIC_CHUNK = ITEMS.register("raw_auric_chunk", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> AURIC_INGOT = ITEMS.register("auric_ingot", () -> new Item(new Item.Properties()));
@@ -58,11 +69,13 @@ public abstract class ROACWItemRegistry {
     public static final RegistryObject<Item> EVASION_SCARF = ITEMS.register("evasion_scarf", EvasionScarf::new);
     public static final RegistryObject<Item> ELEMENTAL_GAUNTLET = ITEMS.register("elemental_gauntlet", ElementalGauntlet::new);
 
+
     //Murasama and Sheath
     public static final RegistryObject<Item> MURASAMA_BLADE = ITEMS.register("murasama_blade",MurasamaBladeItem::new);
     public static final RegistryObject<Item> BURST_SHEATH = ITEMS.register("burst_sheath", BurstSheath::new);
 
-
+    //Nightmare Tome
+    public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("tome_of_nightmares", NightmareTome::new);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
@@ -71,7 +84,12 @@ public abstract class ROACWItemRegistry {
     {
         return ITEMS.getEntries();
     }
+    public static Collection<RegistryObject<Item>> getCSItems()
+    {
+        return ITEMS.getEntries();
+    }
 
     @OnlyIn(Dist.CLIENT)
     public abstract BlockEntityWithoutLevelRenderer getRenderer();
+
 }
