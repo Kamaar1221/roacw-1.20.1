@@ -16,9 +16,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.fml.common.Mod;
+
+import java.rmi.registry.Registry;
 
 @Mod.EventBusSubscriber
 public class ServerEvents {
@@ -62,6 +65,7 @@ public class ServerEvents {
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,100, 0));
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,200, 0));
             event.getEntity().addEffect(new MobEffectInstance(ModEffect.EFFECTABYSSAL_BURN.get(),200, 0));
+            event.getEntity().addEffect(new MobEffectInstance(ROACWEffectRegistry.SHADOWFLAME.get(),200, 0));
         }
     }
     @SubscribeEvent
@@ -71,6 +75,17 @@ public class ServerEvents {
             event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(),200, 0));
             event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.BLIGHT.get(),200, 0));
             event.getEntity().setRemainingFireTicks(Math.max(event.getEntity().getRemainingFireTicks(), 200));
+        }
+    }
+    @SubscribeEvent
+    public static void onLivingHealEvent(LivingHealEvent event)
+    {
+        MobEffectInstance ShadowFlameEffect = event.getEntity().getEffect(ROACWEffectRegistry.SHADOWFLAME.get());
+
+        if (ShadowFlameEffect != null)
+        {
+            int effectLevel = ShadowFlameEffect.getAmplifier();
+            event.setAmount((float) (event.getAmount() * (1 - effectLevel * 0.2)));
         }
     }
 }

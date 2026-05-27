@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "roacw:item/nightmare_tome_gui"
+    }
+}

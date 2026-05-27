@@ -13,7 +13,7 @@ public class NightmareTomeModel extends GeoModel<NightmareTome> {
   
   @Override
   public ResourceLocation getTextureResource(NightmareTome animatable) {
-    return ROACW.id("textures/item/curio/nightmare_tome.png");
+    return ROACW.id("textures/item/curio/nightmare_tome_gui.png");
   }
   
   @Override

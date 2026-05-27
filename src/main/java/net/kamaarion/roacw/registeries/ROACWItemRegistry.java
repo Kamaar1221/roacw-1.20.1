@@ -75,16 +75,12 @@ public abstract class ROACWItemRegistry {
     public static final RegistryObject<Item> BURST_SHEATH = ITEMS.register("burst_sheath", BurstSheath::new);
 
     //Nightmare Tome
-    public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("tome_of_nightmares", NightmareTome::new);
+    public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("nightmare_tome", NightmareTome::new);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
     public static Collection<RegistryObject<Item>> getROACWItems()
-    {
-        return ITEMS.getEntries();
-    }
-    public static Collection<RegistryObject<Item>> getCSItems()
     {
         return ITEMS.getEntries();
     }
