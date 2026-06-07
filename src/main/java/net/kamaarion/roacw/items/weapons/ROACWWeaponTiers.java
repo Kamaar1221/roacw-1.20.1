@@ -21,8 +21,8 @@ import java.util.function.Supplier;
 
 public class ROACWWeaponTiers extends StaffTier implements IronsWeaponTier {
     public static ROACWWeaponTiers MURASAMABLADE = new ROACWWeaponTiers(ItemPropertiesHelper.equipment().stacksTo(1).rarity(ROACWItemRegistry.GOD_FORGED), 15F, -2.5F,
-            new AttributeContainer(ROACWAttributeRegistry.EXO_MAGIC_POWER, .2, AttributeModifier.Operation.MULTIPLY_BASE),
-            new AttributeContainer(AttributeRegistry.SPELL_POWER, .15, AttributeModifier.Operation.MULTIPLY_BASE)
+            new AttributeContainer(ROACWAttributeRegistry.EXO_MAGIC_POWER, .2, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.SPELL_POWER, .15, AttributeModifier.Operation.MULTIPLY_TOTAL)
 
     );
 

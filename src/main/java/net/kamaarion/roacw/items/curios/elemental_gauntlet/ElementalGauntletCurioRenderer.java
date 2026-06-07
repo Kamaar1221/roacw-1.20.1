@@ -18,7 +18,7 @@ import org.joml.Matrix4f;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
-@OnlyIn(Dist.CLIENT) // Don't do this
+@OnlyIn(Dist.CLIENT)
 public class ElementalGauntletCurioRenderer implements ICurioRenderer {
     private final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
     private final Matrix4f reflectionMatrix = new Matrix4f(
@@ -43,41 +43,61 @@ public class ElementalGauntletCurioRenderer implements ICurioRenderer {
             float netHeadYaw,
             float headPitch) {
 
+        if (!slotContext.visible()) {
+            return;
+        }
+
         if (renderLayerParent.getModel() instanceof HumanoidModel<?>) {
             @SuppressWarnings("unchecked")
             HumanoidModel<LivingEntity> humanoidModel = (HumanoidModel<LivingEntity>) renderLayerParent.getModel();
 
-            // Check the slot index assigned by Curios (typically 0 for right hand, 1 for left hand)
             int slotIndex = slotContext.index();
 
-            if (slotIndex == 0) {
+            if (slotIndex == 0 && humanoidModel.rightArm.visible) {
                 // --- RIGHT ARM RENDERING ---
                 poseStack.pushPose();
                 humanoidModel.rightArm.translateAndRotate(poseStack);
-
                 poseStack.translate(0.0D, 0.5D, 0.0D);
                 poseStack.scale(1.1f, 1.1f, 1.1f);
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-
-                itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
+                itemRenderer.renderStatic(
+                        slotContext.entity(),
+                        stack,
+                        ItemDisplayContext.FIXED,
+                        false,
+                        poseStack,
+                        renderTypeBuffer,
+                        slotContext.entity().level(),
+                        light,
+                        OverlayTexture.NO_OVERLAY,
+                        0
+                );
                 poseStack.popPose();
-
-            } else if (slotIndex == 1) {
+            }
+            else if (slotIndex == 1 && humanoidModel.leftArm.visible) {
                 // --- LEFT ARM RENDERING ---
                 poseStack.pushPose();
                 humanoidModel.leftArm.translateAndRotate(poseStack);
-
                 poseStack.translate(0.5D, 0.0D, 0.0D);
                 poseStack.mulPoseMatrix(reflectionMatrix);
                 poseStack.translate(0.5D, 0.0D, 0.0D);
                 poseStack.translate(0.0D, 0.5D, 0.0D);
                 poseStack.scale(1.1f, 1.1f, 1.1f);
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-
-                itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
+                itemRenderer.renderStatic(
+                        slotContext.entity(),
+                        stack,
+                        ItemDisplayContext.FIXED,
+                        false,
+                        poseStack,
+                        renderTypeBuffer,
+                        slotContext.entity().level(),
+                        light,
+                        OverlayTexture.NO_OVERLAY,
+                        0
+                );
                 poseStack.popPose();
             }
-
         }
     }
 }

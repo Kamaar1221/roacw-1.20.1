@@ -3,5 +3,12 @@
     "sounds": [
       "roacw:electric_sword_swing"
     ]
+  },
+  "dash_whoosh": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.dash_whoosh",
+    "sounds": [
+      "roacw:dash_whoosh"
+    ]
   }
 }

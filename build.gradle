@@ -172,6 +172,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
     runtimeOnly fg.deobf("curse.maven:cloth-config-348521:5729105")
     runtimeOnly fg.deobf("curse.maven:better-combat-by-daedelus-639842:5625757")
+    runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
 
 
 

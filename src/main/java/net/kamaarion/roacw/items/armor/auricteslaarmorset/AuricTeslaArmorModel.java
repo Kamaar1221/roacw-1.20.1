@@ -1,6 +1,7 @@
 package net.kamaarion.roacw.items.armor.auricteslaarmorset;
 
 import net.minecraft.resources.ResourceLocation;
+import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.ROACW;
 import software.bernie.geckolib.model.GeoModel;
 
@@ -9,6 +10,9 @@ public class AuricTeslaArmorModel extends GeoModel<AuricTeslaArmorItem> {
     }
 
     public ResourceLocation getModelResource(AuricTeslaArmorItem object) {
+        if (Config.REMOVE_CAPE.get()) {
+            return ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "geo/item/armor/auric_tesla_armor_capeless.geo.json");
+        }
         return ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "geo/item/armor/auric_tesla_armor.geo.json");
     }
 

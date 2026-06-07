@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CFB",
+    "DAD",
+    "CEB"
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:necronomicon_spell_book"
+    },
+    "B": {
+      "item": "cataclysm:ignitium_ingot"
+    },
+    "C": {
+      "item": "cataclysm:cursium_ingot"
+    },
+    "D": {
+      "item": "minecraft:echo_shard"
+    },
+    "E": {
+      "item": "traveloptics:flame_tempered_handguard"
+    },
+    "F": {
+      "item": "traveloptics:echo_winglet"
+    }
+  },
+  "result": {
+    "item": "roacw:nightmare_tome"
+  }
+}

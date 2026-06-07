@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CDB",
+    "CAB",
+    "   "
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:cultist_helmet"
+    },
+    "B": {
+      "item": "cataclysm:ignitium_ingot"
+    },
+    "C": {
+      "item": "cataclysm:cursium_ingot"
+    },
+    "D": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+
+  "result": {
+    "item": "roacw:fearmonger_greathelm"
+  }
+}

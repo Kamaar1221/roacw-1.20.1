@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.kamaarion.roacw.registeries.ROACWArmorMaterials;
+import net.kamaarion.roacw.items.armor.ROACWArmorMaterials;
 import net.kamaarion.roacw.registeries.MarsRarityColorHelp;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
@@ -31,20 +31,14 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
-
             private MarsArmorRenderer renderer;
 
             @Override
             public @NotNull HumanoidModel<?> getHumanoidArmorModel(
-                    LivingEntity livingEntity,
-                    ItemStack itemStack,
-                    EquipmentSlot slot,
-                    HumanoidModel<?> original) {
-
+                    LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel<?> original) {
                 if (renderer == null) {
                     renderer = new MarsArmorRenderer(new MarsArmorModel());
                 }
-
                 renderer.prepForRender(livingEntity, itemStack, slot, original);
                 return renderer;
             }
@@ -60,6 +54,8 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add(Component.translatable("item.roacw.mars_engine.desc").withStyle(ChatFormatting.DARK_RED));
+
+        pTooltipComponents.add(Component.literal("Full Set Bonus: Grants Creative Flight").withStyle(ChatFormatting.GOLD));
     }
 
     @Override
@@ -68,8 +64,10 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
                 super.getName(stack).getString()
         );
     }
+
     @Override
     public boolean isDamageable(ItemStack stack) {
         return false;
     }
 }
+

@@ -11,7 +11,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -30,7 +29,7 @@ public class MurasamaBladeItem extends StaffItem implements GeoItem, IPresetSpel
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private static final RawAnimation CAST = RawAnimation.begin().thenPlay("cast");
 
-    public MurasamaBladeItem() {
+    public MurasamaBladeItem(Properties rarity) {
         super(ItemPropertiesHelper.equipment().stacksTo(1).rarity(ROACWItemRegistry.GOD_FORGED), ROACWWeaponTiers.MURASAMABLADE);
     }
 
@@ -73,6 +72,6 @@ public class MurasamaBladeItem extends StaffItem implements GeoItem, IPresetSpel
     }
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.murasama_blade.desc").withStyle(ChatFormatting.DARK_PURPLE));
+        pTooltipComponents.add(Component.translatable("item.roacw.murasama_blade.desc").withStyle(ChatFormatting.DARK_RED));
     }
 }

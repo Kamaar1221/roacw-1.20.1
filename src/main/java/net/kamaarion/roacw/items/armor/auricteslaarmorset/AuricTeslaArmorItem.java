@@ -9,7 +9,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.kamaarion.roacw.registeries.ROACWArmorMaterials;
+import net.kamaarion.roacw.items.armor.ROACWArmorMaterials;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import javax.annotation.Nullable;

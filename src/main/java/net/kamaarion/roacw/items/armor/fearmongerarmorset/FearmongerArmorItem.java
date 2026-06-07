@@ -2,7 +2,7 @@ package net.kamaarion.roacw.items.armor.fearmongerarmorset;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;
-import net.kamaarion.roacw.registeries.ROACWArmorMaterials;
+import net.kamaarion.roacw.items.armor.ROACWArmorMaterials;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +28,7 @@ public class FearmongerArmorItem extends ImbuableChestplateArmorItem {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.fearmonger_core.desc").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.roacw.fearmonger_platemail.desc").withStyle(ChatFormatting.GOLD));
     }
     @Override
     public boolean isDamageable(ItemStack stack) {

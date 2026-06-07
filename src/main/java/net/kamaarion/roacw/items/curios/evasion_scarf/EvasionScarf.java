@@ -2,15 +2,19 @@ package net.kamaarion.roacw.items.curios.evasion_scarf;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import dev.shadowsoffire.attributeslib.api.ALObjects;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -23,13 +27,15 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
 public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public EvasionScarf() {
+    public EvasionScarf(Properties rarity) {
         super(ItemPropertiesHelper
                 .equipment()
                 .stacksTo(1)
@@ -91,14 +97,16 @@ public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
-        attr.put(CSAttributeRegistry.ABYSSAL_MAGIC_POWER.get(),
-                new AttributeModifier(uuid, "Abyssal Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(AttributeRegistry.SUMMON_DAMAGE.get(),
-                new AttributeModifier(uuid, "Summon Damage", 0.30, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(AttributeRegistry.MAX_MANA.get(),
-                new AttributeModifier(uuid, "Max Mana", 200, AttributeModifier.Operation.ADDITION));
+        attr.put(Attributes.MOVEMENT_SPEED,
+                new AttributeModifier(uuid, "Movement Speed", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
+        attr.put(ALObjects.Attributes.DODGE_CHANCE.get(),
+                new AttributeModifier(uuid, "Movement Speed", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
 
         return attr;
+    }
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        pTooltipComponents.add(Component.translatable("item.roacw.evasion_scarf.desc").withStyle(ChatFormatting.DARK_RED));
     }
 
 

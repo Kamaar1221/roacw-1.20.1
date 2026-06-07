@@ -1,8 +1,10 @@
-package net.kamaarion.roacw.registeries;
+package net.kamaarion.roacw.items.armor;
 
+import com.github.L_Ender.cataclysm.init.ModItems;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.armor.IronsExtendedArmorMaterial;
 import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
+import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -23,19 +25,19 @@ import static io.redspace.ironsspellbooks.item.armor.ExtendedArmorMaterials.make
 public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
 
     MARS_ARMOR("mars_armor", 45, marsArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 7.5f, 0,
-            () -> Ingredient.of(Items.IRON_INGOT), Map.of(
-            (Attribute)Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
-            (Attribute)AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 350,AttributeModifier.Operation.ADDITION),
-            (Attribute)AttributeRegistry.ELDRITCH_SPELL_POWER.get(), new AttributeModifier("Eldritch Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            (Attribute)AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
-            (Attribute)CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Technomancy Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
-            (Attribute)AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            (Attribute)AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
+            () -> Ingredient.of(ModItems.WITHERITE_INGOT.get()), Map.of(
+            Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 350,AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.ELDRITCH_SPELL_POWER.get(), new AttributeModifier("Eldritch Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
+            CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Technomancy Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
 
     AURIC_TESLA_ARMOR("auric_tesla_armor", 45, auricTeslaArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 10f, 0,
             () -> Ingredient.of(ROACWItemRegistry.AURIC_INGOT .get()), Map.of(
-            (Attribute) Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+            Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 350,AttributeModifier.Operation.ADDITION),
             AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
             CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Technomancy Power", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
@@ -44,16 +46,15 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
 
-    FEARMONGER_ARMOR("fearmonger_armor", 45, fearmongerArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 10f, 0,
-            () -> Ingredient.of(ROACWItemRegistry.AURIC_INGOT .get()), Map.of(
-            (Attribute) Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+    FEARMONGER_ARMOR("fearmonger_armor", 45, fearmongerArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 5f, 0,
+            () -> Ingredient.of(ModItems.IGNITIUM_INGOT .get()), Map.of(
+            Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 250,AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Spell Power", 0.3, AttributeModifier.Operation.MULTIPLY_BASE),
-            AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier("Ice Spell Power", 0.3, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Spell Power", 0.2, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier("Ice Spell Power", 0.2, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.ELDRITCH_SPELL_POWER.get(), new AttributeModifier("Eldritch Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
-            AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            AttributeRegistry.SUMMON_DAMAGE.get(), new AttributeModifier("Summon Damage", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.075, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SUMMON_DAMAGE.get(), new AttributeModifier("Summon Damage", 0.15, AttributeModifier.Operation.MULTIPLY_BASE)
     ));
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
@@ -106,7 +107,7 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
         return makeArmorMap(13, 18, 16, 13);
     }
     static public EnumMap<ArmorItem.Type, Integer> fearmongerArmorMap() {
-        return makeArmorMap(10, 15, 13, 10);
+        return makeArmorMap(6, 11, 19, 6);
     }
 
     @Override

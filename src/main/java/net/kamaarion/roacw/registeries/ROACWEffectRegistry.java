@@ -1,9 +1,7 @@
 package net.kamaarion.roacw.registeries;
 
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.effects.AuricChargeEffect;
-import net.kamaarion.roacw.effects.AuricExhaustionEffect;
-import net.kamaarion.roacw.effects.ShadowflameEffect;
+import net.kamaarion.roacw.effects.*;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -22,6 +20,12 @@ public class ROACWEffectRegistry {
 
     public static final RegistryObject<MobEffect> SHADOWFLAME =
             MOB_EFFECTS.register("shadowflame", ShadowflameEffect::new);
+
+    public static final RegistryObject<MobEffect> ELEMENTAL_MIX =
+            MOB_EFFECTS.register("elemental_mix", ElementalMixEffect::new);
+
+    public static final RegistryObject<MobEffect> EVASION_SCARF_BUFF =
+            MOB_EFFECTS.register("evasion_scarf_buff", EvasionScarfBuffEffect::new);
 
     public static void register(IEventBus eventBus)
     {

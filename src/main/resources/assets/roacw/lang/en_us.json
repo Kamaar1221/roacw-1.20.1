@@ -6,18 +6,28 @@
   "item.roacw.mars_engine.desc": "Putting on this armor, you feel a power emanating from it that you've never felt before, something precise yet violent, like an automaton designed for carnage.",
   "item.roacw.auric_tesla_royal_helm": "Auric Tesla Royal Helm",
   "item.roacw.auric_tesla_cuirass": "Auric Tesla Cuirass",
-  "item.roacw.auric_tesla_leggings": "Auric Tesla Leggings",
-  "item.roacw.auric_tesla_greaves": "Auric Tesla Greaves",
+  "item.roacw.auric_tesla_cuisses": "Auric Tesla Cuisses",
+  "item.roacw.auric_tesla_boots": "Auric Tesla Boots",
   "item.roacw.auric_tesla_cuirass.desc": "After finding all of the components to forge such a masterpiece, this armor makes you feel unstoppable, as if the entire world will bow to you.",
+  "item.roacw.fearmonger_greathelm": "Fearmonger Greathelm",
+  "item.roacw.fearmonger_platemail": "Fearmonger Platemail",
+  "item.roacw.fearmonger_legplates": "Fearmonger Legplates",
+  "item.roacw.fearmonger_greaves": "Fearmonger Greaves",
+  "item.roacw.fearmonger_platemail.desc":"The one thing you have understood through your journey is that, fear is the greatest weapon. Harnessing the elements of the endothermic elements of the cold, and the nightmarish fuel of the heat, fear consumes your enemies, for you are both the blazing heat, and the chilling cold.",
 
   "item.roacw.statis_curse": "Statis' Curse",
+  "item.roacw.statis_curse.desc": "Summons will occasionally inflict a stack of Shadowflame, up to 5 stacks.",
   "item.roacw.evasion_scarf": "Evasion Scarf",
+  "item.roacw.evasion_scarf.desc": "Press V to dash forward, gaining a small speed boost and damage boost afterwards.",
+  "item.roacw.nightmare_tome": "Tome Of Nightmares",
+  "item.roacw.nightmare_tome.desc": "You swear you could hear screaming coming from the book...",
   "item.roacw.elemental_gauntlet": "Elemental Gauntlet",
+  "item.roacw.elemental_gauntlet.desc": "Melee attacks will inflict Elemental Mix.",
   "item.roacw.burst_sheath": "Burst Sheath",
+  "item.roacw.burst_sheath.desc": "There Will Be Blood!",
 
   "item.roacw.murasama_blade": "Muramasa",
   "item.roacw.murasama_blade.desc": "The Only Thing I Know For Real...",
-
 
   "item.roacw.raw_auric_chunk": "Raw Auric Chunk",
   "item.roacw.auric_ingot": "Auric Ingot",
@@ -25,6 +35,17 @@
   "item.roacw.fried_chicken": "Fried Chicken",
 
   "school.roacw.exo": "Exo",
+
+  "effect.roacw.shadowflame":"Shadowflame",
+  "effect.roacw.shadowflame.desc":"Reduces regeneration by 20% and deals damage over time.",
+  "effect.roacw.elemental_mix":"Elemental Mix",
+  "effect.roacw.elemental_mix.desc":"Reduces armor, armor toughness, movement speed, spell resistance, and regeneration. Deals damage over time.",
+  "effect.roacw.auric_charge":"Auric Charge",
+  "effect.roacw.auric_charge.desc":"Infuses you with increased armor, armor toughness, spell resistance, movement speed, attack damage and spell power. Also increases regeneration.",
+  "effect.roacw.auric_exhaustion":"Auric Exhaustion",
+  "effect.roacw.auric_exhaustion.desc":"You are unable to revive with the Auric Tesla Armor!",
+  "effect.roacw.evasion_scarf_buff":"Evasion Scarf Buff",
+  "effect.roacw.evasion_scarf_buff.desc":"Grants a small damage, spell power and speed buff.",
 
   "attribute.roacw.exo_magic_resist": "Exo Magic resist",
   "attribute.roacw.exo_spell_power": "Exo Magic Power",
@@ -38,6 +59,8 @@
   "block.roacw.auric_ore": "Auric Ore",
   "block.roacw.deepslate_auric_ore": "Deepslate Auric Ore",
   "block.roacw.auric_block": "Auric Block",
+
+  "ui.roacw.recast_bonus_damage": "%d Added damage (+1 damage per recast)",
 
   "creativetab.roacw": "RoaCW Items"
 }
