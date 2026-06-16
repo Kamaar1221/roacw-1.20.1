@@ -1,7 +1,6 @@
 package net.kamaarion.roacw.items.armor.fearmongerarmorset;
 
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.items.armor.auricteslaarmorset.AuricTeslaArmorItem;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 

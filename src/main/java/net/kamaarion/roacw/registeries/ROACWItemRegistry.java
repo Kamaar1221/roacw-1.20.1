@@ -3,7 +3,7 @@ package net.kamaarion.roacw.registeries;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.kamaarion.roacw.items.armor.fearmongerarmorset.FearmongerArmorItem;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
-import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
+//import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.items.curios.nightmare_tome.NightmareTome;
 import net.kamaarion.roacw.items.weapons.murasama_blade.MurasamaBladeItem;
 import net.minecraft.world.item.ArmorItem;
@@ -46,15 +46,17 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> FEARMONGER_GREAVES = ITEMS.register("fearmonger_greaves", () -> new FearmongerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
 
     // Basic Materials / Consumables
-    public static final RegistryObject<Item> RAW_AURIC_CHUNK = ITEMS.register("raw_auric_chunk", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> RAW_AURIC_CHUNK = ITEMS.register("raw_auric_chunk", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
     public static final RegistryObject<Item> AURIC_INGOT = ITEMS.register("auric_ingot", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> ASCENDANT_SPIRIT_ESSENCE = ITEMS.register("ascendant_spirit_essence", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> CHARGED_AURIC_INGOT = ITEMS.register("charged_auric_ingot", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+
     public static final RegistryObject<Item> FRIED_CHICKEN = ITEMS.register("fried_chicken", () -> new Item(new Item.Properties().food(ROACWFoodRegistry.FRIED_CHICKEN).rarity(GOD_FORGED)));
 
     // Curios
     public static final RegistryObject<Item> STATIS_CURSE = ITEMS.register("statis_curse", () -> new StatisCurse(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> EVASION_SCARF = ITEMS.register("evasion_scarf", () -> new EvasionScarf(new Item.Properties().rarity(Rarity.EPIC)));
-    public static final RegistryObject<Item> ELEMENTAL_GAUNTLET = ITEMS.register("elemental_gauntlet", () -> new ElementalGauntlet(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> ELEMENTAL_GAUNTLET = ITEMS.register("elemental_gauntlet", () -> new ElementalGauntlet(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> BURST_SHEATH = ITEMS.register("burst_sheath", () -> new BurstSheath(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
 
 
@@ -65,7 +67,7 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("nightmare_tome", () -> new NightmareTome(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
 
     // High Ruler Shield
-    public static final RegistryObject<Item> HIGH_RULER_SHIELD = ITEMS.register("high_ruler_shield", () -> new HighRulerShield(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    //public static final RegistryObject<Item> HIGH_RULER_SHIELD = ITEMS.register("high_ruler_shield", () -> new HighRulerShield(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));//
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

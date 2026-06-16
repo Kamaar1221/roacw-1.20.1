@@ -20,6 +20,9 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
         super(ROACWArmorMaterials.AURIC_TESLA_ARMOR, type, settings, withManaAndSpellPowerAttribute(125, 0.05));
     }
 
+    private static final net.minecraft.network.chat.Style AURIC_GOLD = net.minecraft.network.chat.Style.EMPTY
+            .withColor(net.minecraft.network.chat.TextColor.parseColor("#FFDC16"));
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
@@ -28,8 +31,38 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.auric_tesla_cuirass.desc").withStyle(ChatFormatting.GRAY));
+        if (pLevel != null && pLevel.isClientSide()) {
+            net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+            int maxTooltipWidth = 240;
+
+            Component loreText = Component.translatable("item.roacw.auric_tesla_cuirass.desc").withStyle(AURIC_GOLD);
+            font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
+            });
+
+            pTooltipComponents.add(Component.empty());
+
+            Component tooltipText1 = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip1").withStyle(ChatFormatting.GRAY);
+            font.getSplitter().splitLines(tooltipText1, maxTooltipWidth, tooltipText1.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText1.getStyle()));
+            });
+
+            pTooltipComponents.add(Component.empty());
+
+            Component currentBoundKey = net.kamaarion.roacw.client.ModKeyMappings.AURIC_DASH_KEY.getTranslatedKeyMessage()
+                    .copy().withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
+
+            Component tooltipText2 = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip2", currentBoundKey).withStyle(ChatFormatting.GRAY);
+
+            font.getSplitter().splitLines(tooltipText2, maxTooltipWidth, tooltipText2.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText2.getStyle()));
+            });
+
+        } else {
+            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        }
     }
+
     @Override
     public boolean isDamageable(ItemStack stack) {
         return false;

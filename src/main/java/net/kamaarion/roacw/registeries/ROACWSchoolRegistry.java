@@ -21,12 +21,9 @@ public class ROACWSchoolRegistry {
         ROACWSchools.register(eventBus);
     }
 
-    // 2. Exo School Registration
-    // Forge automatically generates and assigns the proper ResourceLocation ID for us here!
     public static final ResourceLocation EXO_RESOURCE = ROACW.id("exo");
     public static final Supplier<SchoolType> EXO = ROACWSchools.register("exo", () -> new SchoolType(
             ResourceLocation.tryBuild(ROACW.MODID, "exo"),
-            // Manually defining the resource path
             ROACWTags.EXO_FOCUS,
             Component.translatable("school.roacw.exo").withStyle(Style.EMPTY.withColor(0xCC4723)),
             ROACWAttributeRegistry.EXO_MAGIC_POWER,

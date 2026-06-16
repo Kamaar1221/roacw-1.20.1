@@ -38,25 +38,29 @@ public class ServerEvents {
     }
 
     private boolean tryAuricTeslaRevive(LivingEntity living) {
+        if (!net.kamaarion.roacw.Config.ENABLE_AURIC_REVIVE.get()) {
+            return false;
+        }
+
         ItemStack chestplate = living.getItemBySlot(EquipmentSlot.CHEST);
         if ((living.level() instanceof ServerLevel serverLevel) &&
                 chestplate.getItem() == ROACWItemRegistry.AURIC_TESLA_CUIRASS.get() &&
                 !living.hasEffect(ROACWEffectRegistry.AURIC_EXHAUSTION.get())) {
 
             living.setHealth(10.0F);
-            serverLevel.playSound( null, living.getX(), living.getY(), living.getZ(), SoundEvents.TOTEM_USE, living.getSoundSource(), 1.25f, 1.0F );
+            serverLevel.playSound(
+                    null, living.getX(), living.getY(), living.getZ(),
+                    SoundEvents.TOTEM_USE, living.getSoundSource(), 1.25f, 1.0F
+            );
 
             living.addEffect(new MobEffectInstance(ROACWEffectRegistry.AURIC_CHARGE.get(), 300, 0, false, false, true));
-
             return true;
         }
         return false;
     }
 
-
     @Mod.EventBusSubscriber(modid = "roacw", bus = Mod.EventBusSubscriber.Bus.FORGE)
     public class AuricReviveCooldownHandler {
-
         @SubscribeEvent
         public static void onEffectExpiry(MobEffectEvent.Expired event) {
             handleChargeRemoval(event.getEntity(), event.getEffectInstance());
@@ -69,12 +73,12 @@ public class ServerEvents {
 
         private static void handleChargeRemoval(LivingEntity entity, @Nullable MobEffectInstance instance) {
             if (instance == null || entity.level().isClientSide()) return;
-
             if (instance.getEffect() == ROACWEffectRegistry.AURIC_CHARGE.get()) {
                 entity.addEffect(new MobEffectInstance(ROACWEffectRegistry.AURIC_EXHAUSTION.get(), 6000, 0, false, false, true));
             }
         }
     }
+
 
 
     @SubscribeEvent

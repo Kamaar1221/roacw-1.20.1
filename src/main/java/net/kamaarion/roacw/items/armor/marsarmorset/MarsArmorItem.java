@@ -53,10 +53,30 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.mars_engine.desc").withStyle(ChatFormatting.DARK_RED));
+        if (pLevel != null && pLevel.isClientSide()) {
+            net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+            int maxTooltipWidth = 240;
 
-        pTooltipComponents.add(Component.literal("Full Set Bonus: Grants Creative Flight").withStyle(ChatFormatting.GOLD));
+            Component loreText = Component.translatable("item.roacw.mars_engine.desc").withStyle(ChatFormatting.DARK_RED);
+            font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
+            });
+            pTooltipComponents.add(Component.empty());
+            Component tooltipText = Component.translatable("item.roacw.mars_engine.tooltip").withStyle(ChatFormatting.GRAY);
+            font.getSplitter().splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText.getStyle()));
+            });
+            /*pTooltipComponents.add(Component.empty());
+            Component setBonusText = Component.literal("Full Set Bonus: Grants Creative Flight").withStyle(ChatFormatting.GOLD);
+            font.getSplitter().splitLines(setBonusText, maxTooltipWidth, setBonusText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(setBonusText.getStyle()));
+            });*/
+
+        } else {
+            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        }
     }
+
 
     @Override
     public Component getName(ItemStack stack) {

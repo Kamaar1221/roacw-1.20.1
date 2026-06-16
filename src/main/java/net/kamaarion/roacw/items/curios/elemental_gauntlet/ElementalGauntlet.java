@@ -96,16 +96,26 @@ public class ElementalGauntlet extends CurioBaseItem implements ICurioItem, GeoI
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
+        // 1. MUST grab the multimap from the super class to maintain Curio/Iron's system registry
+        Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create(super.getAttributeModifiers(slotContext, uuid, stack));
+
+        // 2. Filter by slot if you only want it active in specific Curio slots (Optional)
+        // if (slotContext.identifier().equals("hands")) {
+
         attr.put(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(uuid, "Attack Damage", 10, AttributeModifier.Operation.ADDITION));
+                new AttributeModifier(uuid, "Attack Damage", 10.0D, AttributeModifier.Operation.ADDITION));
+
         attr.put(Attributes.ATTACK_SPEED,
-                new AttributeModifier(uuid, "Attack Speed", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
+                new AttributeModifier(uuid, "Attack Speed", 0.15D, AttributeModifier.Operation.MULTIPLY_BASE));
+
         attr.put(ALObjects.Attributes.CRIT_CHANCE.get(),
-                new AttributeModifier(uuid, "Crit Chance", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
+                new AttributeModifier(uuid, "Crit Chance", 0.15D, AttributeModifier.Operation.MULTIPLY_BASE));
+
+        // }
 
         return attr;
     }
+
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add(Component.translatable("item.roacw.elemental_gauntlet.desc").withStyle(ChatFormatting.AQUA));

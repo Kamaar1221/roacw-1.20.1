@@ -3,22 +3,25 @@
   "item.roacw.mars_engine": "XG-07 Mars Engine",
   "item.roacw.mars_leg_guards": "XG-07 Mars Leg Guards",
   "item.roacw.mars_boosters": "XG-07 Mars Boosters",
-  "item.roacw.mars_engine.desc": "Putting on this armor, you feel a power emanating from it that you've never felt before, something precise yet violent, like an automaton designed for carnage.",
+  "item.roacw.mars_engine.desc": "\"Putting on this armor, you feel a power emanating from it that you've never felt before, something precise yet violent, like an automaton designed for carnage.\"",
+  "item.roacw.mars_engine.tooltip":"Wearing the full armor, you gain infinite creative flight, and removing a piece of the armor mid-air will cause the player to slowly descend.",
   "item.roacw.auric_tesla_royal_helm": "Auric Tesla Royal Helm",
   "item.roacw.auric_tesla_cuirass": "Auric Tesla Cuirass",
   "item.roacw.auric_tesla_cuisses": "Auric Tesla Cuisses",
   "item.roacw.auric_tesla_boots": "Auric Tesla Boots",
-  "item.roacw.auric_tesla_cuirass.desc": "After finding all of the components to forge such a masterpiece, this armor makes you feel unstoppable, as if the entire world will bow to you.",
+  "item.roacw.auric_tesla_cuirass.desc": "\"After finding all of the components to forge such a masterpiece, this armor makes you feel unstoppable, as if the entire world will bow to you.\"",
+  "item.roacw.auric_tesla_cuirass.tooltip1":"On damage that would cause the player to die,revive with 5 hearts and grant the Auric Charge effect. §c[⌛ CD: 5m]",
+  "item.roacw.auric_tesla_cuirass.tooltip2":"On [§c§l%s§7] press, dash forward, dealing high damage and gaining some of the damage back as health. §c[⌛ CD: 1m]",
   "item.roacw.fearmonger_greathelm": "Fearmonger Greathelm",
   "item.roacw.fearmonger_platemail": "Fearmonger Platemail",
   "item.roacw.fearmonger_legplates": "Fearmonger Legplates",
   "item.roacw.fearmonger_greaves": "Fearmonger Greaves",
-  "item.roacw.fearmonger_platemail.desc":"The one thing you have understood through your journey is that, fear is the greatest weapon. Harnessing the elements of the endothermic elements of the cold, and the nightmarish fuel of the heat, fear consumes your enemies, for you are both the blazing heat, and the chilling cold.",
+  "item.roacw.fearmonger_platemail.desc":"\"Your journey was not kind to you, but if it taught you one thing? Fear. A lesson you'll take to the grave. Harnessing the Element of Ice and Fire to replicate that shiver down your spine and the feverish feeling of fear. It is now you, who is the bringer of Fear.\"",
 
   "item.roacw.statis_curse": "Statis' Curse",
   "item.roacw.statis_curse.desc": "Summons will occasionally inflict a stack of Shadowflame, up to 5 stacks.",
   "item.roacw.evasion_scarf": "Evasion Scarf",
-  "item.roacw.evasion_scarf.desc": "Press V to dash forward, gaining a small speed boost and damage boost afterwards.",
+  "item.roacw.evasion_scarf.desc": "On [§c§l%s§7] press, dash forward, gaining a small speed boost and damage boost if you dash through an enemy. §c[⌛ CD: 10s]",
   "item.roacw.nightmare_tome": "Tome Of Nightmares",
   "item.roacw.nightmare_tome.desc": "You swear you could hear screaming coming from the book...",
   "item.roacw.elemental_gauntlet": "Elemental Gauntlet",
@@ -32,7 +35,12 @@
   "item.roacw.raw_auric_chunk": "Raw Auric Chunk",
   "item.roacw.auric_ingot": "Auric Ingot",
   "item.roacw.charged_auric_ingot": "Charged Auric Ingot",
+  "item.roacw.ascendant_spirit_essence": "Ascendant Spirit Essence",
   "item.roacw.fried_chicken": "Fried Chicken",
+
+  "rarity.roacw.god_forged.name": "God Forged",
+  "rarity.roacw.exo_engineered.name": "Exo-Engineered",
+  "rarity.roacw.otherworldly.name": "Otherworldly",
 
   "school.roacw.exo": "Exo",
 
@@ -60,7 +68,12 @@
   "block.roacw.deepslate_auric_ore": "Deepslate Auric Ore",
   "block.roacw.auric_block": "Auric Block",
 
+  "key.categories.roacw": "Remnants Of A Cruel World",
+  "key.roacw.auric_dash": "Auric Dash",
+  "key.roacw.evasion_scarf_dash": "Evasion Scarf Dash",
+
   "ui.roacw.recast_bonus_damage": "%d Added damage (+1 damage per recast)",
 
-  "creativetab.roacw": "RoaCW Items"
+  "creativetab.roacw.equipment": "RoaCW Equipment",
+  "creativetab.roacw.items": "RoaCW Items"
 }

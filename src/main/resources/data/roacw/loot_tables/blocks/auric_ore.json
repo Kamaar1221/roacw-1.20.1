@@ -47,7 +47,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "roacw:raw_auric"
+              "name": "roacw:raw_auric_chunk"
             }
           ]
         }

@@ -1,0 +1,19 @@
+{
+  "type": "crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "traveloptics:abyssal_tentacle"
+    },
+    {
+      "item": "traveloptics:echo_winglet"
+    },
+    {
+      "item": "traveloptics:flame_tempered_handguard"
+    }
+  ],
+  "result": {
+    "item": "roacw:ascendant_spirit_essence",
+    "count": 3
+  }
+}

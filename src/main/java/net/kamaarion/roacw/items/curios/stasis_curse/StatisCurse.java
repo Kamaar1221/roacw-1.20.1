@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -60,9 +61,6 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
 
-        // Runs every tick while worn
-        // You can leave this empty if you want
-
     }
 
     @Override
@@ -105,6 +103,12 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
 
         return attr;
     }
+
+    @Override
+    public Rarity getRarity(ItemStack stack) {
+        return ROACWItemRegistry.OTHERWORLDLY;
+    }
+
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add(Component.translatable("item.roacw.statis_curse.desc").withStyle(ChatFormatting.DARK_PURPLE));

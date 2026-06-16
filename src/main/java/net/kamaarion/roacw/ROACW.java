@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.render.SpellBookCurioRenderer;
 import net.kamaarion.roacw.client.CustomAnimatedParticle;
 import net.kamaarion.roacw.events.ServerEvents;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheathCurioRenderer;
-import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer;
 import net.kamaarion.roacw.network.ModMessages;
 import net.kamaarion.roacw.registeries.*;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +15,6 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext; // Added import for registration
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -37,12 +35,12 @@ public class ROACW {
     public ROACW(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
 
-        context.registerConfig(ModConfig.Type.CLIENT, Config.SPEC);
-        // Registering the new server-side configurations safely without changing Client specifications
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SPEC);
+        context.registerConfig(ModConfig.Type.COMMON, Config.SERVER_SPEC);
+        context.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+
 
         MinecraftForge.EVENT_BUS.register(new ServerEvents());
-        // Register the Client Tick Handler to listen continuously for keybind presses
+
         MinecraftForge.EVENT_BUS.register(net.kamaarion.roacw.client.ClientTickHandler.class);
 
         ROACWItemRegistry.register(modEventBus);
@@ -85,7 +83,6 @@ public class ROACW {
             CuriosRendererRegistry.register(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get(), ElementalGauntletCurioRenderer::new);
             CuriosRendererRegistry.register(ROACWItemRegistry.BURST_SHEATH.get(), BurstSheathCurioRenderer::new);
             CuriosRendererRegistry.register(ROACWItemRegistry.NIGHTMARE_TOME.get(), SpellBookCurioRenderer::new);
-            CuriosRendererRegistry.register(ROACWItemRegistry.HIGH_RULER_SHIELD.get(), HighRulerShieldCurioRenderer::new);
         }
 
         @SubscribeEvent

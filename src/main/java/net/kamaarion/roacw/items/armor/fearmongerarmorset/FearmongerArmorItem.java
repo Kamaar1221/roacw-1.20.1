@@ -20,6 +20,11 @@ public class FearmongerArmorItem extends ImbuableChestplateArmorItem {
         super(ROACWArmorMaterials.FEARMONGER_ARMOR, type, settings, withManaAndSpellPowerAttribute(125, 0.05));
     }
 
+    private static final net.minecraft.network.chat.Style NEON_PURPLE = net.minecraft.network.chat.Style.EMPTY
+            .withColor(net.minecraft.network.chat.TextColor.parseColor("#CE84FF"));
+
+
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
@@ -28,7 +33,18 @@ public class FearmongerArmorItem extends ImbuableChestplateArmorItem {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.fearmonger_platemail.desc").withStyle(ChatFormatting.GOLD));
+        if (pLevel != null && pLevel.isClientSide()) {
+            net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+            int maxTooltipWidth = 240;
+
+            Component loreText = Component.translatable("item.roacw.fearmonger_platemail.desc").withStyle(NEON_PURPLE);
+            font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
+            });
+
+        } else {
+            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        }
     }
     @Override
     public boolean isDamageable(ItemStack stack) {

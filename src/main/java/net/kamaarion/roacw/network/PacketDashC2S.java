@@ -1,5 +1,6 @@
 package net.kamaarion.roacw.network;
 
+import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
@@ -50,73 +51,81 @@ public class PacketDashC2S {
             // ==========================================
             // START: AURIC TESLA DASH LOGIC (Type 2)
             // ==========================================
-            if (this.dashType == 2 && isWearingFullAuricTesla(player)) {
-                long currentServerTick = player.server.getTickCount();
-                long nextAvailableTick = AURIC_COOLDOWN_TRACKER.getOrDefault(player.getUUID(), 0L);
+            if (this.dashType == 2) {
 
-                if (currentServerTick >= nextAvailableTick) {
-                    AURIC_COOLDOWN_TRACKER.put(player.getUUID(), currentServerTick + 200);
-
-                    Vec3 lookDirection = player.getLookAngle();
-                    double auricDashSpeed = 2.8;
-                    double auricDashHeight = 0.1;
-
-                    Vec3 motion = new Vec3(lookDirection.x, auricDashHeight, lookDirection.z).normalize().scale(auricDashSpeed);
-
-                    player.setDeltaMovement(motion);
-                    player.hurtMarked = true;
-
-                    player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                            ROACWSoundRegistry.DASH_WHOOSH.get(), SoundSource.PLAYERS, 1.0F, 1.2F);
-
-                    if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
-                        serverLevel.sendParticles(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.5, player.getZ(), 25, 0.3, 0.3, 0.3, 0.15);
-                    }
-
-                    // === AURIC TESLA DAMAGE & LIFESTEAL ZONE ===
-                    AABB damageZone = player.getBoundingBox().expandTowards(motion.scale(4.0));
-                    java.util.List<LivingEntity> targets = player.level().getEntitiesOfClass(
-                            LivingEntity.class, damageZone, entity -> entity != player
-                    );
-
-                    float totalHealAmount = 0.0F;
-
-                    for (LivingEntity target : targets) {
-                        float damageGiven = 30.0F;
-
-                        if (target.hurt(player.damageSources().indirectMagic(player, player), damageGiven)) {
-                            totalHealAmount += (damageGiven * 0.20F);
-                        }
-
-                        target.knockback(1.2, -motion.x, -motion.z);
-                        target.hurtMarked = true;
-
-                        if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
-                            serverLevel.sendParticles(ParticleTypes.EXPLOSION, target.getX(), target.getY() + 1.0, target.getZ(), 3, 0.1, 0.1, 0.1, 0.0);
-                            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + 1.0, target.getZ(), 15, 0.3, 0.3, 0.3, 0.2);
-                        }
-
-                        player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                                SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 0.6F, 1.6F);
-                    }
-
-                    if (totalHealAmount > 0.0F) {
-                        player.heal(totalHealAmount);
-                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                                SoundEvents.WITCH_DRINK, SoundSource.PLAYERS, 0.5F, 1.4F);
-
-                        if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
-                            serverLevel.sendParticles(ParticleTypes.HEART, player.getX(), player.getY() + 1.0, player.getZ(), 5, 0.4, 0.4, 0.4, 0.0);
-                        }
-                    }
-
+                // CRITICAL SERVER-SIDE CONFIG KILL-SWITCH FIX:
+                // If the server owner turns it off in roacw-common.toml, stop processing immediately!
+                if (!Config.ENABLE_AURIC_TESLA_DASH.get()) {
                     return;
+                }
+
+                if (isWearingFullAuricTesla(player)) {
+                    long currentServerTick = player.server.getTickCount();
+                    long nextAvailableTick = AURIC_COOLDOWN_TRACKER.getOrDefault(player.getUUID(), 0L);
+
+                    if (currentServerTick >= nextAvailableTick) {
+                        AURIC_COOLDOWN_TRACKER.put(player.getUUID(), currentServerTick + 1200);
+
+                        Vec3 lookDirection = player.getLookAngle();
+                        double auricDashSpeed = 4.0;
+                        double auricDashHeight = 0.1;
+
+                        Vec3 motion = new Vec3(lookDirection.x, auricDashHeight, lookDirection.z).normalize().scale(auricDashSpeed);
+
+                        player.setDeltaMovement(motion);
+                        player.hurtMarked = true;
+
+                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                                ROACWSoundRegistry.DASH_WHOOSH.get(), SoundSource.PLAYERS, 1.0F, 1.2F);
+
+                        if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                            serverLevel.sendParticles(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.5, player.getZ(), 25, 0.3, 0.3, 0.3, 0.15);
+                        }
+
+                        // === AURIC TESLA DAMAGE & LIFESTEAL ZONE ===
+                        AABB damageZone = player.getBoundingBox().expandTowards(motion.scale(4.0));
+                        java.util.List<LivingEntity> targets = player.level().getEntitiesOfClass(
+                                LivingEntity.class, damageZone, entity -> entity != player
+                        );
+
+                        float totalHealAmount = 0.0F;
+
+                        for (LivingEntity target : targets) {
+                            float damageGiven = 30.0F;
+                            if (target.hurt(player.damageSources().indirectMagic(player, player), damageGiven)) {
+                                // Adds 10.0 base flat heal + 6.0 lifesteal per enemy hit
+                                totalHealAmount += 10.0F + (damageGiven * 0.20F);
+                            }
+
+                            target.knockback(1.2, -motion.x, -motion.z);
+                            target.hurtMarked = true;
+
+                            if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                                serverLevel.sendParticles(ParticleTypes.EXPLOSION, target.getX(), target.getY() + 1.0, target.getZ(), 3, 0.1, 0.1, 0.1, 0.0);
+                                serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY() + 1.0, target.getZ(), 15, 0.3, 0.3, 0.3, 0.2);
+                            }
+
+                            player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
+                                    SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 0.6F, 1.6F);
+                        }
+
+                        if (totalHealAmount > 0.0F) {
+                            player.heal(totalHealAmount);
+                            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                                    SoundEvents.WITCH_DRINK, SoundSource.PLAYERS, 0.5F, 1.4F);
+
+                            if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                                serverLevel.sendParticles(ParticleTypes.HEART, player.getX(), player.getY() + 1.0, player.getZ(), 5, 0.4, 0.4, 0.4, 0.0);
+                            }
+                        }
+
+                        return;
+                    }
                 }
             }
             // ==========================================
             // END: AURIC TESLA DASH LOGIC
             // ==========================================
-
             // ==========================================
             // START: ORIGINAL EVASION SCARF LOGIC (Type 1)
             // ==========================================
@@ -131,7 +140,7 @@ public class PacketDashC2S {
                         player.getCooldowns().addCooldown(dashItem, 200);
 
                         Vec3 lookDirection = player.getLookAngle();
-                        double dashSpeed = 1.5;
+                        double dashSpeed = 2.0;
                         Vec3 motion = new Vec3(lookDirection.x, 0.1, lookDirection.z).normalize().scale(dashSpeed);
                         player.setDeltaMovement(motion);
                         player.hurtMarked = true;
@@ -187,7 +196,7 @@ public class PacketDashC2S {
         private static boolean isWearingFullAuricTesla(ServerPlayer player) {
             net.minecraft.world.item.ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
             net.minecraft.world.item.ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-            net.minecraft.world.item.ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS); // FIX: Evaluates the correct leg slot
+            net.minecraft.world.item.ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
             net.minecraft.world.item.ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
 
         return head.is(ROACWItemRegistry.AURIC_TESLA_ROYAL_HELM.get()) &&

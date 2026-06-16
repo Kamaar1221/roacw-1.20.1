@@ -2,26 +2,23 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "CDB",
-    "CAB",
-    "   "
+    " AC",
+    "ABA",
+    " A "
   ],
   "key": {
     "A": {
-      "item": "irons_spellbooks:cultist_boots"
+      "item": "irons_spellbooks:dragonskin"
     },
     "B": {
-      "item": "cataclysm:ignitium_ingot"
+      "item": "irons_spellbooks:greater_conjurers_talisman"
     },
     "C": {
-      "item": "cataclysm:cursium_ingot"
-    },
-    "D": {
       "item": "roacw:ascendant_spirit_essence"
     }
   },
 
   "result": {
-    "item": "roacw:fearmonger_greaves"
+    "item": "roacw:statis_curse"
   }
 }

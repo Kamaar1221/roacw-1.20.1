@@ -61,9 +61,6 @@ public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
 
-        // Runs every tick while worn
-        // You can leave this empty if you want
-
     }
 
     @Override
@@ -100,13 +97,28 @@ public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
         attr.put(Attributes.MOVEMENT_SPEED,
                 new AttributeModifier(uuid, "Movement Speed", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
         attr.put(ALObjects.Attributes.DODGE_CHANCE.get(),
-                new AttributeModifier(uuid, "Movement Speed", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
+                new AttributeModifier(uuid, "Dodge Chance", 0.075, AttributeModifier.Operation.MULTIPLY_BASE));
 
         return attr;
     }
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.evasion_scarf.desc").withStyle(ChatFormatting.DARK_RED));
+        if (pLevel != null && pLevel.isClientSide()) {
+            net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+            int maxTooltipWidth = 240;
+
+            Component currentBoundKey = net.kamaarion.roacw.client.ModKeyMappings.DASH_KEY.getTranslatedKeyMessage()
+                    .copy().withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
+
+            Component scarfTooltip = Component.translatable("item.roacw.evasion_scarf.desc", currentBoundKey).withStyle(ChatFormatting.GRAY);
+
+            font.getSplitter().splitLines(scarfTooltip, maxTooltipWidth, scarfTooltip.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(scarfTooltip.getStyle()));
+            });
+
+        } else {
+            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        }
     }
 
 

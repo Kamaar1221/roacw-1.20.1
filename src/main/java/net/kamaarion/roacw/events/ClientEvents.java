@@ -1,6 +1,6 @@
 package net.kamaarion.roacw.events;
 
-import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer; // Added Import
+//import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer; // Added Import
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.kamaarion.roacw.registeries.ROACWParticleRegistry;
 import net.minecraft.client.Minecraft;
@@ -113,7 +113,7 @@ public class ClientEvents {
     }
 
     // Added Hook: Handles Curios Layer Rendering Engine Initialization safely on the main thread
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
       event.enqueueWork(() -> {
         CuriosRendererRegistry.register(
@@ -121,7 +121,7 @@ public class ClientEvents {
                 HighRulerShieldCurioRenderer::new
         );
       });
-    }
+    }*/
   }
 }
 

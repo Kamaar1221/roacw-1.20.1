@@ -14,7 +14,7 @@ public class ModKeyMappings {
     public static final String KEY_CATEGORY_ROACW = "key.categories.roacw";
 
     public static final KeyMapping DASH_KEY = new KeyMapping(
-            "key.roacw.dash",
+            "key.roacw.evasion_scarf_dash",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_V,
             KEY_CATEGORY_ROACW

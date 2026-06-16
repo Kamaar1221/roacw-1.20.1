@@ -1,5 +1,6 @@
 package net.kamaarion.roacw.client;
 
+import net.kamaarion.roacw.Config; // Added config import
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.network.ModMessages;
 import net.kamaarion.roacw.network.PacketDashC2S;
@@ -38,7 +39,13 @@ public class ClientInputHandler {
 
         // Handle New Auric Tesla Dash (X Key)
         if (ModKeyMappings.AURIC_DASH_KEY.consumeClick()) {
-            // FIX: Aligned the equipment validations to match the server-side registration checks exactly
+
+            // FIX: Block the click immediately on the client if the config is disabled
+            if (!Config.ENABLE_AURIC_TESLA_DASH.get()) {
+                return;
+            }
+
+            // Aligned equipment validations matching your current registry item names exactly
             boolean hasFullSet = player.getItemBySlot(EquipmentSlot.HEAD).is(ROACWItemRegistry.AURIC_TESLA_ROYAL_HELM.get()) &&
                     player.getItemBySlot(EquipmentSlot.CHEST).is(ROACWItemRegistry.AURIC_TESLA_CUIRASS.get()) &&
                     player.getItemBySlot(EquipmentSlot.LEGS).is(ROACWItemRegistry.AURIC_TESLA_CUISSES.get()) &&
@@ -50,3 +57,4 @@ public class ClientInputHandler {
         }
     }
 }
+

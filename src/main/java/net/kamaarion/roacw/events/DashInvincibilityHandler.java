@@ -22,7 +22,6 @@ public class DashInvincibilityHandler {
                 if (remainingTicks > 190.0F) {
                     event.setCanceled(true);
 
-                    // Spawn a subtle deflection particle to show they dodged it
                     if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
                         serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.POOF,
                                 player.getX(), player.getY() + 1.0, player.getZ(),
