@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static net.kamaarion.roacw.registeries.ROACWSoundRegistry.DASH_WHOOSH;
+
 public class PacketDashC2S {
     private final int dashType;
     private static final Map<UUID, Long> AURIC_COOLDOWN_TRACKER = new HashMap<>();
@@ -76,7 +78,7 @@ public class PacketDashC2S {
                         player.hurtMarked = true;
 
                         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                                ROACWSoundRegistry.DASH_WHOOSH.get(), SoundSource.PLAYERS, 1.0F, 1.2F);
+                                ROACWSoundRegistry.AURIC_DASH_CHARGE.get(), SoundSource.PLAYERS, 1.0F, 1.2F);
 
                         if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
                             serverLevel.sendParticles(ParticleTypes.CLOUD, player.getX(), player.getY() + 0.5, player.getZ(), 25, 0.3, 0.3, 0.3, 0.15);
@@ -145,7 +147,7 @@ public class PacketDashC2S {
                         player.setDeltaMovement(motion);
                         player.hurtMarked = true;
 
-                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ROACWSoundRegistry.DASH_WHOOSH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), DASH_WHOOSH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                         if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
                             serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, player.getX(), player.getY() + 0.5, player.getZ(), 15, 0.2, 0.2, 0.2, 0.1);
                         }

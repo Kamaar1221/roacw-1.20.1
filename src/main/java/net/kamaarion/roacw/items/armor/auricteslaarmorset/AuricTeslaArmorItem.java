@@ -2,6 +2,7 @@ package net.kamaarion.roacw.items.armor.auricteslaarmorset;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;
+import net.kamaarion.roacw.client.others.ModKeyMappings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +50,7 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
 
             pTooltipComponents.add(Component.empty());
 
-            Component currentBoundKey = net.kamaarion.roacw.client.ModKeyMappings.AURIC_DASH_KEY.getTranslatedKeyMessage()
+            Component currentBoundKey = ModKeyMappings.AURIC_DASH_KEY.getTranslatedKeyMessage()
                     .copy().withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 
             Component tooltipText2 = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip2", currentBoundKey).withStyle(ChatFormatting.GRAY);

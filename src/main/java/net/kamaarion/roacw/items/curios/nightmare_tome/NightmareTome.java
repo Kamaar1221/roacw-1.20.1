@@ -24,36 +24,39 @@ import java.util.function.Consumer;
 
 public class NightmareTome extends SpellBook implements GeoItem {
   private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-  public NightmareTome(Properties rarity) {
-    super(10);
+
+  public NightmareTome(Properties properties) {
+    super(12, properties);
+
     withSpellbookAttributes(
             new AttributeContainer(AttributeRegistry.ICE_SPELL_POWER, 0.2, AttributeModifier.Operation.MULTIPLY_BASE),
             new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, 0.2, AttributeModifier.Operation.MULTIPLY_BASE),
             new AttributeContainer(AttributeRegistry.SUMMON_DAMAGE, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, 0.05, AttributeModifier.Operation.MULTIPLY_BASE),
-            new AttributeContainer(AttributeRegistry.MAX_MANA, 300, AttributeModifier.Operation.ADDITION));
+            new AttributeContainer(AttributeRegistry.MAX_MANA, 300, AttributeModifier.Operation.ADDITION)
+    );
   }
 
   @Override
   public void initializeClient(Consumer<IClientItemExtensions> consumer) {
     consumer.accept(new IClientItemExtensions() {
       private NightmareTomeRenderer renderer;
-      
+
+      @Override
       public BlockEntityWithoutLevelRenderer getCustomRenderer() {
         if (this.renderer == null) {
           this.renderer = new NightmareTomeRenderer();
         }
-        
         return this.renderer;
       }
     });
   }
-  
+
   @Override
   public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-  
+    // Leave empty if Geckolib animations are not being manually driven here
   }
-  
+
   @Override
   public AnimatableInstanceCache getAnimatableInstanceCache() {
     return this.cache;
@@ -66,6 +69,10 @@ public class NightmareTome extends SpellBook implements GeoItem {
 
   @Override
   public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    // Allows Iron's Spells to render the slots, spell details, and modded attributes first
+    super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+
+    // Adds your custom mod lore/description text directly underneath
     pTooltipComponents.add(Component.translatable("item.roacw.nightmare_tome.desc").withStyle(ChatFormatting.DARK_PURPLE));
   }
 }

@@ -29,11 +29,9 @@ public class EvasionScarfCurioRenderer implements ICurioRenderer {
 
             poseStack.pushPose();
             humanoidModel.body.translateAndRotate(poseStack);
-            // x = sideways, y = up/down, z = forward/back
-            poseStack.translate(0.0D, 0.07D, 0.0D);
-            poseStack.scale(1.1f, 1.1f, 1.1f);
+            poseStack.translate(0.0D, 0.08D, 0.0D);
+            poseStack.scale(1.15f, 1.15f, 1.15f);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-
 
             itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
             poseStack.popPose();

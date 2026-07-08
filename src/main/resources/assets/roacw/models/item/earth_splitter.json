@@ -1,0 +1,12 @@
+{
+    "parent": "minecraft:item/handheld",
+    "loader": "forge:separate_transforms",
+    "base": {
+        "parent": "roacw:item/earth_splitter_model"
+    },
+    "perspectives": {
+        "gui": {
+            "parent": "roacw:item/earth_splitter_gui"
+        }
+    }
+}

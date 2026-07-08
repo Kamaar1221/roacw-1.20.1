@@ -10,5 +10,12 @@
     "sounds": [
       "roacw:dash_whoosh"
     ]
+  },
+  "auric_dash_charge": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.auric_dash_charge",
+    "sounds": [
+      "roacw:auric_dash_charge"
+    ]
   }
 }

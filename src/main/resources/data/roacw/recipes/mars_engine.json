@@ -20,7 +20,7 @@
       "item": "irons_spellbooks:lightning_rune"
     },
     "E": {
-      "tag": "roacw:craftable_with_auric_chest"
+      "tag": "roacw:craftable_with_tech_chest"
     },
     "I": {
       "item": "roacw:charged_auric_ingot"

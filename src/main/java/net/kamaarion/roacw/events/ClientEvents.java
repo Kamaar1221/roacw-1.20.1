@@ -1,6 +1,13 @@
 package net.kamaarion.roacw.events;
 
-//import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer; // Added Import
+import net.kamaarion.roacw.client.others.CustomAnimatedParticle;
+import net.kamaarion.roacw.entity.renderer.EarthlyVirtueAoERenderer;
+import net.kamaarion.roacw.entity.renderer.EarthlyVirtueShardsRenderer;
+import net.kamaarion.roacw.entity.renderer.ImpalingColumnShardsRenderer;
+import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
+import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer;
+import net.kamaarion.roacw.particle.AuricChargeLightningParticle;
+import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.kamaarion.roacw.registeries.ROACWParticleRegistry;
 import net.minecraft.client.Minecraft;
@@ -9,15 +16,19 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent; // Added Import
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
@@ -32,73 +43,128 @@ public class ClientEvents {
     @SubscribeEvent
     public static void renderArm(RenderArmEvent event) {
       if (event.getArm() != event.getPlayer().getMainArm()) return;
-      CuriosApi
-              .getCuriosInventory(event.getPlayer())
-              .ifPresent((iCuriosItemHandler -> {
-                iCuriosItemHandler.findCurios(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get()).forEach((slotResult -> {
-                  ItemStack itemStack = slotResult.stack();
-                  SlotContext slotContext = slotResult.slotContext();
-                  EntityRenderer<?> entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(event.getPlayer());
-                  if (entityRenderer instanceof PlayerRenderer playerRenderer) {
-                    CuriosRendererRegistry.getRenderer(itemStack.getItem()).ifPresent((renderer) -> {
-                      AbstractClientPlayer player = event.getPlayer();
-                      float partialTick = Minecraft.getInstance().getPartialTick();
-                      boolean shouldSit = player.isPassenger() && (player.getVehicle() != null && player.getVehicle().shouldRiderSit());
-                      float limbSwingAmount = 0.0F;
-                      float limbSwing = 0.0F;
-                      if (!shouldSit && player.isAlive()) {
-                        limbSwingAmount = player.walkAnimation.speed(partialTick);
-                        limbSwing = player.walkAnimation.position(partialTick);
-                        if (player.isBaby()) {
-                          limbSwing *= 3.0F;
-                        }
-                        if (limbSwingAmount > 1.0F) {
-                          limbSwingAmount = 1.0F;
-                        }
-                      }
-                      float ageInTicks = player.tickCount + partialTick;
-                      float f = Mth.rotLerp(partialTick, player.yBodyRotO, player.yBodyRot);
-                      float f1 = Mth.rotLerp(partialTick, player.yHeadRotO, player.yHeadRot);
-                      float netHeadYaw = f1 - f;
-                      if (shouldSit && player.getVehicle() instanceof LivingEntity livingentity) {
-                        f = Mth.rotLerp(partialTick, livingentity.yBodyRotO, livingentity.yBodyRot);
-                        netHeadYaw = f1 - f;
-                        float f3 = Mth.wrapDegrees(netHeadYaw);
-                        if (f3 < -85.0F) {
-                          f3 = -85.0F;
-                        }
-                        if (f3 >= 85.0F) {
-                          f3 = 85.0F;
-                        }
-                        f = f1 - f3;
-                        if (f3 * f3 > 2500.0F) {
-                          f += f3 * 0.2F;
-                        }
-                        netHeadYaw = f1 - f;
-                      }
-                      float headPitch = Mth.lerp(partialTick, player.xRotO, player.getXRot());
-                      if (isEntityUpsideDown(player)) {
-                        headPitch *= -1.0F;
-                        netHeadYaw *= -1.0F;
-                      }
-                      PlayerModel<AbstractClientPlayer> playerModel = playerRenderer.getModel();
-                      playerModel.setAllVisible(false);
-                      if (event.getPlayer().getMainArm() == HumanoidArm.RIGHT) {
-                        playerModel.rightArm.visible = true;
-                      } else if (event.getPlayer().getMainArm() == HumanoidArm.LEFT) {
-                        playerModel.leftArm.visible = true;
-                      }
-                      playerModel.crouching = false;
-                      playerModel.attackTime = 0;
-                      playerModel.swimAmount = 0;
-                      playerModel.setupAnim(player, 0, 0, 0, 0, 0);
-                      renderer.render(
-                              itemStack, slotContext, event.getPoseStack(), playerRenderer, event.getMultiBufferSource(), event.getPackedLight(), limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch
-                      );
-                    });
-                  }
-                }));
-              }));
+
+      CuriosApi.getCuriosInventory(event.getPlayer()).ifPresent(handler -> {
+        handler.findCurios(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get()).forEach(slotResult -> {
+
+          ItemStack itemStack = slotResult.stack();
+          SlotContext slotContext = slotResult.slotContext();
+
+          EntityRenderer<?> entityRenderer = Minecraft.getInstance()
+                  .getEntityRenderDispatcher()
+                  .getRenderer(event.getPlayer());
+
+          if (!(entityRenderer instanceof PlayerRenderer playerRenderer))
+            return;
+
+          CuriosRendererRegistry.getRenderer(itemStack.getItem()).ifPresent(renderer -> {
+
+            AbstractClientPlayer player = event.getPlayer();
+            float partialTick = Minecraft.getInstance().getPartialTick();
+
+            boolean shouldSit = player.isPassenger()
+                    && player.getVehicle() != null
+                    && player.getVehicle().shouldRiderSit();
+
+            float limbSwingAmount = 0.0F;
+            float limbSwing = 0.0F;
+
+            if (!shouldSit && player.isAlive()) {
+              limbSwingAmount = player.walkAnimation.speed(partialTick);
+              limbSwing = player.walkAnimation.position(partialTick);
+
+              if (player.isBaby())
+                limbSwing *= 3.0F;
+
+              limbSwingAmount = Math.min(limbSwingAmount, 1.0F);
+            }
+
+            float ageInTicks = player.tickCount + partialTick;
+
+            float bodyYaw = Mth.rotLerp(partialTick, player.yBodyRotO, player.yBodyRot);
+            float headYaw = Mth.rotLerp(partialTick, player.yHeadRotO, player.yHeadRot);
+            float netHeadYaw = headYaw - bodyYaw;
+
+            if (shouldSit && player.getVehicle() instanceof LivingEntity vehicle) {
+
+              bodyYaw = Mth.rotLerp(partialTick, vehicle.yBodyRotO, vehicle.yBodyRot);
+              netHeadYaw = headYaw - bodyYaw;
+
+              float wrapped = Mth.wrapDegrees(netHeadYaw);
+              wrapped = Mth.clamp(wrapped, -85.0F, 85.0F);
+
+              bodyYaw = headYaw - wrapped;
+
+              if (wrapped * wrapped > 2500.0F)
+                bodyYaw += wrapped * 0.2F;
+
+              netHeadYaw = headYaw - bodyYaw;
+            }
+
+            float headPitch = Mth.lerp(partialTick, player.xRotO, player.getXRot());
+
+            if (isEntityUpsideDown(player)) {
+              headPitch *= -1.0F;
+              netHeadYaw *= -1.0F;
+            }
+
+            PlayerModel<AbstractClientPlayer> model = playerRenderer.getModel();
+            model.setAllVisible(false);
+
+            if (player.getMainArm() == HumanoidArm.RIGHT)
+              model.rightArm.visible = true;
+            else
+              model.leftArm.visible = true;
+
+            model.crouching = false;
+            model.attackTime = 0;
+            model.swimAmount = 0;
+            model.setupAnim(player, 0, 0, 0, 0, 0);
+
+            renderer.render(
+                    itemStack,
+                    slotContext,
+                    event.getPoseStack(),
+                    playerRenderer,
+                    event.getMultiBufferSource(),
+                    event.getPackedLight(),
+                    limbSwing,
+                    limbSwingAmount,
+                    partialTick,
+                    ageInTicks,
+                    netHeadYaw,
+                    headPitch
+            );
+          });
+        });
+      });
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRender(RenderPlayerEvent.Pre event) {
+
+      Player player = event.getEntity();
+
+      if (!player.isUsingItem()) return;
+      if (player.getUsedItemHand() != InteractionHand.OFF_HAND) return;
+
+      ItemStack offhand = player.getOffhandItem();
+
+      if (!(offhand.getItem() instanceof HighRulerShield))
+        return;
+
+      PlayerRenderer renderer = event.getRenderer();
+      PlayerModel<AbstractClientPlayer> model = renderer.getModel();
+
+      if (player.getMainArm() == HumanoidArm.RIGHT) {
+        model.leftArm.xRot = (float) Math.toRadians(-90);
+        model.leftArm.yRot = (float) Math.toRadians(15);
+        model.leftArm.zRot = (float) Math.toRadians(10);
+      } else {
+        model.rightArm.xRot = (float) Math.toRadians(-90);
+        model.rightArm.yRot = (float) Math.toRadians(-15);
+        model.rightArm.zRot = (float) Math.toRadians(-10);
+      }
     }
   }
 
@@ -108,20 +174,41 @@ public class ClientEvents {
     @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
       event.registerSpriteSet(
-              ROACWParticleRegistry.SHADOWFLAME.get(), net.kamaarion.roacw.client.CustomAnimatedParticle.Provider::new
+              ROACWParticleRegistry.SHADOWFLAME.get(),
+              CustomAnimatedParticle.Provider::new
+      );
+      event.registerSpriteSet(
+              ROACWParticleRegistry.AURIC_CHARGE_LIGHTNING.get(),
+              AuricChargeLightningParticle.Provider::new
       );
     }
 
-    // Added Hook: Handles Curios Layer Rendering Engine Initialization safely on the main thread
-    /*@SubscribeEvent
+    @SubscribeEvent
+    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.IMPALING_COLUMN_SHARDS.get(),
+              ImpalingColumnShardsRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.EARTHLY_VIRTUE_SHARDS.get(),
+              EarthlyVirtueShardsRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.EARTHLY_VIRTUE_AOE.get(),
+              EarthlyVirtueAoERenderer::new
+      );
+    }
+
+    @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-      event.enqueueWork(() -> {
-        CuriosRendererRegistry.register(
-                ROACWItemRegistry.HIGH_RULER_SHIELD.get(),
-                HighRulerShieldCurioRenderer::new
-        );
-      });
-    }*/
+      event.enqueueWork(() ->
+              CuriosRendererRegistry.register(
+                      ROACWItemRegistry.HIGH_RULER_SHIELD.get(),
+                      HighRulerShieldCurioRenderer::new
+              )
+      );
+    }
   }
 }
-

@@ -62,6 +62,11 @@
   "spell.roacw.quick_strike.guide": "Slash at your target multiple times, inflicting Disabled and Severed on hit, and heals you for 35% of the damage dealt",
   "spell.roacw.final_rend": "Final Rend",
   "spell.roacw.final_rend.guide": "Charge up a powerful slash obliterating nearby entities caught within. Inflicts Disabled and Severed on hit, and healing you for all damage dealt.",
+  "spell.roacw.impaling_column": "Impaling Column",
+  "spell.roacw.impaling_column.guide": "Smash the ground, sending forth a line of stalagmites that deal high damage and inflict Armor Crunch.",
+  "spell.roacw.earthly_virtue": "Earthly Virtue",
+  "spell.roacw.earthly_virtue.guide": "Summon an area of stalagmites that knock up enemies on the first pulse, and each pulse after damages enemies, heals allies, and grants Sanctified Bedrock once, which does not refresh.",
+
 
   "block.roacw.raw_auric_block": "Block of Raw Auric Ore",
   "block.roacw.auric_ore": "Auric Ore",
@@ -71,6 +76,8 @@
   "key.categories.roacw": "Remnants Of A Cruel World",
   "key.roacw.auric_dash": "Auric Dash",
   "key.roacw.evasion_scarf_dash": "Evasion Scarf Dash",
+
+  "subtitles.roacw.dash_whoosh": "Dash Whooshes",
 
   "ui.roacw.recast_bonus_damage": "%d Added damage (+1 damage per recast)",
 

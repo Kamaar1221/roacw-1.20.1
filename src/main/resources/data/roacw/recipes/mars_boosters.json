@@ -20,7 +20,7 @@
       "item": "irons_spellbooks:lightning_rune"
     },
     "E": {
-      "item": "cataclysm_spellbooks:excelsius_greaves"
+      "tag": "roacw:craftable_with_tech_boots"
     },
     "I": {
       "item": "roacw:charged_auric_ingot"

@@ -1,10 +1,14 @@
 package net.kamaarion.roacw.registeries;
 
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.kamaarion.roacw.items.armor.earthenpaladinset.EarthenPaladinArmorItem;
 import net.kamaarion.roacw.items.armor.fearmongerarmorset.FearmongerArmorItem;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
 //import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
+import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.items.curios.nightmare_tome.NightmareTome;
+import net.kamaarion.roacw.items.weapons.earth_splitter.EarthSplitterItem;
+import net.kamaarion.roacw.items.weapons.high_ruler_sword.HighRulerSwordItem;
 import net.kamaarion.roacw.items.weapons.murasama_blade.MurasamaBladeItem;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -45,6 +49,12 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> FEARMONGER_LEGPLATES = ITEMS.register("fearmonger_legplates", () -> new FearmongerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
     public static final RegistryObject<Item> FEARMONGER_GREAVES = ITEMS.register("fearmonger_greaves", () -> new FearmongerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
 
+    public static final RegistryObject<Item> EARTHEN_PALADIN_HELMET = ITEMS.register("earthen_paladin_helmet", () -> new EarthenPaladinArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> EARTHEN_PALADIN_CHESTPLATE = ITEMS.register("earthen_paladin_chestplate", () -> new EarthenPaladinArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> EARTHEN_PALADIN_LEGGINGS = ITEMS.register("earthen_paladin_leggings", () -> new EarthenPaladinArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> EARTHEN_PALADIN_GREAVES = ITEMS.register("earthen_paladin_greaves", () -> new EarthenPaladinArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().rarity(OTHERWORLDLY).fireResistant()));
+
+
     // Basic Materials / Consumables
     public static final RegistryObject<Item> RAW_AURIC_CHUNK = ITEMS.register("raw_auric_chunk", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
     public static final RegistryObject<Item> AURIC_INGOT = ITEMS.register("auric_ingot", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
@@ -62,12 +72,16 @@ public class ROACWItemRegistry {
 
     // Weapons
     public static final RegistryObject<Item> MURASAMA_BLADE = ITEMS.register("murasama_blade", () -> new MurasamaBladeItem(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> EARTH_SPLITTER = ITEMS.register("earth_splitter", () -> new EarthSplitterItem(new Item.Properties().rarity(Rarity.EPIC)));
+
 
     // Spellbooks
     public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("nightmare_tome", () -> new NightmareTome(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
 
-    // High Ruler Shield
-    //public static final RegistryObject<Item> HIGH_RULER_SHIELD = ITEMS.register("high_ruler_shield", () -> new HighRulerShield(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));//
+    // High Ruler Items
+    public static final RegistryObject<Item> HIGH_RULER_SHIELD = ITEMS.register("high_ruler_shield", () -> new HighRulerShield(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> HIGH_RULER_SWORD = ITEMS.register("high_ruler_sword", () -> new HighRulerSwordItem(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

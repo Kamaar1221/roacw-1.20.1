@@ -1,0 +1,62 @@
+package net.kamaarion.roacw.particle;
+
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.*;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
+public class AuricChargeLightningParticle extends TextureSheetParticle {
+    private final SpriteSet sprites;
+
+    protected AuricChargeLightningParticle(ClientLevel level, double x, double y, double z,
+                                           double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites) {
+        super(level, x, y, z, xSpeed, ySpeed, zSpeed);
+        this.sprites = sprites;
+
+        this.xd = xSpeed;
+        this.yd = ySpeed;
+        this.zd = zSpeed;
+
+        this.quadSize *= 1.5F * 0.50F; // same base as CustomAnimatedParticle, scaled to 0.15x
+        this.lifetime = 30;
+        this.hasPhysics = true;
+
+        updateFastSprite();
+    }
+
+    @Override
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        updateFastSprite();
+    }
+
+    private void updateFastSprite() {
+        float animationSpeedMultiplier = 0.5F;
+        int totalFrames = 4; // matches auric_charge_lightning.json
+
+        int currentFrame = (int)(this.age * animationSpeedMultiplier) % totalFrames;
+        this.setSprite(this.sprites.get(currentFrame, totalFrames));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static class Provider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet sprites;
+
+        public Provider(SpriteSet sprites) {
+            this.sprites = sprites;
+        }
+
+        @Override
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
+            return new AuricChargeLightningParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
+        }
+    }
+}

@@ -175,6 +175,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
     runtimeOnly fg.deobf("curse.maven:obscure-tooltips-715660:7568506")
     runtimeOnly fg.deobf("curse.maven:fragmentum-1123970:8099907")
+    runtimeOnly fg.deobf("curse.maven:overloaded-armor-bar-314002:4631133")
+    runtimeOnly fg.deobf("curse.maven:attributefix-280510:7612291")
 
 
 

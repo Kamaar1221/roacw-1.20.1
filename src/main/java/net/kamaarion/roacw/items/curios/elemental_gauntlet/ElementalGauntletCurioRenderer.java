@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -50,52 +51,60 @@ public class ElementalGauntletCurioRenderer implements ICurioRenderer {
         if (renderLayerParent.getModel() instanceof HumanoidModel<?>) {
             @SuppressWarnings("unchecked")
             HumanoidModel<LivingEntity> humanoidModel = (HumanoidModel<LivingEntity>) renderLayerParent.getModel();
-
             int slotIndex = slotContext.index();
+            LivingEntity wearer = slotContext.entity();
+
+            // Detect if the wearer is using a Slim (Alex) model template
+            boolean isSlim = false;
+            if (wearer instanceof AbstractClientPlayer clientPlayer) {
+                isSlim = clientPlayer.getModelName().equals("slim");
+            }
 
             if (slotIndex == 0 && humanoidModel.rightArm.visible) {
                 // --- RIGHT ARM RENDERING ---
                 poseStack.pushPose();
                 humanoidModel.rightArm.translateAndRotate(poseStack);
-                poseStack.translate(0.0D, 0.5D, 0.0D);
-                poseStack.scale(1.1f, 1.1f, 1.1f);
+
+                // Adjust positioning slightly inward if skin is slim
+                double xOffset = isSlim ? -0.04875D : -0.08D;
+                poseStack.translate(xOffset, 0.5D, 0.0D);
+
+                // Slightly thin down the X-scale if player model is slim
+                float scaleX = isSlim ? 0.95f : 1.1f;
+                poseStack.scale(scaleX, 1.1f, 1.1f);
+
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+
                 itemRenderer.renderStatic(
-                        slotContext.entity(),
-                        stack,
-                        ItemDisplayContext.FIXED,
-                        false,
-                        poseStack,
-                        renderTypeBuffer,
-                        slotContext.entity().level(),
-                        light,
-                        OverlayTexture.NO_OVERLAY,
-                        0
+                        wearer, stack, ItemDisplayContext.FIXED, false,
+                        poseStack, renderTypeBuffer, wearer.level(), light, OverlayTexture.NO_OVERLAY, 0
                 );
                 poseStack.popPose();
-            }
-            else if (slotIndex == 1 && humanoidModel.leftArm.visible) {
+
+            } else if (slotIndex == 1 && humanoidModel.leftArm.visible) {
                 // --- LEFT ARM RENDERING ---
                 poseStack.pushPose();
                 humanoidModel.leftArm.translateAndRotate(poseStack);
+
                 poseStack.translate(0.5D, 0.0D, 0.0D);
                 poseStack.mulPoseMatrix(reflectionMatrix);
                 poseStack.translate(0.5D, 0.0D, 0.0D);
-                poseStack.translate(0.0D, 0.5D, 0.0D);
-                poseStack.scale(1.1f, 1.1f, 1.1f);
+
+                // Adjust positioning slightly outward to account for missing pixel row if slim
+                double xOffset = isSlim ? -0.065D : -0.08D;
+                poseStack.translate(xOffset, 0.5D, 0.0D);
+
+                // Thinner X-scaling factor for the mirrored left side if slim
+                float scaleX = isSlim ? 0.95f : 1.1f;
+                poseStack.scale(scaleX, 1.1f, 1.1f);
+
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+
                 itemRenderer.renderStatic(
-                        slotContext.entity(),
-                        stack,
-                        ItemDisplayContext.FIXED,
-                        false,
-                        poseStack,
-                        renderTypeBuffer,
-                        slotContext.entity().level(),
-                        light,
-                        OverlayTexture.NO_OVERLAY,
-                        0
+                        wearer, stack, ItemDisplayContext.FIXED, false,
+                        poseStack, renderTypeBuffer, wearer.level(), light, OverlayTexture.NO_OVERLAY, 0
                 );
+
                 poseStack.popPose();
             }
         }

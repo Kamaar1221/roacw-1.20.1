@@ -61,9 +61,6 @@ public class ElementalGauntlet extends CurioBaseItem implements ICurioItem, GeoI
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
 
-        // Runs every tick while worn
-        // You can leave this empty if you want
-
     }
 
     @Override
@@ -96,14 +93,10 @@ public class ElementalGauntlet extends CurioBaseItem implements ICurioItem, GeoI
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        // 1. MUST grab the multimap from the super class to maintain Curio/Iron's system registry
         Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create(super.getAttributeModifiers(slotContext, uuid, stack));
 
-        // 2. Filter by slot if you only want it active in specific Curio slots (Optional)
-        // if (slotContext.identifier().equals("hands")) {
-
         attr.put(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(uuid, "Attack Damage", 10.0D, AttributeModifier.Operation.ADDITION));
+                new AttributeModifier(uuid, "Attack Damage", 5.0D, AttributeModifier.Operation.ADDITION));
 
         attr.put(Attributes.ATTACK_SPEED,
                 new AttributeModifier(uuid, "Attack Speed", 0.15D, AttributeModifier.Operation.MULTIPLY_BASE));

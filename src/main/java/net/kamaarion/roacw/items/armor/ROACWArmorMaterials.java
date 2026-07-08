@@ -1,5 +1,8 @@
 package net.kamaarion.roacw.items.armor;
 
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.gametechbc.gtbcs_geomancy_plus.api.init.GGAttributes;
 import com.github.L_Ender.cataclysm.init.ModItems;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.armor.IronsExtendedArmorMaterial;
@@ -55,6 +58,16 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             AttributeRegistry.ELDRITCH_SPELL_POWER.get(), new AttributeModifier("Eldritch Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.075, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SUMMON_DAMAGE.get(), new AttributeModifier("Summon Damage", 0.15, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
+
+    EARTHEN_PALADIN_ARMOR("earthen_paladin_armor", 45, earthenPaladinArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 5f, 0,
+            () -> Ingredient.of(ItemHandler.BLUFF_ROD .get()), Map.of(
+            Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 200,AttributeModifier.Operation.ADDITION),
+            GGAttributes.GEO_SPELL_POWER.get(), new AttributeModifier("Geo Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier("Holy Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.075, AttributeModifier.Operation.MULTIPLY_BASE)
     ));
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
@@ -107,8 +120,10 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
         return makeArmorMap(13, 18, 16, 13);
     }
     static public EnumMap<ArmorItem.Type, Integer> fearmongerArmorMap() {
-        return makeArmorMap(6, 11, 19, 6);
+        return makeArmorMap(6, 11, 9, 6);
     }
+    static public EnumMap<ArmorItem.Type, Integer> earthenPaladinArmorMap() {return makeArmorMap(7, 13, 10, 7);}
+
 
     @Override
     public int getDefenseForType(ArmorItem.Type p_266752_) {

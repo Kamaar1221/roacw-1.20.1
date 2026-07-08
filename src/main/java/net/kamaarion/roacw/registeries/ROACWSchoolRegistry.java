@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import static io.redspace.ironsspellbooks.api.registry.SchoolRegistry.SCHOOL_REGISTRY_KEY;
 
 public class ROACWSchoolRegistry {
-    // 1. Create the DeferredRegister using your Mod ID String
     private static final DeferredRegister<SchoolType> ROACWSchools =
             DeferredRegister.create(SCHOOL_REGISTRY_KEY, ROACW.MODID);
 

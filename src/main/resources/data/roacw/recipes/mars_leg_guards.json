@@ -20,7 +20,7 @@
       "item": "irons_spellbooks:lightning_rune"
     },
     "E": {
-      "item": "cataclysm_spellbooks:excelsius_leggings"
+      "tag": "roacw:craftable_with_tech_leggingss"
     },
     "I": {
       "item": "roacw:charged_auric_ingot"

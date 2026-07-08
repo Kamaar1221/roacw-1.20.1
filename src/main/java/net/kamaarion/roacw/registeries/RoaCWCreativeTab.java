@@ -30,12 +30,18 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.FEARMONGER_PLATEMAIL.get());
                         output.accept(ROACWItemRegistry.FEARMONGER_LEGPLATES.get());
                         output.accept(ROACWItemRegistry.FEARMONGER_GREAVES.get());
+                        output.accept(ROACWItemRegistry.EARTHEN_PALADIN_HELMET.get());
+                        output.accept(ROACWItemRegistry.EARTHEN_PALADIN_CHESTPLATE.get());
+                        output.accept(ROACWItemRegistry.EARTHEN_PALADIN_LEGGINGS.get());
+                        output.accept(ROACWItemRegistry.EARTHEN_PALADIN_GREAVES.get());
+                        output.accept(ROACWItemRegistry.EARTH_SPLITTER.get());
+                        output.accept(ROACWItemRegistry.HIGH_RULER_SHIELD.get());
+                        output.accept(ROACWItemRegistry.HIGH_RULER_SWORD.get());
                         output.accept(ROACWItemRegistry.STATIS_CURSE.get());
                         output.accept(ROACWItemRegistry.EVASION_SCARF.get());
                         output.accept(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get());
-                        output.accept(ROACWItemRegistry.MURASAMA_BLADE.get());
-                        output.accept(ROACWItemRegistry.BURST_SHEATH.get());
                         output.accept(ROACWItemRegistry.NIGHTMARE_TOME.get());
+
                     })
                     .build());
 
@@ -53,6 +59,16 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.AURIC_INGOT.get());
                         output.accept(ROACWItemRegistry.CHARGED_AURIC_INGOT.get());
                         output.accept(ROACWItemRegistry.ASCENDANT_SPIRIT_ESSENCE.get());
+                    })
+                    .build());
+
+    public static final RegistryObject<CreativeModeTab> ROACW_WIP = CREATIVE_MODE_TAB.register("roacw_wip",
+            () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(ROACWItemRegistry.MURASAMA_BLADE.get()))
+                    .title(Component.translatable("creativetab.roacw.wip"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(ROACWItemRegistry.MURASAMA_BLADE.get());
+                        output.accept(ROACWItemRegistry.BURST_SHEATH.get());
                     })
                     .build());
 

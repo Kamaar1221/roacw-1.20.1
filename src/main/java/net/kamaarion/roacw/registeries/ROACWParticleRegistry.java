@@ -15,6 +15,9 @@ public class ROACWParticleRegistry {
     public static final RegistryObject<SimpleParticleType> SHADOWFLAME =
             PARTICLE_TYPES.register("shadowflame", () -> new SimpleParticleType(false));
 
+    public static final RegistryObject<SimpleParticleType> AURIC_CHARGE_LIGHTNING =
+            PARTICLE_TYPES.register("auric_charge_lightning", () -> new SimpleParticleType(false));
+
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);
     }

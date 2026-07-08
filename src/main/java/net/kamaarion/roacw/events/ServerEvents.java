@@ -1,26 +1,31 @@
 package net.kamaarion.roacw.events;
 
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import net.kamaarion.roacw.Utils;
+import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.projectile.Projectile;
+import org.joml.Vector3f;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 
@@ -79,14 +84,80 @@ public class ServerEvents {
         }
     }
 
-
-
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
-        if (event.getEntity().level().isClientSide()) {
-            return;
+        if (event.getEntity().level().isClientSide()) return;
+
+        // --- HighRulerShield: 5% passive block chance when equipped as a curio ---
+        if (event.getEntity() instanceof Player player) {
+            // Only proc if not already actively blocking it in offhand
+            ItemStack offhand = player.getOffhandItem();
+            boolean blockingInHand = offhand.getItem() instanceof HighRulerShield && player.isUsingItem();
+
+            if (!blockingInHand) {
+                CuriosApi.getCuriosHelper()
+                        .findFirstCurio(player, s -> s.getItem() instanceof HighRulerShield)
+                        .ifPresent(result -> {
+                            if (player.getRandom().nextFloat() < 0.5f) {
+                                event.setCanceled(true);
+                                player.level().playSound(
+                                        null,
+                                        player.blockPosition(),
+                                        SoundEvents.SHIELD_BLOCK,
+                                        SoundSource.PLAYERS,
+                                        1.0f,
+                                        0.8f + player.getRandom().nextFloat() * 0.4f
+                                );
+                            }
+                        });
+            }
+            // --- HighRulerShield: 10% AOE burst when actively blocking a hit ---
+            if (blockingInHand && player.getRandom().nextFloat() < 0.50f) {
+                double radius = 3.0;
+                float damage = 4.0f;
+                float knockbackStrength = 1.5f;
+
+                player.level().getEntitiesOfClass(LivingEntity.class,
+                                player.getBoundingBox().inflate(radius),
+                                target -> target != player && target.isAlive())
+                        .forEach(target -> {
+                            target.hurt(player.level().damageSources().playerAttack(player), damage);
+
+                            double dx = target.getX() - player.getX();
+                            double dz = target.getZ() - player.getZ();
+                            double dist = Math.sqrt(dx * dx + dz * dz);
+                            if (dist > 0) {
+                                target.setDeltaMovement(
+                                        target.getDeltaMovement()
+                                                .add(dx / dist * knockbackStrength, 0.4, dz / dist * knockbackStrength)
+                                );
+                                target.hurtMarked = true;
+                            }
+                        });
+
+                // Play impact sound
+                player.level().playSound(null, player.blockPosition(),
+                        SoundEvents.SHIELD_BLOCK,
+                        SoundSource.PLAYERS,
+                        1.5f, 0.5f);
+
+                // Spawn blastwave ring at player's feet
+                if (player.level() instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(
+                            new BlastwaveParticleOptions(
+                                    new Vector3f(0.3F, 0.4F, 0.9F),
+                                    (float) radius
+                            ),
+                            player.getX(),
+                            player.getY() + 0.1,
+                            player.getZ(),
+                            1, 0, 0, 0, 0
+                    );
+                }
+            }
         }
 
+        // --- Statis Curse: summon shadowflame proc ---
         Entity directSource = event.getSource().getDirectEntity();
         Entity trueSource = event.getSource().getEntity();
         IMagicSummon summon = null;
@@ -114,7 +185,6 @@ public class ServerEvents {
                 if (target.hasEffect(shadowFlame)) {
                     MobEffectInstance activeEffect = target.getEffect(shadowFlame);
                     if (activeEffect != null) {
-
                         currentAmplifier = Math.min(activeEffect.getAmplifier() + 1, 4);
                     }
                 }
@@ -124,10 +194,9 @@ public class ServerEvents {
         }
     }
 
-
     @SubscribeEvent
-    public void onLivingDamage(LivingDamageEvent event){
-        if(event.getSource().getDirectEntity() instanceof Player player && Utils.hasCurio(player, ROACWItemRegistry.ELEMENTAL_GAUNTLET.get())){
+    public void onLivingDamage(LivingDamageEvent event) {
+        if (event.getSource().getDirectEntity() instanceof Player player && Utils.hasCurio(player, ROACWItemRegistry.ELEMENTAL_GAUNTLET.get())) {
             event.getEntity().addEffect(new MobEffectInstance(
                     ROACWEffectRegistry.ELEMENTAL_MIX.get(),
                     200,
@@ -154,4 +223,3 @@ public class ServerEvents {
         }
     }
 }
-

@@ -15,6 +15,8 @@ public class ROACWSoundRegistry {
     // Cleanly added your dash sound event right below your existing sound
     public static RegistryObject<SoundEvent> DASH_WHOOSH = registerSoundEvent("dash_whoosh");
 
+    public static RegistryObject<SoundEvent> AURIC_DASH_CHARGE = registerSoundEvent("auric_dash_charge");
+
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);
     }

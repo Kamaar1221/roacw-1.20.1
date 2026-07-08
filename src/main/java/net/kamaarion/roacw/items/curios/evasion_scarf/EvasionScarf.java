@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.kamaarion.roacw.client.others.ModKeyMappings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -107,7 +108,7 @@ public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
             int maxTooltipWidth = 240;
 
-            Component currentBoundKey = net.kamaarion.roacw.client.ModKeyMappings.DASH_KEY.getTranslatedKeyMessage()
+            Component currentBoundKey = ModKeyMappings.DASH_KEY.getTranslatedKeyMessage()
                     .copy().withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 
             Component scarfTooltip = Component.translatable("item.roacw.evasion_scarf.desc", currentBoundKey).withStyle(ChatFormatting.GRAY);

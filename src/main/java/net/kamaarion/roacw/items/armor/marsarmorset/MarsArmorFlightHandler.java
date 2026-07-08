@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import java.util.HashSet;
@@ -16,6 +17,10 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = "roacw", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class MarsArmorFlightHandler {
+    // Players whose mayfly/flying was granted BY THIS MOD. Only these players
+    // should ever have flight revoked by this handler.
+    private static final Set<UUID> MARS_FLIGHT_GRANTED = new HashSet<>();
+    // Players currently getting a soft-landing (fall damage negation) after losing Mars flight.
     private static final Set<UUID> PROTECTED_PLAYERS = new HashSet<>();
 
     @SubscribeEvent
@@ -30,10 +35,12 @@ public class MarsArmorFlightHandler {
                 player.getAbilities().mayfly = true;
                 player.onUpdateAbilities();
             }
+            MARS_FLIGHT_GRANTED.add(playerUUID);
             PROTECTED_PLAYERS.remove(playerUUID);
         } else {
-            // Strip flight powers if armor is removed OR config option gets toggled off
-            if (!player.isCreative() && !player.isSpectator() && player.getAbilities().mayfly) {
+            // Only strip flight if WE granted it. Never touch flight another mod gave the player.
+            if (MARS_FLIGHT_GRANTED.remove(playerUUID)
+                    && !player.isCreative() && !player.isSpectator()) {
                 player.getAbilities().mayfly = false;
                 player.getAbilities().flying = false;
                 player.onUpdateAbilities();
@@ -55,6 +62,13 @@ public class MarsArmorFlightHandler {
                 PROTECTED_PLAYERS.remove(playerUUID);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        UUID playerUUID = event.getEntity().getUUID();
+        MARS_FLIGHT_GRANTED.remove(playerUUID);
+        PROTECTED_PLAYERS.remove(playerUUID);
     }
 
     @SubscribeEvent

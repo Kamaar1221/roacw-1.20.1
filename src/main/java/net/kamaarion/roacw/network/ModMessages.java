@@ -26,10 +26,15 @@ public class ModMessages {
                 .encoder(PacketDashC2S::toBytes)
                 .consumerMainThread(PacketDashC2S::handle)
                 .add();
+
+        net.messageBuilder(PacketArmorPulseC2S.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(PacketArmorPulseC2S::new)
+                .encoder(PacketArmorPulseC2S::toBytes)
+                .consumerMainThread(PacketArmorPulseC2S::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {
         INSTANCE.sendToServer(message);
     }
 }
-

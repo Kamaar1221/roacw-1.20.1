@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -37,24 +38,25 @@ public class HighRulerShieldCurioRenderer implements ICurioRenderer {
         ICurioRenderer.translateIfSneaking(poseStack, entity);
         ICurioRenderer.rotateIfSneaking(poseStack, entity);
 
-        poseStack.translate(0.0D, 0.45D, 0.22D);
+        // Attach to the player's body bone so it follows custom animations
+        M model = renderLayerParent.getModel();
+        if (model instanceof HumanoidModel<?> humanoidModel) {
+            humanoidModel.body.translateAndRotate(poseStack);
+        }
 
-        poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
-
-        poseStack.mulPose(Axis.YP.rotationDegrees(-45.0F));
-
-        poseStack.scale(0.55F, 0.55F, 0.55F);
+        poseStack.translate(0.0D, 0.25D, 0.25D);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-225F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.scale(0.9F, 0.9F, 0.9F);
 
         Minecraft.getInstance().getItemRenderer().renderStatic(
-                entity,
                 stack,
-                ItemDisplayContext.NONE,
-                false,
+                ItemDisplayContext.FIXED,
+                light,
+                OverlayTexture.NO_OVERLAY,
                 poseStack,
                 renderTypeBuffer,
                 entity.level(),
-                light,
-                OverlayTexture.NO_OVERLAY,
                 entity.getId() + slotContext.index()
         );
 

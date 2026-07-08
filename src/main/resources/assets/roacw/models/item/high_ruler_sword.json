@@ -1,0 +1,12 @@
+{
+    "parent": "minecraft:item/handheld",
+    "loader": "forge:separate_transforms",
+    "base": {
+        "parent": "roacw:item/high_ruler_sword_model"
+    },
+    "perspectives": {
+        "gui": {
+            "parent": "roacw:item/high_ruler_sword_gui"
+        }
+    }
+}

@@ -1,6 +1,8 @@
 package net.kamaarion.roacw.events;
 
 import net.kamaarion.roacw.ROACW;
+import net.kamaarion.roacw.entity.renderer.EarthlyVirtueShardsRenderer;
+import net.kamaarion.roacw.entity.renderer.ImpalingColumnShardsRenderer;
 import net.kamaarion.roacw.entity.renderer.FinalRendAoERenderer;
 import net.kamaarion.roacw.entity.renderer.QuickStrikeAoERenderer;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
@@ -17,6 +19,9 @@ public class ClientSetup {
     {
         event.registerEntityRenderer(ROACWEntityRegistry.QUICK_STRIKE.get(), QuickStrikeAoERenderer::new);
         event.registerEntityRenderer(ROACWEntityRegistry.FINAL_REND.get(), FinalRendAoERenderer::new);
+        event.registerEntityRenderer(ROACWEntityRegistry.IMPALING_COLUMN_SHARDS.get(), ImpalingColumnShardsRenderer::new);
+        event.registerEntityRenderer(ROACWEntityRegistry.EARTHLY_VIRTUE_SHARDS.get(), EarthlyVirtueShardsRenderer::new);
+
     }
 
     @SubscribeEvent
