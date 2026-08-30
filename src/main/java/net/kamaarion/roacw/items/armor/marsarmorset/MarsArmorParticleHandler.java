@@ -1,5 +1,6 @@
 package net.kamaarion.roacw.items.armor.marsarmorset;
 
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;

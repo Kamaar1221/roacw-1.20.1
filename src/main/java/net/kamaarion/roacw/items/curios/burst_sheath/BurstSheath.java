@@ -99,8 +99,6 @@ public class BurstSheath extends CurioBaseItem implements ICurioItem, GeoItem {
         Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
         attr.put(ROACWAttributeRegistry.EXO_MAGIC_POWER.get(),
                 new AttributeModifier(uuid, "Exo Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(AttributeRegistry.SUMMON_DAMAGE.get(),
-                new AttributeModifier(uuid, "Summon Damage", 0.30, AttributeModifier.Operation.MULTIPLY_BASE));
         attr.put(AttributeRegistry.MAX_MANA.get(),
                 new AttributeModifier(uuid, "Max Mana", 200, AttributeModifier.Operation.ADDITION));
 

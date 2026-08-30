@@ -6,6 +6,7 @@ import net.kamaarion.roacw.Utils;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -55,7 +56,7 @@ public class ServerEvents {
             living.setHealth(10.0F);
             serverLevel.playSound(
                     null, living.getX(), living.getY(), living.getZ(),
-                    SoundEvents.TOTEM_USE, living.getSoundSource(), 1.25f, 1.0F
+                    ROACWSoundRegistry.AURIC_REVIVE_EXPLOSION.get(), living.getSoundSource(), 2.00f, 1.0F
             );
 
             living.addEffect(new MobEffectInstance(ROACWEffectRegistry.AURIC_CHARGE.get(), 300, 0, false, false, true));

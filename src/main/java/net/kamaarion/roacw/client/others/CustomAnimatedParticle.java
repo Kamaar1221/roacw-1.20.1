@@ -20,10 +20,9 @@ public class CustomAnimatedParticle extends TextureSheetParticle {
         this.zd = zSpeed;
 
         this.quadSize *= 1.5F;
-        this.lifetime = 30;    // Total particle life is 30 ticks (1.5 seconds)
+        this.lifetime = 30;
         this.hasPhysics = true;
 
-        // Set the initial frame index using our fast timing logic
         updateFastSprite();
     }
 
@@ -35,18 +34,14 @@ public class CustomAnimatedParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
-        // Dynamically shift texture indexes at accelerated speeds on every game tick
         updateFastSprite();
     }
 
     private void updateFastSprite() {
-        // CHANGED: 3.0F means the animation textures will flip 3 times faster than normal
         float animationSpeedMultiplier = 0.5F;
 
-        // Total number of .png frames declared in your shadowflame.json asset file
         int totalFrames = 5;
 
-        // Determine frame number based on age multiplied by speed, then loop back using modulo (%)
         int currentFrame = (int)(this.age * animationSpeedMultiplier) % totalFrames;
 
         this.setSprite(this.sprites.get(currentFrame, totalFrames));

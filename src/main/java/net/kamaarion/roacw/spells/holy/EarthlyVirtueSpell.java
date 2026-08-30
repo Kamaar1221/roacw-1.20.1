@@ -15,7 +15,7 @@ import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueAoE;
 import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueShards;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
-import net.kamaarion.roacw.registeries.ROACWSpellRegistries;
+import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -185,7 +185,7 @@ public class EarthlyVirtueSpell extends AbstractSpell {
 
             } else {
 
-                var damageSource = ROACWSpellRegistries.EARTHLY_VIRTUE
+                var damageSource = ROACWSpellRegistry.EARTHLY_VIRTUE
                         .get()
                         .getDamageSource(entity, entity);
 

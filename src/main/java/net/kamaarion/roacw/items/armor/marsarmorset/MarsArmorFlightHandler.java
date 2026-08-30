@@ -25,6 +25,7 @@ public class MarsArmorFlightHandler {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+
         if (event.phase != TickEvent.Phase.END) return;
         Player player = event.player;
         UUID playerUUID = player.getUUID();

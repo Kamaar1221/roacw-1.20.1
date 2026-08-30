@@ -23,10 +23,6 @@ public class ROACWAttributeRegistry {
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent event)
     {
-        /*event.getTypes().forEach(entity -> {
-            event.add(entity, EXO_MAGIC_RESIST.get());
-            event.add(entity, EXO_MAGIC_POWER.get());
-        });*/
 
         event.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> event.add(entity, attribute.get())));
     }

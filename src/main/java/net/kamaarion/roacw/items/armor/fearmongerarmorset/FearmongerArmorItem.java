@@ -28,7 +28,7 @@ public class FearmongerArmorItem extends ImbuableChestplateArmorItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
-        return new GenericCustomArmorRenderer<>(new FearmongerArmorModel());
+        return new FearmongerArmorRenderer(new FearmongerArmorModel());
     }
 
     @Override

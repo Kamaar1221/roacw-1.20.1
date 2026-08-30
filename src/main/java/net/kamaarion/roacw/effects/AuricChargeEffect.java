@@ -42,7 +42,7 @@ public class AuricChargeEffect extends MagicMobEffect {
                 double z = entity.getZ();
 
                 serverLevel.sendParticles(
-                        ROACWParticleRegistry.AURIC_CHARGE_LIGHTNING.get(),
+                        ParticleRegistry.ELECTRICITY_PARTICLE.get(),
                         x, y, z,
                         2,
                         0.4, 0.5, 0.4,

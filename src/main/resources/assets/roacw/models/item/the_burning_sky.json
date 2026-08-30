@@ -1,0 +1,16 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "forge:separate_transforms",
+  "base": {
+    "parent": "roacw:item/the_burning_sky_model"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "roacw:item/the_burning_sky_gui"
+    },
+    "fixed":
+    {
+      "parent": "roacw:item/the_burning_sky_model"
+    }
+  }
+}

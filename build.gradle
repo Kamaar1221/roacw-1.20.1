@@ -166,6 +166,7 @@ dependencies {
     implementation fg.deobf("curse.maven:gtbcs-geomancy-plus-1352485:7580390")
     implementation fg.deobf("curse.maven:gtbcs-spelllib-1194714:7584987")
     implementation fg.deobf("curse.maven:mowzies-mobs-250498:7815705")
+    implementation fg.deobf("curse.maven:irons-lib-1492763:8207055")
     runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
     runtimeOnly fg.deobf("curse.maven:ydms-mobhealthbar-mod-559894:4818965")
     runtimeOnly fg.deobf("curse.maven:selene-499980:7664875")
@@ -177,6 +178,14 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:fragmentum-1123970:8099907")
     runtimeOnly fg.deobf("curse.maven:overloaded-armor-bar-314002:4631133")
     runtimeOnly fg.deobf("curse.maven:attributefix-280510:7612291")
+    runtimeOnly fg.deobf("curse.maven:blessfulled-1182590:6624691")
+    runtimeOnly fg.deobf("curse.maven:xaeros-minimap-263420:8449808")
+    runtimeOnly fg.deobf("curse.maven:emi-580555:6420945")
+    runtimeOnly fg.deobf("curse.maven:emi-loot-681783:7417249")
+    runtimeOnly fg.deobf("curse.maven:fzzy-config-1005914:7568893")
+    runtimeOnly fg.deobf("curse.maven:symbols-n-stuff-1091274:5730405")
+    runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
+
 
 
 

@@ -1,0 +1,107 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+  "texture_size": [
+    128,
+    128
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0,
+        -5,
+        0.25
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        -5,
+        0.25
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        -13.15,
+        -1.94,
+        -7.65
+      ],
+      "translation": [
+        0.75,
+        -0.5,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        -13.150000000000091,
+        -1.9400000000000546,
+        -7.650000000000091
+      ],
+      "translation": [
+        0.75,
+        -0.5,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "ground": {
+      "rotation": [
+        -0.37,
+        2.37,
+        89.76
+      ],
+      "translation": [
+        7.75,
+        0,
+        0
+      ]
+    },
+    "gui": {
+      "rotation": [
+        -90,
+        -52.75,
+        -90
+      ],
+      "translation": [
+        -3.25,
+        -3.75,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        -5.75,
+        0
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ]
+    }
+  },
+  "textures": {
+    "particle": "remnants_of_a_cruel_world:item/burning_sky"
+  }
+}

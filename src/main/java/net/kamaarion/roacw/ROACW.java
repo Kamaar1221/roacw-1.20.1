@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.render.SpellBookCurioRenderer;
 import net.kamaarion.roacw.client.others.ClientTickHandler;
 import net.kamaarion.roacw.events.ClientEvents; // Correctly imported your ClientEvents file
 import net.kamaarion.roacw.events.ServerEvents;
+import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanterCurioRenderer;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheathCurioRenderer;
 import net.kamaarion.roacw.items.curios.elemental_gauntlet.ElementalGauntletCurioRenderer;
 import net.kamaarion.roacw.items.curios.evasion_scarf.EvasionScarfCurioRenderer;
@@ -52,7 +53,7 @@ public class ROACW {
         RoaCWCreativeTab.register(modEventBus);
         ROACWAttributeRegistry.register(modEventBus);
         ROACWSchoolRegistry.register(modEventBus);
-        ROACWSpellRegistries.register(modEventBus);
+        ROACWSpellRegistry.register(modEventBus);
         ROACWEntityRegistry.register(modEventBus);
         ROACWSoundRegistry.register(modEventBus);
         ROACWEffectRegistry.register(modEventBus);
@@ -101,7 +102,10 @@ public class ROACW {
             CuriosRendererRegistry.register(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get(), ElementalGauntletCurioRenderer::new);
             CuriosRendererRegistry.register(ROACWItemRegistry.BURST_SHEATH.get(), BurstSheathCurioRenderer::new);
             CuriosRendererRegistry.register(ROACWItemRegistry.NIGHTMARE_TOME.get(), SpellBookCurioRenderer::new);
+            CuriosRendererRegistry.register(ROACWItemRegistry.AURIC_CODEX.get(), SpellBookCurioRenderer::new);
+            CuriosRendererRegistry.register(ROACWItemRegistry.EARTHEN_PALADIN_OATH.get(), SpellBookCurioRenderer::new);
             CuriosRendererRegistry.register(ROACWItemRegistry.HIGH_RULER_SHIELD.get(), HighRulerShieldCurioRenderer::new);
+            CuriosRendererRegistry.register(ROACWItemRegistry.ALCHEMICAL_DECANTER.get(), AlchemicalDecanterCurioRenderer::new);
         }
     }
 

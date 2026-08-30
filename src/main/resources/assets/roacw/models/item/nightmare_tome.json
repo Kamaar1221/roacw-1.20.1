@@ -6,12 +6,10 @@
   },
   "perspectives": {
     "gui": {
-      "parent": "item/generated",
-      "textures": {
-        "layer0": "roacw:item/nightmare_tome_gui"
-      }
+      "parent": "roacw:item/nightmare_tome_gui"
     },
-    "head": {
+    "fixed":
+    {
       "parent": "roacw:item/nightmare_tome_model"
     }
   }

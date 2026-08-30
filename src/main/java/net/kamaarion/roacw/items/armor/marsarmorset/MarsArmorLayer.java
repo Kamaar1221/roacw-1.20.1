@@ -12,7 +12,12 @@ import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class MarsArmorLayer extends GeoRenderLayer<MarsArmorItem> {
-    private static final ResourceLocation LAYER = ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "textures/item/armor/mars_armor_glowmask.png");
+
+    private static final ResourceLocation LAYER =
+            ResourceLocation.fromNamespaceAndPath(
+            ROACW.MODID,
+            "textures/item/armor/mars_armor_glowmask.png"
+            );
 
     public MarsArmorLayer(GeoRenderer<MarsArmorItem> renderer) {
         super(renderer);

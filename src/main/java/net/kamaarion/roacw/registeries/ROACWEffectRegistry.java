@@ -4,8 +4,7 @@ import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.effects.*;
 import net.kamaarion.roacw.effects.ArmorCrunchEffect;
 import net.kamaarion.roacw.effects.SanctifiedBedrockEffect;
-import net.kamaarion.roacw.effects.PaladinPulseEffect;       // Explicit import for clarity
-import net.kamaarion.roacw.effects.PaladinProtectionEffect;  // Explicit import for clarity
+import net.kamaarion.roacw.effects.PlagueEffect;              // add this import
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -23,13 +22,10 @@ public class ROACWEffectRegistry {
     public static final RegistryObject<MobEffect> EVASION_SCARF_BUFF = MOB_EFFECTS.register("evasion_scarf_buff", EvasionScarfBuffEffect::new);
     public static final RegistryObject<MobEffect> SANCTIFIED_BEDROCK = MOB_EFFECTS.register("sanctified_bedrock", SanctifiedBedrockEffect::new);
     public static final RegistryObject<MobEffect> ARMOR_CRUNCH = MOB_EFFECTS.register("armor_crunch", ArmorCrunchEffect::new);
+    public static final RegistryObject<MobEffect> PLAGUE = MOB_EFFECTS.register("plague", PlagueEffect::new);
+    public static final RegistryObject<MobEffect> PESTILENCE_CLOAK_BUFF = MOB_EFFECTS.register("pestilence_cloak_buff", PestilenceCloakBuffEffect::new);
+    public static final RegistryObject<MobEffect> GOD_SLAYER_INFERNO = MOB_EFFECTS.register("god_slayer_inferno", GodSlayerInfernoEffect::new);
 
-    // NEW EFFECT REGISTRATIONS
-    // Used for the caster player (Self-buff: +50% armor/toughness, -30% speed)
-    public static final RegistryObject<MobEffect> PALADIN_PULSE = MOB_EFFECTS.register("paladin_pulse", PaladinPulseEffect::new);
-
-    // Used for nearby allied players (Ally-buff: +25% armor/toughness, no speed penalty)
-    public static final RegistryObject<MobEffect> PALADIN_PROTECTION = MOB_EFFECTS.register("paladin_protection", PaladinProtectionEffect::new);
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

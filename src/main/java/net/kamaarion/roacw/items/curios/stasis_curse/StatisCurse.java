@@ -95,7 +95,7 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
         attr.put(AttributeRegistry.SPELL_POWER.get(),
-                new AttributeModifier(uuid, "Abyssal Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
+                new AttributeModifier(uuid, "Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
         attr.put(AttributeRegistry.SUMMON_DAMAGE.get(),
                 new AttributeModifier(uuid, "Summon Damage", 0.30, AttributeModifier.Operation.MULTIPLY_BASE));
         attr.put(AttributeRegistry.MAX_MANA.get(),

@@ -1,10 +1,10 @@
 package net.kamaarion.roacw.events;
 
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.entity.renderer.EarthlyVirtueShardsRenderer;
-import net.kamaarion.roacw.entity.renderer.ImpalingColumnShardsRenderer;
-import net.kamaarion.roacw.entity.renderer.FinalRendAoERenderer;
-import net.kamaarion.roacw.entity.renderer.QuickStrikeAoERenderer;
+import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueShardsRenderer;
+import net.kamaarion.roacw.entity.spells.impaling_column.ImpalingColumnShardsRenderer;
+import net.kamaarion.roacw.entity.spells.final_rend.FinalRendAoERenderer;
+import net.kamaarion.roacw.entity.spells.quick_strike.QuickStrikeAoERenderer;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;

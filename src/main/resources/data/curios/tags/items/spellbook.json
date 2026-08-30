@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "roacw:nightmare_tome"
+    "roacw:nightmare_tome",
+    "roacw:auric_codex",
+    "roacw:earthen_paladin_oath"
   ]
 }

@@ -2,8 +2,10 @@ package net.kamaarion.roacw.items.armor.earthenpaladinset;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;
+import net.kamaarion.roacw.client.others.ModKeyMappings;
 import net.kamaarion.roacw.items.armor.ROACWArmorMaterials;
 import net.kamaarion.roacw.items.armor.fearmongerarmorset.FearmongerArmorModel;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -20,15 +22,12 @@ public class EarthenPaladinArmorItem extends ImbuableChestplateArmorItem {
         super(ROACWArmorMaterials.EARTHEN_PALADIN_ARMOR, type, settings, withManaAndSpellPowerAttribute(125, 0.05));
     }
 
-    private static final net.minecraft.network.chat.Style NEON_PURPLE = net.minecraft.network.chat.Style.EMPTY
-            .withColor(net.minecraft.network.chat.TextColor.parseColor("#CE84FF"));
-
 
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
-        return new GenericCustomArmorRenderer<>(new EarthenPaladinArmorModel());
+        return new EarthenPaladinArmorRenderer(new EarthenPaladinArmorModel());
     }
 
     @Override
@@ -37,9 +36,24 @@ public class EarthenPaladinArmorItem extends ImbuableChestplateArmorItem {
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
             int maxTooltipWidth = 240;
 
-            Component loreText = Component.translatable("item.roacw.earthen_paladin_chestplate.desc").withStyle(NEON_PURPLE);
+            Component loreText = Component.translatable("item.roacw.earthen_paladin_chestplate.desc").withStyle(ChatFormatting.YELLOW);
             font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
+            });
+
+            pTooltipComponents.add(Component.empty());
+
+            Component currentBoundKey = ModKeyMappings.ARMOR_PULSE_KEY.getTranslatedKeyMessage()
+                    .copy()
+                    .withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
+
+            Component tooltipName = Component.translatable("item.roacw.earthen_paladin_chestplate.tooltip.name")
+                    .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+            pTooltipComponents.add(tooltipName);
+
+            Component tooltipText = Component.translatable("item.roacw.earthen_paladin_chestplate.tooltip.desc", currentBoundKey).withStyle(ChatFormatting.GRAY);
+            font.getSplitter().splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText.getStyle()));
             });
 
         } else {

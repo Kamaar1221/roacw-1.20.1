@@ -1,12 +1,26 @@
 package net.kamaarion.roacw.events;
 
 import net.kamaarion.roacw.client.others.CustomAnimatedParticle;
-import net.kamaarion.roacw.entity.renderer.EarthlyVirtueAoERenderer;
-import net.kamaarion.roacw.entity.renderer.EarthlyVirtueShardsRenderer;
-import net.kamaarion.roacw.entity.renderer.ImpalingColumnShardsRenderer;
+import net.kamaarion.roacw.entity.mob.earthen_paladin.EarthenPaladinRenderer;
+import net.kamaarion.roacw.entity.projectile.belladonna_petal.BelladonnaPetalRenderer;
+import net.kamaarion.roacw.entity.projectile.god_killer_dart.GodKillerDartRenderer;
+import net.kamaarion.roacw.entity.projectile.plague_charger_stinger.PlagueChargerStingerRenderer;
+import net.kamaarion.roacw.entity.projectile.plague_cloud.PlagueCloudRenderer;
+import net.kamaarion.roacw.entity.projectile.plague_nuke.PlagueNukeRenderer;
+import net.kamaarion.roacw.entity.projectile.plague_rocket.PlagueRocketRenderer;
+import net.kamaarion.roacw.entity.spells.burning_meteor.BurningMeteorRenderer;
+import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueAoERenderer;
+import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueShardsRenderer;
+import net.kamaarion.roacw.entity.spells.impaling_column.ImpalingColumnShardsRenderer;
+import net.kamaarion.roacw.entity.summon.belladonna_spirit.BelladonnaSpiritRenderer;
+import net.kamaarion.roacw.entity.summon.dark_raven.DarkRavenRenderer;
+import net.kamaarion.roacw.entity.summon.plague_charger.PlagueChargerRenderer;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer;
 import net.kamaarion.roacw.particle.AuricChargeLightningParticle;
+import net.kamaarion.roacw.particle.BoosterExhaustParticle;
+import net.kamaarion.roacw.particle.PlagueCloudParticle;
+import net.kamaarion.roacw.particle.PlagueNanoParticle;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.kamaarion.roacw.registeries.ROACWParticleRegistry;
@@ -22,10 +36,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -168,6 +179,7 @@ public class ClientEvents {
     }
   }
 
+
   @Mod.EventBusSubscriber(modid = "roacw", value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
   public static class ModBusEvents {
 
@@ -180,6 +192,23 @@ public class ClientEvents {
       event.registerSpriteSet(
               ROACWParticleRegistry.AURIC_CHARGE_LIGHTNING.get(),
               AuricChargeLightningParticle.Provider::new
+      );
+      event.registerSpriteSet(
+              ROACWParticleRegistry.PLAGUE_NANO_GREEN.get(),
+              PlagueNanoParticle.GreenProvider::new);
+
+      event.registerSpriteSet(
+              ROACWParticleRegistry.PLAGUE_NANO_RED.get(),
+              PlagueNanoParticle.RedProvider::new);
+
+      event.registerSpriteSet(
+              ROACWParticleRegistry.PLAGUE_CLOUD.get(),
+              PlagueCloudParticle.Provider::new
+      );
+
+      event.registerSpriteSet(
+              ROACWParticleRegistry.BOOSTER_EXHAUST.get(),
+              BoosterExhaustParticle.Provider::new
       );
     }
 
@@ -199,6 +228,67 @@ public class ClientEvents {
               ROACWEntityRegistry.EARTHLY_VIRTUE_AOE.get(),
               EarthlyVirtueAoERenderer::new
       );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PLAGUE_ROCKET.get(),
+              PlagueRocketRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PLAGUE_NUKE.get(),
+              PlagueNukeRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PLAGUE_CLOUD.get(),
+              PlagueCloudRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PESTILENCE_CLOAK_CLOUD.get(),
+              PlagueCloudRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.BELLADONNA_SPIRIT.get(),
+              BelladonnaSpiritRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.BELLADONNA_PETAL.get(),
+              BelladonnaPetalRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PLAGUE_CHARGER.get(),
+              PlagueChargerRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PLAGUE_CHARGER_STINGER.get(),
+              PlagueChargerStingerRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.EARTHEN_PALADIN.get(),
+              EarthenPaladinRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.GOD_KILLER_DART.get(),
+              GodKillerDartRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.DARK_RAVEN.get(),
+              DarkRavenRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.BURNING_METEOR.get(),
+              BurningMeteorRenderer::new
+      );
+
     }
 
     @SubscribeEvent

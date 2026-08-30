@@ -2,7 +2,8 @@ package net.kamaarion.roacw.client.others;
 
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.network.ModMessages;
-import net.kamaarion.roacw.network.PacketDashC2S;
+import net.kamaarion.roacw.network.PacketAuricTeslaDashC2S;
+import net.kamaarion.roacw.network.PacketEvasionScarfDashC2S;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -19,20 +20,18 @@ public class ClientTickHandler {
         if (event.phase != TickEvent.Phase.END) return;
         if (Minecraft.getInstance().player == null) return;
 
-        // Handle Original Scarf Dash (V Key) - Passes Type 1
         if (ModKeyMappings.DASH_KEY.isDown()) {
             if (!scarfWasPressed) {
-                ModMessages.sendToServer(new PacketDashC2S(1));
+                ModMessages.sendToServer(new PacketEvasionScarfDashC2S());
                 scarfWasPressed = true;
             }
         } else {
             scarfWasPressed = false;
         }
 
-        // Handle New Auric Tesla Dash (X Key) - Passes Type 2
         if (ModKeyMappings.AURIC_DASH_KEY.isDown()) {
             if (!auricWasPressed) {
-                ModMessages.sendToServer(new PacketDashC2S(2));
+                ModMessages.sendToServer(new PacketAuricTeslaDashC2S());
                 auricWasPressed = true;
             }
         } else {
@@ -40,4 +39,3 @@ public class ClientTickHandler {
         }
     }
 }
-

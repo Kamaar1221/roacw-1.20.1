@@ -4,18 +4,18 @@ import net.kamaarion.roacw.ROACW;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 
-public class EarthSplitterModel extends DefaultedItemGeoModel<EarthSplitterItem> {
+public class EarthSplitterModel extends DefaultedItemGeoModel<EarthSplitter> {
     public EarthSplitterModel() {super (ResourceLocation.fromNamespaceAndPath(ROACW.MODID, ""));}
 
-    public ResourceLocation getModelResource(EarthSplitterItem object) {
+    public ResourceLocation getModelResource(EarthSplitter object) {
         return ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "geo/item/weapon/earth_splitter.geo.json");
     }
 
-    public ResourceLocation getTextureResource(EarthSplitterItem object) {
+    public ResourceLocation getTextureResource(EarthSplitter object) {
         return ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "textures/item/weapon/earth_splitter.png");
     }
 
-    public ResourceLocation getAnimationResource(EarthSplitterItem animatable) {
+    public ResourceLocation getAnimationResource(EarthSplitter animatable) {
         return ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "animations/wizard_armor_animation.json");
     }
 }

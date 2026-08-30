@@ -17,5 +17,114 @@
     "sounds": [
       "roacw:auric_dash_charge"
     ]
+  },
+  "auric_revive_explosion": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.auric_revive_explosion",
+    "sounds": [
+      "roacw:auric_revive_explosion"
+    ]
+  },
+  "hive_nuke_launch": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.hive_nuke_launch",
+    "sounds": [
+      "roacw:hive_nuke_launch"
+    ]
+  },
+  "plague_nuke_explosion": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.plague_nuke_explosion",
+    "sounds": [
+      "roacw:plague_nuke_explosion"
+    ]
+  },
+  "plague_rocket_explosion": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.plague_rocket_explosion",
+    "sounds": [
+      "roacw:plague_rocket_explosion"
+    ]
+  },
+  "hive_rocket_launch": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.hive_rocket_launch",
+    "sounds": [
+      "roacw:hive_rocket_launch"
+    ]
+  },
+  "hive_nuke_ready": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.hive_nuke_ready",
+    "sounds": [
+      "roacw:hive_nuke_ready"
+    ]
+  },
+  "hive_nuke_charge": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.hive_nuke_charge",
+    "sounds": [
+      "roacw:hive_nuke_charge"
+    ]
+  },
+  "plaguebringer_jets_activated": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.plaguebringer_jets_activated",
+    "sounds": [
+      "roacw:plaguebringer_jets_activated"
+    ]
+  },
+  "dark_raven_idle": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.dark_raven_idle",
+    "sounds": [
+      "roacw:dark_raven_idle"
+    ]
+  },
+  "dark_raven_attack": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.dark_raven_attack",
+    "sounds": [
+      "roacw:dark_raven_attack"
+    ]
+  },
+  "dark_raven_hurt": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.dark_raven_hurt",
+    "sounds": [
+      "roacw:dark_raven_hurt"
+    ]
+  },
+  "dark_raven_summon": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.dark_raven_summon",
+    "sounds": [
+      "roacw:dark_raven_summon"
+    ]
+  },
+  "roacw_title_intro": {
+    "sounds": [
+      {
+        "name": "roacw:roacw_title_intro",
+        "stream": true
+      }
+    ]
+  },
+  "roacw_title_loop": {
+    "sounds": [
+      {
+        "name": "roacw:roacw_title_loop",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "remnants_of_a_cruel_world_title": {
+    "sounds": [
+      {
+        "name": "roacw:remnants_of_a_cruel_world_title",
+        "stream": true
+      }
+    ]
   }
 }

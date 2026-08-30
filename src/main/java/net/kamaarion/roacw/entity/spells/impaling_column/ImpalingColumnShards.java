@@ -1,5 +1,6 @@
 package net.kamaarion.roacw.entity.spells.impaling_column;
 
+import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +39,9 @@ public class ImpalingColumnShards extends Entity implements GeoEntity {
     private LivingEntity owner;
     private UUID ownerUUID;
     private float damage;
+    // Not synced entity data - only affects server-side damage logic, never rendering.
+    private boolean applyKnockup = false;
+    private double knockupStrength = 0.9D;
 
     public ImpalingColumnShards(EntityType<? extends Entity> type, Level level) {
         super(type, level);
@@ -52,6 +56,10 @@ public class ImpalingColumnShards extends Entity implements GeoEntity {
     public boolean isTilted() { return this.entityData.get(TILTED); }
     public void setDamage(float damage) { this.damage = damage; }
     public float getDamage() { return this.damage; }
+    public void setApplyKnockup(boolean applyKnockup) { this.applyKnockup = applyKnockup; }
+    public boolean isApplyKnockup() { return this.applyKnockup; }
+    public void setKnockupStrength(double knockupStrength) { this.knockupStrength = knockupStrength; }
+    public double getKnockupStrength() { return this.knockupStrength; }
 
     public void setOwner(LivingEntity owner) {
         this.owner = owner;
@@ -132,7 +140,7 @@ public class ImpalingColumnShards extends Entity implements GeoEntity {
 
     private void dealDamage() {
         LivingEntity caster = this.getOwner();
-        var source = net.kamaarion.roacw.registeries.ROACWSpellRegistries.IMPALING_COLUMN
+        var source = ROACWSpellRegistry.IMPALING_COLUMN
                 .get().getDamageSource(this, caster);
 
         for (LivingEntity target : this.level().getEntitiesOfClass(
@@ -145,6 +153,11 @@ public class ImpalingColumnShards extends Entity implements GeoEntity {
             target.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                     net.kamaarion.roacw.registeries.ROACWEffectRegistry.ARMOR_CRUNCH.get(),
                     200, 0, false, false, true));
+
+            if (this.applyKnockup) {
+                target.setDeltaMovement(target.getDeltaMovement().x, this.knockupStrength, target.getDeltaMovement().z);
+                target.hurtMarked = true;
+            }
         }
     }
 
@@ -167,6 +180,8 @@ public class ImpalingColumnShards extends Entity implements GeoEntity {
         if (tag.contains("Scale")) this.setScale(tag.getFloat("Scale"));
         if (tag.contains("SpawnDelay")) this.setSpawnDelay(tag.getInt("SpawnDelay"));
         if (tag.contains("Tilted")) this.setTilted(tag.getBoolean("Tilted"));
+        if (tag.contains("ApplyKnockup")) this.applyKnockup = tag.getBoolean("ApplyKnockup");
+        if (tag.contains("KnockupStrength")) this.knockupStrength = tag.getDouble("KnockupStrength");
         if (tag.hasUUID("Owner")) this.ownerUUID = tag.getUUID("Owner");
     }
 
@@ -176,6 +191,8 @@ public class ImpalingColumnShards extends Entity implements GeoEntity {
         tag.putFloat("Scale", this.getScale());
         tag.putInt("SpawnDelay", this.getSpawnDelay());
         tag.putBoolean("Tilted", this.isTilted());
+        tag.putBoolean("ApplyKnockup", this.applyKnockup);
+        tag.putDouble("KnockupStrength", this.knockupStrength);
         if (this.ownerUUID != null) tag.putUUID("Owner", this.ownerUUID);
     }
 }

@@ -2,9 +2,7 @@ package net.kamaarion.roacw.client.others;
 
 import net.kamaarion.roacw.Config; // Added config import
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.network.ModMessages;
-import net.kamaarion.roacw.network.PacketDashC2S;
-import net.kamaarion.roacw.network.PacketArmorPulseC2S;
+import net.kamaarion.roacw.network.*;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -33,7 +31,7 @@ public class ClientInputHandler {
 
             CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
                 if (!inv.findCurios(dashItem).isEmpty()) {
-                    ModMessages.sendToServer(new PacketDashC2S(1));
+                    ModMessages.sendToServer(new PacketEvasionScarfDashC2S());
                 }
             });
         }
@@ -53,13 +51,18 @@ public class ClientInputHandler {
                     player.getItemBySlot(EquipmentSlot.FEET).is(ROACWItemRegistry.AURIC_TESLA_BOOTS.get());
 
             if (hasFullSet) {
-                ModMessages.sendToServer(new PacketDashC2S(2));
+                ModMessages.sendToServer(new PacketAuricTeslaDashC2S());
             }
         }
 
         // Handle Earthen Paladin Armor Pulse (G Key)
         if (ModKeyMappings.ARMOR_PULSE_KEY.consumeClick()) {
-            ModMessages.sendToServer(new PacketArmorPulseC2S());
+            ModMessages.sendToServer(new PacketEarthenPaladinPulseC2S());
+        }
+
+        // Handle Plaguebringer Jet Boost (H Key)
+        if (ModKeyMappings.PLAGUEBRINGER_JET_BOOST_KEY.consumeClick()) {
+            ModMessages.sendToServer(new PacketPlaguebringerJetBoostC2S());
         }
     }
 }

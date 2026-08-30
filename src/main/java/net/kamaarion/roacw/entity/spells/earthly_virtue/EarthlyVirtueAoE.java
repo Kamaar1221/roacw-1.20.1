@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
-import net.kamaarion.roacw.registeries.ROACWSpellRegistries;
+import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -147,7 +147,7 @@ public class EarthlyVirtueAoE extends Entity {
                 }
             } else {
                 // Damage enemy targets inside the boundary loop
-                var source = ROACWSpellRegistries.EARTHLY_VIRTUE
+                var source = ROACWSpellRegistry.EARTHLY_VIRTUE
                         .get()
                         .getDamageSource(this, caster);
                 DamageSources.applyDamage(target, damage, source);

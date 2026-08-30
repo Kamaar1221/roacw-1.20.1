@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "AA ",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:divine_pebble"
+    }
+  },
+
+  "result": {
+    "item": "roacw:divine_chunk"
+  }
+}

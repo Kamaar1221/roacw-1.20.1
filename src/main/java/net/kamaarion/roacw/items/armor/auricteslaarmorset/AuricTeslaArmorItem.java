@@ -27,7 +27,7 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
-        return new GenericCustomArmorRenderer<>(new AuricTeslaArmorModel());
+        return new AuricTeslaArmorRenderer(new AuricTeslaArmorModel());
     }
 
     @Override
@@ -43,7 +43,11 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
 
             pTooltipComponents.add(Component.empty());
 
-            Component tooltipText1 = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip1").withStyle(ChatFormatting.GRAY);
+            Component tooltip1Name = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip1.name")
+                    .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+            pTooltipComponents.add(tooltip1Name);
+
+            Component tooltipText1 = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip1.desc").withStyle(ChatFormatting.GRAY);
             font.getSplitter().splitLines(tooltipText1, maxTooltipWidth, tooltipText1.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText1.getStyle()));
             });
@@ -53,8 +57,11 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
             Component currentBoundKey = ModKeyMappings.AURIC_DASH_KEY.getTranslatedKeyMessage()
                     .copy().withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 
-            Component tooltipText2 = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip2", currentBoundKey).withStyle(ChatFormatting.GRAY);
+            Component tooltip2Name = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip2.name")
+                    .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+            pTooltipComponents.add(tooltip2Name);
 
+            Component tooltipText2 = Component.translatable("item.roacw.auric_tesla_cuirass.tooltip2.desc", currentBoundKey).withStyle(ChatFormatting.GRAY);
             font.getSplitter().splitLines(tooltipText2, maxTooltipWidth, tooltipText2.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText2.getStyle()));
             });
@@ -63,7 +70,6 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         }
     }
-
     @Override
     public boolean isDamageable(ItemStack stack) {
         return false;

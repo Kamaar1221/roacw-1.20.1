@@ -1,0 +1,94 @@
+package net.kamaarion.roacw.items.weapons.phaseblade;
+
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.item.weapons.StaffItem;
+import net.acetheeldritchking.cataclysm_spellbooks.registries.SpellRegistries;
+import net.kamaarion.roacw.items.weapons.ROACWWeaponTiers;
+import net.kamaarion.roacw.registeries.MarsRarityColorHelp;
+import net.kamaarion.roacw.registeries.ROACWItemRegistry;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class Phaseblade extends StaffItem implements GeoItem, IPresetSpellContainer, GeoAnimatable {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    public Phaseblade(Properties properties) {
+        super(properties.stacksTo(1).rarity(ROACWItemRegistry.EXO_ENGINEERED), ROACWWeaponTiers.PHASEBLADE);
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        return MarsRarityColorHelp.createRainbowWave(
+                super.getName(stack).getString()
+        );
+    }
+
+
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            private PhasebladeRenderer renderer = null;
+
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null) {
+                    this.renderer = new PhasebladeRenderer();
+                }
+
+                return this.renderer;
+            }
+        });
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @Override
+    public void initializeSpellContainer(ItemStack itemStack) {
+        if (itemStack == null || ISpellContainer.isSpellContainer(itemStack)) {
+            return;
+        }
+        var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
+        spellContainer.addSpell(SpellRegistries.QUICK_STRIKE.get(), 8, true);
+        ISpellContainer.set(itemStack, spellContainer.toImmutable());
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        if (pLevel != null && pLevel.isClientSide()) {
+            net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+            int maxTooltipWidth = 240;
+
+            Component loreText = Component.translatable("item.roacw.phaseblade.desc").withStyle(ChatFormatting.YELLOW);
+            font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
+            });
+
+        } else {
+            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        }
+    }
+}

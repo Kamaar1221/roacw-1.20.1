@@ -20,26 +20,33 @@ public class ModKeyMappings {
             KEY_CATEGORY_ROACW
     );
 
-    // Completely new key mapping added without modifying your original Scarf setup
+
     public static final KeyMapping AURIC_DASH_KEY = new KeyMapping(
             "key.roacw.auric_dash",
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_X, // Defaulting to the 'X' key natively
+            GLFW.GLFW_KEY_X,
             KEY_CATEGORY_ROACW
     );
 
-    // Earthen Paladin full-set ability trigger
     public static final KeyMapping ARMOR_PULSE_KEY = new KeyMapping(
             "key.roacw.armor_pulse",
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_G,
+            GLFW.GLFW_KEY_X,
+            KEY_CATEGORY_ROACW
+    );
+
+    public static final KeyMapping PLAGUEBRINGER_JET_BOOST_KEY = new KeyMapping(
+            "key.roacw.plaguebringer_jet_boost",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_X,
             KEY_CATEGORY_ROACW
     );
 
     @SubscribeEvent
     public static void onKeyRegister(RegisterKeyMappingsEvent event) {
         event.register(DASH_KEY);
-        event.register(AURIC_DASH_KEY); // Registers the second key cleanly into Minecraft options
-        event.register(ARMOR_PULSE_KEY); // Registers the Earthen Paladin pulse key
+        event.register(AURIC_DASH_KEY);
+        event.register(ARMOR_PULSE_KEY);
+        event.register(PLAGUEBRINGER_JET_BOOST_KEY);
     }
 }

@@ -1,6 +1,5 @@
 package net.kamaarion.roacw.capability;
 
-import net.kamaarion.roacw.network.PacketArmorPulseC2S;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
