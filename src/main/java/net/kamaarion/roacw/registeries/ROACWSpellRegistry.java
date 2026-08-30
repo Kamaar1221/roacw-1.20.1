@@ -3,13 +3,13 @@ package net.kamaarion.roacw.registeries;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.kamaarion.roacw.ROACW;
+import net.kamaarion.roacw.spells.SummonHydraSpell;
 import net.kamaarion.roacw.spells.exo.FinalRendSpell;
 import net.kamaarion.roacw.spells.exo.QuickStrikeSpell;
 import net.kamaarion.roacw.spells.fire.BurningMeteorSpell;
 import net.kamaarion.roacw.spells.fire.SummonDarkRavenSpell;
 import net.kamaarion.roacw.spells.geo.ImpalingColumnSpell;
 import net.kamaarion.roacw.spells.holy.EarthlyVirtueSpell;
-import net.kamaarion.roacw.spells.ice.SummonEndoHydraSpell;
 import net.kamaarion.roacw.spells.nature.PestilenceCloakSpell;
 import net.kamaarion.roacw.spells.nature.SummonBelladonnaSpiritSpell;
 import net.kamaarion.roacw.spells.technomancy.SummonPlagueChargerSpell;
@@ -48,6 +48,8 @@ public class ROACWSpellRegistry {
     public static final RegistryObject<AbstractSpell> SUMMON_DARK_RAVEN = registerSpell(new SummonDarkRavenSpell());
 
     public static final RegistryObject<AbstractSpell> BURNING_SKY = registerSpell(new BurningMeteorSpell());
+
+    public static final RegistryObject<AbstractSpell> SUMMON_HYDRA = registerSpell(new SummonHydraSpell());
 
 
 

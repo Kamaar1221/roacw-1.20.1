@@ -17,6 +17,8 @@ import net.kamaarion.roacw.entity.spells.final_rend.FinalRendAoE;
 import net.kamaarion.roacw.entity.spells.quick_strike.QuickStrikeAoE;
 import net.kamaarion.roacw.entity.summon.belladonna_spirit.BelladonnaSpiritEntity;
 import net.kamaarion.roacw.entity.summon.dark_raven.DarkRavenEntity;
+import net.kamaarion.roacw.entity.summon.hydra.HydraBodyEntity;
+import net.kamaarion.roacw.entity.summon.hydra.HydraHead;
 import net.kamaarion.roacw.entity.summon.plague_charger.PlagueChargerEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
@@ -180,6 +182,19 @@ public class ROACWEntityRegistry {
                             .clientTrackingRange(64)
                             .build(ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "earthen_paladin_knight").toString())
             );
+
+    public static final RegistryObject<EntityType<HydraBodyEntity>> HYDRA_BODY = ENTITIES.register("hydra_body",
+            () -> EntityType.Builder.<HydraBodyEntity>of(HydraBodyEntity::new, MobCategory.MONSTER)
+                    .sized(1.6f, 2.4f)
+                    .clientTrackingRange(12)
+                    .build(ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "hydra_body").toString()));
+
+    public static final RegistryObject<EntityType<HydraHead>> HYDRA_HEAD = ENTITIES.register("hydra_head",
+            () -> EntityType.Builder.<HydraHead>of(HydraHead::new, MobCategory.MONSTER)
+                    .sized(0.8f, 0.8f)
+                    .fireImmune()
+                    .clientTrackingRange(12)
+                    .build(ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "hydra_head").toString()));
 
 
 
