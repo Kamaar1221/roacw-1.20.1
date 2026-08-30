@@ -3,6 +3,8 @@ package net.kamaarion.roacw;
 import com.mojang.logging.LogUtils;
 import io.redspace.ironsspellbooks.render.SpellBookCurioRenderer;
 import net.kamaarion.roacw.client.others.ClientTickHandler;
+import net.kamaarion.roacw.entity.summon.hydra.HydraBodyEntity;
+import net.kamaarion.roacw.entity.summon.hydra.HydraHead;
 import net.kamaarion.roacw.events.ClientEvents; // Correctly imported your ClientEvents file
 import net.kamaarion.roacw.events.ServerEvents;
 import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanterCurioRenderer;
@@ -84,6 +86,8 @@ public class ROACW {
 
     private void entityAttributes(EntityAttributeCreationEvent event) {
         // Reserved for future custom entity LivingAttributes mappings
+        event.put(ROACWEntityRegistry.HYDRA_BODY.get(), HydraBodyEntity.createAttributes().build());
+        event.put(ROACWEntityRegistry.HYDRA_HEAD.get(), HydraHead.createAttributes().build());
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {

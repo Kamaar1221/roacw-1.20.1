@@ -5,6 +5,8 @@ import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueShardsRende
 import net.kamaarion.roacw.entity.spells.impaling_column.ImpalingColumnShardsRenderer;
 import net.kamaarion.roacw.entity.spells.final_rend.FinalRendAoERenderer;
 import net.kamaarion.roacw.entity.spells.quick_strike.QuickStrikeAoERenderer;
+import net.kamaarion.roacw.entity.summon.hydra.HydraBodyRenderer;
+import net.kamaarion.roacw.entity.summon.hydra.HydraHeadRenderer;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -21,6 +23,8 @@ public class ClientSetup {
         event.registerEntityRenderer(ROACWEntityRegistry.FINAL_REND.get(), FinalRendAoERenderer::new);
         event.registerEntityRenderer(ROACWEntityRegistry.IMPALING_COLUMN_SHARDS.get(), ImpalingColumnShardsRenderer::new);
         event.registerEntityRenderer(ROACWEntityRegistry.EARTHLY_VIRTUE_SHARDS.get(), EarthlyVirtueShardsRenderer::new);
+        event.registerEntityRenderer(ROACWEntityRegistry.HYDRA_BODY.get(), HydraBodyRenderer::new);
+        event.registerEntityRenderer(ROACWEntityRegistry.HYDRA_HEAD.get(), HydraHeadRenderer::new);
 
     }
 
