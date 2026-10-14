@@ -24,44 +24,24 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Summons a group of Dark Ravens around the caster.
- *
- * Raven scaling follows the same general pattern as the Plague Charger:
- *
- * - Damage scales from spell power.
- * - Health scales with spell level and the caster's entity power multiplier.
- * - Each raven receives its calculated damage and health directly when
- *   spawned.
- * - Summon lifetime and dismissal are handled through SummonManager.
- */
 public class SummonDarkRavenSpell extends AbstractSpell {
 
-    private final ResourceLocation spellId =
-            ResourceLocation.fromNamespaceAndPath(
-                    "roacw",
-                    "summon_dark_raven"
-            );
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(
+            "roacw",
+            "summon_dark_raven"
+    );
 
-    private final DefaultConfig defaultConfig =
-            new DefaultConfig()
-                    .setMinRarity(SpellRarity.LEGENDARY)
-                    .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
-                    .setMaxLevel(3)
-                    .setCooldownSeconds(180)
-                    .build();
+    private final DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.LEGENDARY)
+            .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
+            .setMaxLevel(3)
+            .setCooldownSeconds(180)
+            .build();
 
-    /**
-     * How strongly the caster's Eldritch Spell Power contributes to
-     * raven damage, relative to the spell's primary Fire scaling.
-     *
-     * 0.5 = Eldritch Spell Power counts at half effectiveness, added
-     * on top of (not instead of) the normal Fire-based spell power.
-     */
     private static final float ELDRITCH_SPELL_POWER_SCALING = 0.5F;
 
     public SummonDarkRavenSpell() {
-        this.manaCostPerLevel = 10;
+        this.manaCostPerLevel = 25;
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
@@ -69,16 +49,12 @@ public class SummonDarkRavenSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(
-            int spellLevel,
-            LivingEntity caster
-    ) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable(
                         "ui.irons_spellbooks.summon_count",
                         getSummonCountForLevel(spellLevel)
                 ),
-
                 Component.translatable(
                         "ui.irons_spellbooks.hp",
                         Utils.stringTruncation(
@@ -86,7 +62,6 @@ public class SummonDarkRavenSpell extends AbstractSpell {
                                 1
                         )
                 ),
-
                 Component.translatable(
                         "ui.irons_spellbooks.damage",
                         Utils.stringTruncation(
@@ -114,16 +89,11 @@ public class SummonDarkRavenSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(
-                ROACWSoundRegistry.DARK_RAVEN_SUMMON.get()
-        );
+        return Optional.of(ROACWSoundRegistry.DARK_RAVEN_SUMMON.get());
     }
 
     @Override
-    public int getRecastCount(
-            int spellLevel,
-            @Nullable LivingEntity entity
-    ) {
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
         return 2;
     }
 
@@ -162,12 +132,9 @@ public class SummonDarkRavenSpell extends AbstractSpell {
             CastSource castSource,
             MagicData playerMagicData
     ) {
-
-        PlayerRecasts recasts =
-                playerMagicData.getPlayerRecasts();
+        PlayerRecasts recasts = playerMagicData.getPlayerRecasts();
 
         if (!recasts.hasRecastForSpell(this)) {
-
             if (!(world instanceof ServerLevel serverLevel)) {
                 super.onCast(
                         world,
@@ -179,57 +146,26 @@ public class SummonDarkRavenSpell extends AbstractSpell {
                 return;
             }
 
-            SummonedEntitiesCastData summonedEntitiesCastData =
-                    new SummonedEntitiesCastData();
+            SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
 
-            int summonTime =
-                    20 * 60 * 10;
+            int summonTime = 20 * 60 * 10;
+            int summonCount = getSummonCountForLevel(spellLevel);
 
-            int summonCount =
-                    getSummonCountForLevel(spellLevel);
-
-            float ravenDamage =
-                    getRavenDamage(
-                            spellLevel,
-                            entity
-                    );
-
-            float ravenHealth =
-                    getRavenHealth(
-                            spellLevel,
-                            entity
-                    );
+            float ravenDamage = getRavenDamage(spellLevel, entity);
+            float ravenHealth = getRavenHealth(spellLevel, entity);
 
             for (int i = 0; i < summonCount; i++) {
+                DarkRavenEntity raven = new DarkRavenEntity(
+                        ROACWEntityRegistry.DARK_RAVEN.get(),
+                        serverLevel
+                );
 
-                DarkRavenEntity raven =
-                        new DarkRavenEntity(
-                                ROACWEntityRegistry.DARK_RAVEN.get(),
-                                serverLevel
-                        );
-
-                /*
-                 * -----------------------------------------------------
-                 * SPAWN FORMATION
-                 * -----------------------------------------------------
-                 *
-                 * Evenly space the ravens around the caster.
-                 */
-                double angle =
-                        (Math.PI * 2.0D / summonCount) * i;
-
+                double angle = (Math.PI * 2.0D / summonCount) * i;
                 double radius = 2.0D;
 
-                double spawnX =
-                        entity.getX()
-                                + Math.cos(angle) * radius;
-
-                double spawnY =
-                        entity.getEyeY() + 0.5D;
-
-                double spawnZ =
-                        entity.getZ()
-                                + Math.sin(angle) * radius;
+                double spawnX = entity.getX() + Math.cos(angle) * radius;
+                double spawnY = entity.getEyeY() + 0.5D;
+                double spawnZ = entity.getZ() + Math.sin(angle) * radius;
 
                 raven.moveTo(
                         spawnX,
@@ -241,61 +177,19 @@ public class SummonDarkRavenSpell extends AbstractSpell {
 
                 raven.finalizeSpawn(
                         serverLevel,
-                        world.getCurrentDifficultyAt(
-                                raven.blockPosition()
-                        ),
+                        world.getCurrentDifficultyAt(raven.blockPosition()),
                         MobSpawnType.MOB_SUMMONED,
                         null,
                         null
                 );
 
-                /*
-                 * -----------------------------------------------------
-                 * HEALTH SCALING
-                 * -----------------------------------------------------
-                 *
-                 * Match the Plague Charger's health formula:
-                 *
-                 *     (20 + spellLevel * 5)
-                 *          * entityPowerMultiplier
-                 *
-                 * Level 1 = 25 HP
-                 * Level 2 = 30 HP
-                 * Level 3 = 35 HP
-                 */
-                raven.getAttribute(
-                        Attributes.MAX_HEALTH
-                ).setBaseValue(ravenHealth);
+                raven.getAttribute(Attributes.MAX_HEALTH).setBaseValue(ravenHealth);
+                raven.setHealth(raven.getMaxHealth());
 
-                raven.setHealth(
-                        raven.getMaxHealth()
-                );
+                raven.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(ravenDamage);
+                raven.setSpellPower(ravenDamage);
 
-                /*
-                 * -----------------------------------------------------
-                 * DAMAGE SCALING
-                 * -----------------------------------------------------
-                 *
-                 * The Raven's charge uses spellPower as its actual
-                 * damage value, so give the raven the same calculated
-                 * value here.
-                 */
-                raven.getAttribute(
-                        Attributes.ATTACK_DAMAGE
-                ).setBaseValue(ravenDamage);
-
-                raven.setSpellPower(
-                        ravenDamage
-                );
-
-                /*
-                 * -----------------------------------------------------
-                 * SPAWN
-                 * -----------------------------------------------------
-                 */
-                serverLevel.addFreshEntity(
-                        raven
-                );
+                serverLevel.addFreshEntity(raven);
 
                 SummonManager.initSummon(
                         entity,
@@ -305,18 +199,14 @@ public class SummonDarkRavenSpell extends AbstractSpell {
                 );
             }
 
-            RecastInstance recastInstance =
-                    new RecastInstance(
-                            this.getSpellId(),
-                            spellLevel,
-                            getRecastCount(
-                                    spellLevel,
-                                    entity
-                            ),
-                            summonTime,
-                            castSource,
-                            summonedEntitiesCastData
-                    );
+            RecastInstance recastInstance = new RecastInstance(
+                    this.getSpellId(),
+                    spellLevel,
+                    getRecastCount(spellLevel, entity),
+                    summonTime,
+                    castSource,
+                    summonedEntitiesCastData
+            );
 
             recasts.addRecast(
                     recastInstance,
@@ -333,96 +223,30 @@ public class SummonDarkRavenSpell extends AbstractSpell {
         );
     }
 
-    /**
-     * Raven summon count.
-     *
-     * Level 1 = 2
-     * Level 2 = 4
-     * Level 3 = 6
-     */
-    private int getSummonCountForLevel(
-            int spellLevel
-    ) {
-        return 2 + (
-                2 * Math.max(
-                        0,
-                        spellLevel - 1
-                )
-        );
+    private int getSummonCountForLevel(int spellLevel) {
+        return 2 + (2 * Math.max(0, spellLevel - 1));
     }
 
-    /**
-     * Raven health scaling.
-     *
-     * This follows the same health progression used by the
-     * Plague Charger:
-     *
-     *     (20 + spellLevel * 5)
-     *          * entity power multiplier
-     *
-     * If no caster is available, the entity power multiplier
-     * defaults to 1.0 so the spell can safely be queried by
-     * interfaces such as the Inscription Table.
-     */
-    private float getRavenHealth(
-            int spellLevel,
-            @Nullable LivingEntity caster
-    ) {
-        float entityPowerMultiplier =
-                caster == null
-                        ? 1.0F
-                        : getEntityPowerMultiplier(caster);
+    private float getRavenHealth(int spellLevel, @Nullable LivingEntity caster) {
+        float entityPowerMultiplier = caster == null
+                ? 1.0F
+                : getEntityPowerMultiplier(caster);
 
-        return (
-                20.0F
-                        + spellLevel * 5.0F
-        ) * entityPowerMultiplier;
+        return (20.0F + spellLevel * 5.0F) * entityPowerMultiplier;
     }
 
-    /**
-     * Raven damage scaling.
-     *
-     * Fire is the primary school because this spell uses
-     * SchoolRegistry.FIRE_RESOURCE.
-     *
-     * getSpellPower() therefore provides the Fire-scaled spell power
-     * used by the raven's charge. On top of that, the caster's
-     * Eldritch Spell Power contributes as a secondary multiplier, at
-     * half effectiveness.
-     *
-     * If no caster is available, the spell returns its raw base
-     * spell-power progression instead of attempting to query
-     * school power from a null entity.
-     */
-    private float getRavenDamage(
-            int spellLevel,
-            @Nullable LivingEntity caster
-    ) {
+    private float getRavenDamage(int spellLevel, @Nullable LivingEntity caster) {
         if (caster == null) {
-            return this.baseSpellPower
-                    + ((spellLevel - 1) * this.spellPowerPerLevel);
+            return this.baseSpellPower + ((spellLevel - 1) * this.spellPowerPerLevel);
         }
 
-        float baseDamage =
-                getSpellPower(
-                        spellLevel,
-                        caster
-                );
+        float baseDamage = getSpellPower(spellLevel, caster);
 
-        float eldritchPower =
-                (float) SchoolRegistry.ELDRITCH
-                        .get()
-                        .getPowerFor(caster);
+        float eldritchPower = (float) SchoolRegistry.ELDRITCH.get().getPowerFor(caster);
 
-        float eldritchBonus =
-                1.0F
-                        + (
-                        (eldritchPower - 1.0F)
-                                * ELDRITCH_SPELL_POWER_SCALING
-                );
+        float eldritchBonus = 1.0F
+                + ((eldritchPower - 1.0F) * ELDRITCH_SPELL_POWER_SCALING);
 
-        return baseDamage
-                * eldritchBonus;
+        return baseDamage * eldritchBonus;
     }
 }
-

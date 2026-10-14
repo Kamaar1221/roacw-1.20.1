@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " AA",
+    " BA",
+    "A  "
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:divine_chunk"
+    },
+    "B": {
+      "item": "minecraft:netherite_axe"
+    }
+  },
+
+  "result": {
+    "item": "roacw:earth_splitter"
+  }
+}

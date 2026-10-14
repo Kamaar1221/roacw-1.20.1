@@ -4,26 +4,23 @@
   "pattern": [
     "TWT",
     "PEP",
-    "LIL"
+    "TIT"
   ],
   "key": {
     "T": {
-      "item": "cataclysm_spellbooks:technomancy_rune"
+      "item": "roacw:dubious_plating"
     },
     "W": {
-      "item": "cataclysm:witherite_ingot"
+      "item": "roacw:exo_core"
     },
     "P": {
-      "item": "traveloptics:plasma_power_cell"
-    },
-    "L": {
-      "item": "irons_spellbooks:lightning_rune"
+      "item": "roacw:mysterious_circuitry"
     },
     "E": {
       "tag": "roacw:craftable_with_tech_chest"
     },
     "I": {
-      "item": "roacw:charged_auric_ingot"
+      "item": "roacw:miracle_matter"
     }
   },
 

@@ -26,13 +26,16 @@ import java.util.Optional;
 
 public class SummonBelladonnaSpiritSpell extends AbstractSpell {
 
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath("roacw", "summon_belladonna_spirit");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(
+            "roacw",
+            "summon_belladonna_spirit"
+    );
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)               // TODO: confirm against your other Nature spells
+            .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
-            .setMaxLevel(5)                                // matches polar bear's max level; tune if you want fewer tiers
-            .setCooldownSeconds(180)                        // TODO: tune - matches polar bear as a starting point
+            .setMaxLevel(5)
+            .setCooldownSeconds(180)
             .build();
 
     public SummonBelladonnaSpiritSpell() {
@@ -46,14 +49,23 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.summon_count", getSummonCountForLevel(spellLevel)),
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpiritDamage(spellLevel, caster), 1))
+                Component.translatable(
+                        "ui.irons_spellbooks.summon_count",
+                        getSummonCountForLevel(spellLevel)
+                ),
+                Component.translatable(
+                        "ui.irons_spellbooks.damage",
+                        Utils.stringTruncation(
+                                getSpiritDamage(spellLevel, caster),
+                                1
+                        )
+                )
         );
     }
 
     @Override
     public CastType getCastType() {
-        return CastType.LONG; // TODO: switch to INSTANT if you'd rather this fire immediately, like PestilenceCloakSpell
+        return CastType.LONG;
     }
 
     @Override
@@ -68,18 +80,33 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundEvents.EVOKER_PREPARE_SUMMON); // TODO: swap for something more nature-flavored if you have one
+        return Optional.of(SoundEvents.EVOKER_PREPARE_SUMMON);
     }
 
     @Override
     public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
-        return 2; // TODO: verify what this controls exactly (recast slots for dismiss?) against SummonManager source
+        return 2;
     }
 
     @Override
-    public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
-        if (SummonManager.recastFinishedHelper(serverPlayer, recastInstance, recastResult, castDataSerializable)) {
-            super.onRecastFinished(serverPlayer, recastInstance, recastResult, castDataSerializable);
+    public void onRecastFinished(
+            ServerPlayer serverPlayer,
+            RecastInstance recastInstance,
+            RecastResult recastResult,
+            ICastDataSerializable castDataSerializable
+    ) {
+        if (SummonManager.recastFinishedHelper(
+                serverPlayer,
+                recastInstance,
+                recastResult,
+                castDataSerializable
+        )) {
+            super.onRecastFinished(
+                    serverPlayer,
+                    recastInstance,
+                    recastResult,
+                    castDataSerializable
+            );
         }
     }
 
@@ -89,17 +116,29 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
+    public void onCast(
+            Level world,
+            int spellLevel,
+            LivingEntity entity,
+            CastSource castSource,
+            MagicData playerMagicData
+    ) {
         PlayerRecasts recasts = playerMagicData.getPlayerRecasts();
+
         if (!recasts.hasRecastForSpell(this)) {
             if (!(world instanceof ServerLevel serverLevel)) {
-                super.onCast(world, spellLevel, entity, castSource, playerMagicData);
+                super.onCast(
+                        world,
+                        spellLevel,
+                        entity,
+                        castSource,
+                        playerMagicData
+                );
                 return;
             }
 
             SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
-            int summonTime = 20 * 60 * 10; // 3 minutes; TODO tune, matches your original 60s-per-tier intent scaled up
-
+            int summonTime = 20 * 60 * 10;
             int summonCount = getSummonCountForLevel(spellLevel);
             float damage = getSpiritDamage(spellLevel, entity);
 
@@ -109,9 +148,7 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
                         serverLevel
                 );
 
-                // Evenly space spirits around the player
                 double angle = (Math.PI * 2.0D / summonCount) * i;
-
                 double radius = 2.0D;
 
                 double spawnX = entity.getX() + Math.cos(angle) * radius;
@@ -147,11 +184,28 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
                 );
             }
 
-            RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);
-            recasts.addRecast(recastInstance, playerMagicData);
+            RecastInstance recastInstance = new RecastInstance(
+                    this.getSpellId(),
+                    spellLevel,
+                    getRecastCount(spellLevel, entity),
+                    summonTime,
+                    castSource,
+                    summonedEntitiesCastData
+            );
+
+            recasts.addRecast(
+                    recastInstance,
+                    playerMagicData
+            );
         }
 
-        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
+        super.onCast(
+                world,
+                spellLevel,
+                entity,
+                castSource,
+                playerMagicData
+        );
     }
 
     private int getSummonCountForLevel(int spellLevel) {

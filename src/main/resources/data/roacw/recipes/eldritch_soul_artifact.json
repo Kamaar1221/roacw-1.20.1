@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:ascendant_spirit_essence"
+    },
+    "B": {
+      "item": "minecraft:wither_skull"
+    }
+  },
+
+  "result": {
+    "item": "roacw:eldritch_soul_artifact"
+  }
+}

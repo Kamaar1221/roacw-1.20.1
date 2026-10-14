@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " AD",
+    "ABA",
+    "CA "
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:infected_plating"
+    },
+    "B": {
+      "item": "cataclysm:wither_assault_shoulder_weapon"
+    },
+    "C": {
+      "item": "roacw:plague_core"
+    },
+    "D": {
+      "item": "roacw:mysterious_circuitry"
+    }
+  },
+
+  "result": {
+    "item": "roacw:the_hive"
+  }
+}

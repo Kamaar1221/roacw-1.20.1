@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.kamaarion.roacw.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ScrollModelMixin",
+    "AffinityRingMixin",
+    "ScreenEffectRendererMixin",
+    "ServerGamePacketListenerImplAccessor",
+    "BurningArenaLootMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

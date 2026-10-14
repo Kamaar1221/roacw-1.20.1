@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ACA",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:mithril_ingot"
+    },
+    "B": {
+      "item": "minecraft:shield"
+    },
+    "C": {
+      "item": "minecraft:nether_star"
+    }
+  },
+
+  "result": {
+    "item": "roacw:high_ruler_shield"
+  }
+}

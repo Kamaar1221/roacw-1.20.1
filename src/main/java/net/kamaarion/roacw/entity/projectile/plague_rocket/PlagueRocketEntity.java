@@ -6,6 +6,7 @@ import net.kamaarion.roacw.particle.PlagueParticleHelper;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -30,12 +31,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PlagueRocketEntity extends AbstractHurtingProjectile implements GeoEntity {
-
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private static final float EXPLOSION_POWER = 3.0F;
     private static final float DIRECT_HIT_DAMAGE = 8.0F;
     private static final float SPLASH_DAMAGE = 4.0F;
+    private static final int MAX_LIFETIME_TICKS = 200;
 
     private static final double SEARCH_RADIUS = 24.0D;
     private static final double TURN_RATE = 0.50D;
@@ -45,19 +46,6 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     private static final float BANK_SCALE = 4.0F;
     private static final float MAX_BANK_DEGREES = 40.0F;
     private static final float BANK_DECAY = 0.85F;
-
-    private float bankAngle;
-    private float previousBankAngle;
-
-    public float getBankAngle() {
-        return this.bankAngle;
-    }
-
-    public float getPreviousBankAngle() {
-        return this.previousBankAngle;
-    }
-
-    private boolean detonated = false;
 
     private static final int PLAGUE_DURATION_TICKS = 200;
     private static final int PLAGUE_AMPLIFIER = 0;
@@ -74,8 +62,15 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     private static final int MINI_CLOUD_GREEN_PARTICLES = 6;
     private static final int MINI_CLOUD_RED_PARTICLES = 2;
 
+    private static final String DUMMY_MOD_NAMESPACE = "dummmmmmy";
+
+    private float bankAngle;
+    private float previousBankAngle;
+    private boolean detonated;
+
     @Nullable
     private LivingEntity target;
+
     private int retargetCooldown;
 
     public PlagueRocketEntity(EntityType<? extends AbstractHurtingProjectile> type, Level level) {
@@ -87,16 +82,28 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
         this.setOwner(shooter);
     }
 
+    public float getBankAngle() {
+        return this.bankAngle;
+    }
+
+    public float getPreviousBankAngle() {
+        return this.previousBankAngle;
+    }
+
     @Override
     public void tick() {
         this.yRotO = this.getYRot();
         this.xRotO = this.getXRot();
 
         if (!this.level().isClientSide) {
+            if (this.tickCount >= MAX_LIFETIME_TICKS) {
+                this.detonate(null);
+                return;
+            }
+
             this.updateHoming();
 
             if (this.level() instanceof ServerLevel serverLevel) {
-
                 serverLevel.sendParticles(
                         ParticleRegistry.ACID_PARTICLE.get(),
                         this.getX(), this.getY(), this.getZ(),
@@ -127,71 +134,72 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
             this.target = this.findTarget();
             this.retargetCooldown = RETARGET_INTERVAL;
         } else if (--this.retargetCooldown <= 0) {
-
             LivingEntity newTarget = this.findTarget();
 
-            if (newTarget != null &&
-                    newTarget.distanceToSqr(this) < this.target.distanceToSqr(this)) {
+            if (newTarget != null && newTarget.distanceToSqr(this) < this.target.distanceToSqr(this)) {
                 this.target = newTarget;
             }
 
             this.retargetCooldown = RETARGET_INTERVAL;
         }
 
-        if (this.target != null) {
-            if (this.target.distanceToSqr(this) <= PROXIMITY_DETONATE_RADIUS * PROXIMITY_DETONATE_RADIUS) {
-                this.detonate(this.target);
-                return;
-            }
+        if (this.target == null) {
+            return;
+        }
 
-            Vec3 toTarget = this.target.getEyePosition().subtract(this.position()).normalize();
-            Vec3 current = this.getDeltaMovement();
-            double speed = current.length();
+        if (this.target.distanceToSqr(this) <= PROXIMITY_DETONATE_RADIUS * PROXIMITY_DETONATE_RADIUS) {
+            this.detonate(this.target);
+            return;
+        }
 
-            if (speed > 1.0E-4D) {
+        Vec3 toTarget = this.target.getEyePosition().subtract(this.position()).normalize();
+        Vec3 current = this.getDeltaMovement();
+        double speed = current.length();
 
-                Vec3 currentDir = current.normalize();
+        if (speed <= 1.0E-4D) {
+            return;
+        }
 
-                Vec3 blendedDir = currentDir
-                        .scale(1.0D - TURN_RATE)
-                        .add(toTarget.scale(TURN_RATE))
-                        .normalize();
+        Vec3 currentDir = current.normalize();
 
-                this.setDeltaMovement(blendedDir.scale(speed));
+        Vec3 blendedDir = currentDir
+                .scale(1.0D - TURN_RATE)
+                .add(toTarget.scale(TURN_RATE))
+                .normalize();
 
-                float oldYaw = this.getYRot();
+        this.setDeltaMovement(blendedDir.scale(speed));
 
-                float newYaw = (float)(Mth.atan2(blendedDir.x, blendedDir.z) * Mth.RAD_TO_DEG);
+        float oldYaw = this.getYRot();
+        float newYaw = (float) (Mth.atan2(blendedDir.x, blendedDir.z) * Mth.RAD_TO_DEG);
 
-                float newPitch = (float)(Mth.atan2(
+        float newPitch = (float) (
+                Mth.atan2(
                         blendedDir.y,
                         Math.sqrt(blendedDir.x * blendedDir.x + blendedDir.z * blendedDir.z)
-                ) * Mth.RAD_TO_DEG);
+                ) * Mth.RAD_TO_DEG
+        );
 
-                float yawDelta = Mth.wrapDegrees(newYaw - oldYaw);
+        float yawDelta = Mth.wrapDegrees(newYaw - oldYaw);
 
-                this.bankAngle = Mth.clamp(
-                        -yawDelta * BANK_SCALE,
-                        -MAX_BANK_DEGREES,
-                        MAX_BANK_DEGREES
-                );
+        this.bankAngle = Mth.clamp(
+                -yawDelta * BANK_SCALE,
+                -MAX_BANK_DEGREES,
+                MAX_BANK_DEGREES
+        );
 
-                this.setYRot(newYaw);
-                this.setXRot(newPitch);
-            }
-        }
+        this.setYRot(newYaw);
+        this.setXRot(newPitch);
     }
 
     @Nullable
     private LivingEntity findTarget() {
         AABB searchBox = this.getBoundingBox().inflate(SEARCH_RADIUS);
 
-        List<LivingEntity> candidates =
-                this.level().getEntitiesOfClass(
-                        LivingEntity.class,
-                        searchBox,
-                        this::isValidTarget
-                );
+        List<LivingEntity> candidates = this.level().getEntitiesOfClass(
+                LivingEntity.class,
+                searchBox,
+                this::isValidTarget
+        );
 
         LivingEntity closest = null;
         double closestDistSq = Double.MAX_VALUE;
@@ -209,15 +217,18 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     private boolean isValidTarget(LivingEntity candidate) {
-        if (candidate == this.getOwner()
-                || !candidate.isAlive()
-                || candidate.isSpectator()) {
+        if (candidate == this.getOwner() || !candidate.isAlive() || candidate.isSpectator()) {
             return false;
         }
 
-        if (this.getOwner() != null
-                && this.getOwner().isAlliedTo(candidate)) {
+        if (this.getOwner() != null && this.getOwner().isAlliedTo(candidate)) {
             return false;
+        }
+
+        if (DUMMY_MOD_NAMESPACE.equals(
+                BuiltInRegistries.ENTITY_TYPE.getKey(candidate.getType()).getNamespace()
+        )) {
+            return true;
         }
 
         return candidate instanceof Enemy || candidate instanceof Player;
@@ -228,71 +239,59 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
         super.onHit(result);
 
         if (!this.level().isClientSide) {
-            Entity directHit = null;
-
-            if (result instanceof EntityHitResult entityHit) {
-                directHit = entityHit.getEntity();
-            }
+            Entity directHit = result instanceof EntityHitResult entityHit
+                    ? entityHit.getEntity()
+                    : null;
 
             this.detonate(directHit);
         }
     }
 
     private void detonate(@Nullable Entity directHitEntity) {
-
         if (this.detonated) {
             return;
         }
 
         this.detonated = true;
+        this.playExplosionEffects();
 
-        playExplosionEffects();
-
-        float damageMultiplier = (this.getOwner() instanceof LivingEntity owner)
+        float damageMultiplier = this.getOwner() instanceof LivingEntity owner
                 ? Utils.getMagicProjectileDamageMultiplier(owner)
                 : 1.0F;
 
-        if (directHitEntity instanceof LivingEntity living && shouldAffect(living)) {
-
+        if (directHitEntity instanceof LivingEntity living && this.shouldAffect(living)) {
             living.invulnerableTime = 0;
-
             living.hurt(
                     this.damageSources().thrown(this, this.getOwner()),
                     DIRECT_HIT_DAMAGE * damageMultiplier
             );
         }
 
-        spawnExplosionBurst();
-
-        applySplashDamage(directHitEntity, damageMultiplier);
-
-        applyPlagueEffect();
-
-        applyExplosionKnockback();
-
+        this.spawnExplosionBurst();
+        this.applySplashDamage(directHitEntity, damageMultiplier);
+        this.applyPlagueEffect();
+        this.applyExplosionKnockback();
         this.discard();
     }
 
     private void playExplosionEffects() {
-
-        if (level() instanceof ServerLevel serverLevel) {
-
+        if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(
                     ParticleTypes.EXPLOSION,
-                    getX(), getY(), getZ(),
+                    this.getX(), this.getY(), this.getZ(),
                     1, 0, 0, 0, 0
             );
 
             serverLevel.sendParticles(
                     ParticleTypes.SMOKE,
-                    getX(), getY(), getZ(),
-                    8, 0.15, 0.15, 0.15, 0.01
+                    this.getX(), this.getY(), this.getZ(),
+                    8, 0.15D, 0.15D, 0.15D, 0.01D
             );
         }
 
-        level().playSound(
+        this.level().playSound(
                 null,
-                getX(), getY(), getZ(),
+                this.getX(), this.getY(), this.getZ(),
                 ROACWSoundRegistry.PLAGUE_ROCKET_EXPLOSION.get(),
                 SoundSource.HOSTILE,
                 4.0F,
@@ -301,21 +300,20 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     private void spawnExplosionBurst() {
-
-        if (!(level() instanceof ServerLevel serverLevel)) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
             return;
         }
 
         for (int i = 0; i < CLOUD_CLUSTER_COUNT; i++) {
-            double angle = this.random.nextDouble() * Math.PI * 2D;
+            double angle = this.random.nextDouble() * Math.PI * 2.0D;
             double r = this.random.nextDouble() * CLOUD_SCATTER_RADIUS;
 
-            double x = getX() + Math.cos(angle) * r;
-            double z = getZ() + Math.sin(angle) * r;
+            double x = this.getX() + Math.cos(angle) * r;
+            double z = this.getZ() + Math.sin(angle) * r;
 
             PlagueParticleHelper.spawnCloudBurstServer(
                     serverLevel,
-                    x, getY(), z,
+                    x, this.getY(), z,
                     MINI_CLOUD_RADIUS,
                     MINI_CLOUD_HEIGHT,
                     MINI_CLOUD_PARTICLES,
@@ -326,23 +324,23 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     private void applyExplosionKnockback() {
-
-        for (LivingEntity entity : getAffectedEntities()) {
-
-            if (!shouldAffect(entity))
+        for (LivingEntity entity : this.getAffectedEntities()) {
+            if (!this.shouldAffect(entity)) {
                 continue;
+            }
 
             Vec3 offset = entity.position().subtract(this.position());
-
             double distance = offset.length();
 
-            if (distance <= 0.001D)
+            if (distance <= 0.001D) {
                 continue;
+            }
 
-            double strength = 1.0D - (distance / EXPLOSION_POWER);
+            double strength = 1.0D - distance / EXPLOSION_POWER;
 
-            if (strength <= 0)
+            if (strength <= 0.0D) {
                 continue;
+            }
 
             Vec3 motion = offset.normalize().scale(strength * KNOCKBACK_STRENGTH);
 
@@ -364,23 +362,18 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     private boolean shouldAffect(LivingEntity entity) {
-
-        if (entity == this.getOwner())
+        if (entity == this.getOwner()) {
             return false;
+        }
 
-        return this.getOwner() == null
-                || !this.getOwner().isAlliedTo(entity);
+        return this.getOwner() == null || !this.getOwner().isAlliedTo(entity);
     }
 
     private void applySplashDamage(@Nullable Entity excluded, float damageMultiplier) {
-
-        for (LivingEntity entity : getAffectedEntities()) {
-
-            if (entity == excluded)
+        for (LivingEntity entity : this.getAffectedEntities()) {
+            if (entity == excluded || !this.shouldAffect(entity)) {
                 continue;
-
-            if (!shouldAffect(entity))
-                continue;
+            }
 
             entity.invulnerableTime = 0;
 
@@ -392,15 +385,14 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     private void applyPlagueEffect() {
-
-        int amplifier = (this.getOwner() instanceof LivingEntity owner)
+        int amplifier = this.getOwner() instanceof LivingEntity owner
                 ? Utils.getNatureScaledPlagueAmplifier(owner)
                 : PLAGUE_AMPLIFIER;
 
-        for (LivingEntity entity : getAffectedEntities()) {
-
-            if (!shouldAffect(entity))
+        for (LivingEntity entity : this.getAffectedEntities()) {
+            if (!this.shouldAffect(entity)) {
                 continue;
+            }
 
             entity.addEffect(new MobEffectInstance(
                     ROACWEffectRegistry.PLAGUE.get(),
@@ -434,6 +426,6 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
+        return this.cache;
     }
 }

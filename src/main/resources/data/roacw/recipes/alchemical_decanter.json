@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "cataclysm:witherite_ingot"
+    },
+    "B": {
+      "item": "roacw:plague_core"
+    }
+  },
+
+  "result": {
+    "item": "roacw:alchemical_decanter"
+  }
+}

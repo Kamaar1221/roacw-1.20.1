@@ -26,12 +26,10 @@ public class EarthenPaladinHurtByTargetGoal extends HurtByTargetGoal {
             return false;
         }
 
-        // Never retaliate against another Earthen Paladin.
         if (attacker instanceof EarthenPaladinEntity) {
             return false;
         }
 
-        // Only retaliate against players or hostile mobs.
         return attacker instanceof Enemy || attacker instanceof Player;
     }
 }

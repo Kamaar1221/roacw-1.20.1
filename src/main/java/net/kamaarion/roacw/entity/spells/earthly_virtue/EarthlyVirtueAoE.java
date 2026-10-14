@@ -27,16 +27,17 @@ public class EarthlyVirtueAoE extends Entity {
     private UUID ownerUUID;
     private float damage;
     private float healing;
-    private int duration = 400; // 20 seconds
-    private int pulseInterval = 40; // every second
+    private int duration = 400;
+    private int pulseInterval = 40;
     private int ticks;
 
-    // Tracks entities who have already received the 20-second buff from this specific zone
     private final Set<UUID> buffedTargets = new HashSet<>();
 
-    // Locked ground position set on spawn — entity stays here regardless of owner movement
-    private double groundX, groundY, groundZ;
-    private boolean groundPosSet = false;
+    private double groundX;
+    private double groundY;
+    private double groundZ;
+    private boolean groundPosSet;
+
     private static final float RADIUS = 5.0F;
 
     public EarthlyVirtueAoE(EntityType<?> type, Level level) {
@@ -46,13 +47,17 @@ public class EarthlyVirtueAoE extends Entity {
 
     public void setOwner(LivingEntity owner) {
         this.owner = owner;
-        if (owner != null) this.ownerUUID = owner.getUUID();
+        if (owner != null) {
+            this.ownerUUID = owner.getUUID();
+        }
     }
 
     public LivingEntity getOwner() {
         if (this.owner == null && this.ownerUUID != null && this.level() instanceof ServerLevel serverLevel) {
             Entity entity = serverLevel.getEntity(this.ownerUUID);
-            if (entity instanceof LivingEntity living) this.owner = living;
+            if (entity instanceof LivingEntity living) {
+                this.owner = living;
+            }
         }
         return this.owner;
     }
@@ -69,21 +74,21 @@ public class EarthlyVirtueAoE extends Entity {
     public void tick() {
         super.tick();
 
-        // Lock position to spawn point — prevents entity from following player when airborne
         if (!groundPosSet) {
             groundX = this.getX();
             groundY = this.getY();
             groundZ = this.getZ();
             groundPosSet = true;
         }
-        this.setPos(groundX, groundY, groundZ);
 
-        ticks++; // Increments on both client and server to keep ticks in sync
+        this.setPos(groundX, groundY, groundZ);
+        ticks++;
 
         if (!level().isClientSide) {
             if (ticks > 0 && ticks % pulseInterval == 0) {
                 pulse();
             }
+
             if (ticks >= duration) {
                 discard();
             }
@@ -93,47 +98,49 @@ public class EarthlyVirtueAoE extends Entity {
     private void pulse() {
         LivingEntity caster = getOwner();
         if (caster == null) {
-            System.out.println("[EarthlyVirtue] Pulse skipped — caster is null!");
             return;
         }
 
-        System.out.println("[EarthlyVirtue] Pulse fired at tick=" + ticks + " pos=(" + groundX + ", " + groundY + ", " + groundZ + ")" + " healing=" + healing + " damage=" + damage);
         ServerLevel server = (ServerLevel) level();
 
-        // Holy blastwave ring — size matches RADIUS
         server.sendParticles(
                 new BlastwaveParticleOptions(
                         new Vector3f(1.0F, 1.0F, 0.9F),
                         RADIUS
                 ),
-                groundX, groundY + 0.1D, groundZ,
-                1, 0, 0, 0, 0
+                groundX,
+                groundY + 0.1D,
+                groundZ,
+                1,
+                0,
+                0,
+                0,
+                0
         );
 
         AABB aoe = new AABB(
                 new Vec3(groundX, groundY, groundZ),
                 new Vec3(groundX, groundY, groundZ)
-        ).inflate(RADIUS, RADIUS * 2, RADIUS); // double Y to catch targets above/below ground level
+        ).inflate(RADIUS, RADIUS * 2, RADIUS);
 
         for (LivingEntity target : level().getEntitiesOfClass(LivingEntity.class, aoe)) {
             double distSqr = target.distanceToSqr(groundX, groundY, groundZ);
-            if (distSqr > (RADIUS * RADIUS)) continue;
+            if (distSqr > RADIUS * RADIUS) {
+                continue;
+            }
 
-            // Determine if target should be treated as an ally.
-            // Caster is explicitly forced true here so they receive heals/buffs alongside allies inside the radius.
-            boolean shouldHeal = (target == caster) ||
-                    Utils.shouldHealEntity(caster, target) ||
-                    (target instanceof net.minecraft.world.entity.player.Player && caster instanceof net.minecraft.world.entity.player.Player);
-
-            System.out.println("[EarthlyVirtue] Target: " + target.getName().getString() + " | shouldHeal=" + shouldHeal + " | healing=" + healing + " | distSqr=" + distSqr);
+            boolean shouldHeal = target == caster
+                    || Utils.shouldHealEntity(caster, target)
+                    || (target instanceof net.minecraft.world.entity.player.Player
+                    && caster instanceof net.minecraft.world.entity.player.Player);
 
             if (shouldHeal) {
-                // Apply healing strictly inside the boundary loop
                 target.heal(healing);
 
-                MobEffectInstance targetEffect = target.getEffect(ROACWEffectRegistry.SANCTIFIED_BEDROCK.get());
+                MobEffectInstance targetEffect = target.getEffect(
+                        ROACWEffectRegistry.SANCTIFIED_BEDROCK.get()
+                );
 
-                // Refresh armor shield only when missing, whether it's an ally or the caster itself
                 if (targetEffect == null) {
                     target.addEffect(new MobEffectInstance(
                             ROACWEffectRegistry.SANCTIFIED_BEDROCK.get(),
@@ -143,12 +150,9 @@ public class EarthlyVirtueAoE extends Entity {
                             false,
                             true
                     ));
-                    System.out.println("[EarthlyVirtue] Granted fresh shield to: " + target.getName().getString());
                 }
             } else {
-                // Damage enemy targets inside the boundary loop
-                var source = ROACWSpellRegistry.EARTHLY_VIRTUE
-                        .get()
+                var source = ROACWSpellRegistry.EARTHLY_VIRTUE.get()
                         .getDamageSource(this, caster);
                 DamageSources.applyDamage(target, damage, source);
             }
@@ -156,14 +160,27 @@ public class EarthlyVirtueAoE extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {}
+    protected void defineSynchedData() {
+    }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.hasUUID("Owner")) this.ownerUUID = tag.getUUID("Owner");
-        if (tag.contains("Damage")) this.damage = tag.getFloat("Damage");
-        if (tag.contains("Healing")) this.healing = tag.getFloat("Healing");
-        if (tag.contains("Ticks")) this.ticks = tag.getInt("Ticks");
+        if (tag.hasUUID("Owner")) {
+            this.ownerUUID = tag.getUUID("Owner");
+        }
+
+        if (tag.contains("Damage")) {
+            this.damage = tag.getFloat("Damage");
+        }
+
+        if (tag.contains("Healing")) {
+            this.healing = tag.getFloat("Healing");
+        }
+
+        if (tag.contains("Ticks")) {
+            this.ticks = tag.getInt("Ticks");
+        }
+
         if (tag.contains("GroundX")) {
             this.groundX = tag.getDouble("GroundX");
             this.groundY = tag.getDouble("GroundY");
@@ -171,10 +188,10 @@ public class EarthlyVirtueAoE extends Entity {
             this.groundPosSet = true;
         }
 
-        // Load tracking list from NBT data
         if (tag.contains("BuffedTargets", Tag.TAG_LIST)) {
             this.buffedTargets.clear();
             ListTag list = tag.getList("BuffedTargets", Tag.TAG_COMPOUND);
+
             for (int i = 0; i < list.size(); i++) {
                 CompoundTag targetTag = list.getCompound(i);
                 if (targetTag.hasUUID("UUID")) {
@@ -186,7 +203,10 @@ public class EarthlyVirtueAoE extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
-        if (this.ownerUUID != null) tag.putUUID("Owner", this.ownerUUID);
+        if (this.ownerUUID != null) {
+            tag.putUUID("Owner", this.ownerUUID);
+        }
+
         tag.putFloat("Damage", this.damage);
         tag.putFloat("Healing", this.healing);
         tag.putInt("Ticks", this.ticks);
@@ -194,13 +214,14 @@ public class EarthlyVirtueAoE extends Entity {
         tag.putDouble("GroundY", this.groundY);
         tag.putDouble("GroundZ", this.groundZ);
 
-        // Save tracking list to NBT data
         ListTag list = new ListTag();
+
         for (UUID uuid : this.buffedTargets) {
             CompoundTag targetTag = new CompoundTag();
             targetTag.putUUID("UUID", uuid);
             list.add(targetTag);
         }
+
         tag.put("BuffedTargets", list);
     }
 }

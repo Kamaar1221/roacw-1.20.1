@@ -1,0 +1,18 @@
+{
+  "type": "roacw:roacw_boss_loot",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "cataclysm:entities/the_leviathan"
+    }
+  ],
+  "loot_table": "cataclysm:entities/the_leviathan",
+  "entries": [
+    {
+      "item": "roacw:ascendant_spirit_essence",
+      "chance": 0.95,
+      "min_count": 1,
+      "max_count": 2
+    }
+  ]
+}

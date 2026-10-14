@@ -32,7 +32,6 @@ public class BurstSheathCurioRenderer implements ICurioRenderer {
             poseStack.pushPose();
             humanoidModel.body.translateAndRotate(poseStack);
 
-            // Looking at how spellbooks are done, but we're going to the left side instead of the right
             poseStack.translate((slotContext.entity() != null && !slotContext.entity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? 5.5 : 4.5) * .0625f, 16 * .0625f, 0);
             poseStack.mulPose(Axis.YP.rotation(Mth.PI));
             poseStack.mulPose(Axis.ZP.rotation(Mth.PI - 5 * Mth.DEG_TO_RAD));

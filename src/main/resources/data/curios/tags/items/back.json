@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "roacw:high_ruler_shield"
+    "roacw:high_ruler_shield",
+    "roacw:elemental_quiver",
+    "roacw:wings_of_rebirth"
   ]
 }

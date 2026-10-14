@@ -21,13 +21,10 @@ public class ROACWParticleRegistry {
             PARTICLE_TYPES.register("auric_charge_lightning",
                     () -> new SimpleParticleType(false));
 
-
-    // NEW
     public static final RegistryObject<SimpleParticleType> PLAGUE_NANO_GREEN =
             PARTICLE_TYPES.register("plague_nano_green",
                     () -> new SimpleParticleType(true));
 
-    // NEW
     public static final RegistryObject<SimpleParticleType> PLAGUE_NANO_RED =
             PARTICLE_TYPES.register("plague_nano_red",
                     () -> new SimpleParticleType(true));
@@ -36,7 +33,6 @@ public class ROACWParticleRegistry {
             PARTICLE_TYPES.register("plague_cloud",
                     () -> new SimpleParticleType(true));
 
-    // NEW - Plaguebringer jet boost booster exhaust
     public static final RegistryObject<SimpleParticleType> BOOSTER_EXHAUST =
             PARTICLE_TYPES.register("booster_exhaust",
                     () -> new SimpleParticleType(true));

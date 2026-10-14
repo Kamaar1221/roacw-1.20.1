@@ -1,0 +1,24 @@
+{
+  "type": "roacw:roacw_boss_loot",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "cataclysm:entities/ignis"
+    }
+  ],
+  "loot_table": "cataclysm:entities/ignis",
+  "entries": [
+    {
+      "item": "roacw:yharon_soul_fragment",
+      "chance": 1.0,
+      "min_count": 2,
+      "max_count": 5
+    },
+    {
+      "item": "roacw:ascendant_spirit_essence",
+      "chance": 0.05,
+      "min_count": 1,
+      "max_count": 2
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ACA",
+    "ABA",
+    "A A"
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:yharon_feather"
+    },
+    "B": {
+      "item": "minecraft:elytra"
+    },
+    "C": {
+      "item": "roacw:yharon_soul_fragment"
+    }
+  },
+
+  "result": {
+    "item": "roacw:wings_of_rebirth"
+  }
+}

@@ -20,33 +20,33 @@ import java.util.List;
 
 public class PestilenceCloakSpell extends AbstractSpell {
 
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath("roacw", "pestilence_cloak");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(
+            "roacw",
+            "pestilence_cloak"
+    );
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)               // TODO: confirm against your other area/geo spells
+            .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
             .setMaxLevel(3)
             .setCooldownSeconds(45.0)
             .build();
 
-    // Cloud size/duration/damage scaling - used by both onCast (to spawn
-    // the actual cloud) and getUniqueInfo (to display on the scroll), so
-    // they can never drift apart.
     private static final float BASE_RADIUS = 5.0F;
     private static final float RADIUS_PER_LEVEL = 2.5F;
 
     private static final int BASE_LIFETIME_TICKS = 200;
     private static final int LIFETIME_PER_LEVEL = 100;
 
-    private static final float BASE_DAMAGE = 1.0F; // TODO: tune - half the rocket/nuke default (6.0F)
-    private static final float DAMAGE_PER_LEVEL = 1.0F; // flat for now, bump if you want it to scale with level
+    private static final float BASE_DAMAGE = 1.0F;
+    private static final float DAMAGE_PER_LEVEL = 1.0F;
 
     public PestilenceCloakSpell() {
-        this.baseManaCost = 30;        // TODO: tune against your other area spells
-        this.manaCostPerLevel = 10;
+        this.baseManaCost = 100;
+        this.manaCostPerLevel = 25;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
-        this.castTime = 0;             // irrelevant for INSTANT per getCastTime()
+        this.castTime = 0;
     }
 
     @Override
@@ -56,10 +56,18 @@ public class PestilenceCloakSpell extends AbstractSpell {
         float damage = getDamageForLevel(spellLevel);
 
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(damage, 1)),
-                Component.translatable("ui.roacw.plague_cloud_radius", Utils.stringTruncation(radius, 1)),
-                Component.translatable("ui.roacw.plague_cloud_duration", Utils.stringTruncation(durationSeconds, 1))
-
+                Component.translatable(
+                        "ui.irons_spellbooks.damage",
+                        Utils.stringTruncation(damage, 1)
+                ),
+                Component.translatable(
+                        "ui.roacw.plague_cloud_radius",
+                        Utils.stringTruncation(radius, 1)
+                ),
+                Component.translatable(
+                        "ui.roacw.plague_cloud_duration",
+                        Utils.stringTruncation(durationSeconds, 1)
+                )
         );
     }
 
@@ -79,25 +87,42 @@ public class PestilenceCloakSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (level.isClientSide) return;
-        if (entity == null) return;
+    public void onCast(
+            Level level,
+            int spellLevel,
+            LivingEntity entity,
+            CastSource castSource,
+            MagicData playerMagicData
+    ) {
+        if (level.isClientSide || entity == null) {
+            return;
+        }
 
         PestilenceCloakCloudEntity cloud = new PestilenceCloakCloudEntity(
                 ROACWEntityRegistry.PESTILENCE_CLOAK_CLOUD.get(),
                 level
         );
 
-        cloud.setPos(entity.getX(), entity.getY(), entity.getZ());
-        cloud.setOwner(entity);
+        cloud.setPos(
+                entity.getX(),
+                entity.getY(),
+                entity.getZ()
+        );
 
+        cloud.setOwner(entity);
         cloud.setRadius(getRadiusForLevel(spellLevel));
         cloud.setLifetime(getLifetimeTicksForLevel(spellLevel));
         cloud.setDamage(getDamageForLevel(spellLevel));
 
         level.addFreshEntity(cloud);
 
-        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
+        super.onCast(
+                level,
+                spellLevel,
+                entity,
+                castSource,
+                playerMagicData
+        );
     }
 
     private float getRadiusForLevel(int spellLevel) {

@@ -1,0 +1,23 @@
+{
+  "type": "roacw:roacw_structure_loot",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "gtbcs_geomancy_plus:chests/geomancer_tower/geomancer_basic_storage"
+    }
+  ],
+  "entries": [
+    {
+      "item": "roacw:divine_pebble",
+      "chance": 0.1,
+      "min_count": 1,
+      "max_count": 2
+    },
+    {
+      "item": "roacw:divine_chunk",
+      "chance": 0.02,
+      "min_count": 1,
+      "max_count": 1
+    }
+  ]
+}

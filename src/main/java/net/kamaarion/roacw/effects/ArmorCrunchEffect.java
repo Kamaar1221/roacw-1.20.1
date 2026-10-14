@@ -13,7 +13,6 @@ public class ArmorCrunchEffect extends MagicMobEffect {
     public ArmorCrunchEffect() {
         super(MobEffectCategory.HARMFUL, 0x8B4513);
 
-        // Remove 10 armor points
         this.addAttributeModifier(
                 Attributes.ARMOR,
                 "6c77a0d0-1d8b-4f5e-9e0d-8c5e7f4f3b21",
@@ -21,7 +20,6 @@ public class ArmorCrunchEffect extends MagicMobEffect {
                 AttributeModifier.Operation.ADDITION
         );
 
-        // Reduce armor toughness by 20%
         this.addAttributeModifier(
                 Attributes.ARMOR_TOUGHNESS,
                 "c4e3d8a9-72a1-45e5-95f8-b6a6e0d1f332",

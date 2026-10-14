@@ -1,0 +1,24 @@
+{
+  "type": "roacw:roacw_miniboss_loot",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "cataclysm:entities/the_prowler"
+    }
+  ],
+  "loot_table": "cataclysm:entities/the_prowler",
+  "entries": [
+    {
+      "item": "roacw:mysterious_circuitry",
+      "chance": 1.0,
+      "min_count": 3,
+      "max_count": 4
+    },
+    {
+      "item": "roacw:dubious_plating",
+      "chance": 1.0,
+      "min_count": 3,
+      "max_count": 4
+    }
+  ]
+}

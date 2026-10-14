@@ -4,7 +4,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -35,32 +34,32 @@ import java.util.function.Consumer;
 public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public StatisCurse(Properties rarity) {
-        super(ItemPropertiesHelper
-                .equipment()
+    public StatisCurse(Properties properties) {
+        super(properties
                 .stacksTo(1)
                 .fireResistant()
                 .rarity(Rarity.EPIC)
         );
     }
 
+    @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private StatisCurseRenderer renderer;
 
+            @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (this.renderer == null) {
-                    this.renderer = new StatisCurseRenderer();
+                if (renderer == null) {
+                    renderer = new StatisCurseRenderer();
                 }
 
-                return this.renderer;
+                return renderer;
             }
         });
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-
     }
 
     @Override
@@ -78,12 +77,14 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
         return PlayState.CONTINUE;
     }
 
-    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController[]{new AnimationController(this, "controller", 20, this::idlePredicate)});
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 20, this::idlePredicate));
     }
 
+    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+        return cache;
     }
 
     @Override
@@ -92,16 +93,44 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
-        attr.put(AttributeRegistry.SPELL_POWER.get(),
-                new AttributeModifier(uuid, "Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(AttributeRegistry.SUMMON_DAMAGE.get(),
-                new AttributeModifier(uuid, "Summon Damage", 0.30, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(AttributeRegistry.MAX_MANA.get(),
-                new AttributeModifier(uuid, "Max Mana", 200, AttributeModifier.Operation.ADDITION));
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(
+            SlotContext slotContext,
+            UUID uuid,
+            ItemStack stack
+    ) {
+        Multimap<Attribute, AttributeModifier> attributes = LinkedHashMultimap.create();
 
-        return attr;
+        attributes.put(
+                AttributeRegistry.SPELL_POWER.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Spell Power",
+                        0.15,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
+
+        attributes.put(
+                AttributeRegistry.SUMMON_DAMAGE.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Summon Damage",
+                        0.30,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
+
+        attributes.put(
+                AttributeRegistry.MAX_MANA.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Max Mana",
+                        200,
+                        AttributeModifier.Operation.ADDITION
+                )
+        );
+
+        return attributes;
     }
 
     @Override
@@ -110,7 +139,15 @@ public class StatisCurse extends CurioBaseItem implements ICurioItem, GeoItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.statis_curse.desc").withStyle(ChatFormatting.DARK_PURPLE));
+    public void appendHoverText(
+            ItemStack stack,
+            @Nullable Level level,
+            List<Component> tooltipComponents,
+            TooltipFlag tooltipFlag
+    ) {
+        tooltipComponents.add(
+                Component.translatable("item.roacw.statis_curse.desc")
+                        .withStyle(ChatFormatting.DARK_PURPLE)
+        );
     }
 }

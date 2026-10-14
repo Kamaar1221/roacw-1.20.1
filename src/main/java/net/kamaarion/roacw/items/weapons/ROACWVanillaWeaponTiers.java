@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public enum ROACWVanillaWeaponTiers implements Tier {
-    // Add () -> right before Attributes.MOVEMENT_SPEED
     HIGH_RULER_SWORD(3000, 15F, 8.5F, 4, 25, () -> Ingredient.of(Items.NETHERITE_INGOT),
             () -> net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, .15, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
@@ -24,7 +23,6 @@ public enum ROACWVanillaWeaponTiers implements Tier {
     private final int enchantmentValue;
     private final Supplier<Ingredient> repairIngredient;
 
-    // Properties to store our non-Iron's Spells custom attributes
     private final Supplier<? extends Attribute> extraAttribute;
     private final double attributeAmount;
     private final AttributeModifier.Operation attributeOperation;
@@ -50,7 +48,6 @@ public enum ROACWVanillaWeaponTiers implements Tier {
     @Override public int getEnchantmentValue() { return this.enchantmentValue; }
     @Override public Ingredient getRepairIngredient() { return this.repairIngredient.get(); }
 
-    // Custom helper getters for the item class
     public Supplier<? extends Attribute> getExtraAttribute() { return this.extraAttribute; }
     public double getAttributeAmount() { return this.attributeAmount; }
     public AttributeModifier.Operation getAttributeOperation() { return this.attributeOperation; }

@@ -31,6 +31,16 @@ public class EarthenPaladinArmorItem extends ImbuableChestplateArmorItem {
     }
 
     @Override
+    public int getEnchantmentValue() {
+        return 15;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
+    @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         if (pLevel != null && pLevel.isClientSide()) {
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
@@ -55,6 +65,9 @@ public class EarthenPaladinArmorItem extends ImbuableChestplateArmorItem {
             font.getSplitter().splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText.getStyle()));
             });
+
+            pTooltipComponents.add(Component.empty());
+
 
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);

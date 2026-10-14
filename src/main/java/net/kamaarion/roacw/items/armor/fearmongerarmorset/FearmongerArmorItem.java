@@ -32,6 +32,16 @@ public class FearmongerArmorItem extends ImbuableChestplateArmorItem {
     }
 
     @Override
+    public int getEnchantmentValue() {
+        return 15;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
+    @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         if (pLevel != null && pLevel.isClientSide()) {
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
@@ -41,6 +51,9 @@ public class FearmongerArmorItem extends ImbuableChestplateArmorItem {
             font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });
+
+            pTooltipComponents.add(Component.empty());
+
 
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);

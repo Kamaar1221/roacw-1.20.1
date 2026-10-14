@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " AA",
+    "CBA",
+    "B  "
+  ],
+  "key": {
+    "A": {
+      "item": "cataclysm:ignitium_ingot"
+    },
+    "B": {
+      "item": "roacw:yharon_bone"
+    },
+    "C": {
+      "item": "roacw:yharon_soul_fragment"
+    }
+  },
+
+  "result": {
+    "item": "roacw:the_burning_sky"
+  }
+}

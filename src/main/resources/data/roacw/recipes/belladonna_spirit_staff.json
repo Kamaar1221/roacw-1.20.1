@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " AA",
+    " BA",
+    "C  "
+  ],
+  "key": {
+    "A": {
+      "tag": "minecraft:flowers"
+    },
+    "B": {
+      "item": "irons_spellbooks:graybeard_staff"
+    },
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    }
+  },
+  "result": {
+    "item": "roacw:belladonna_spirit_staff"
+  }
+}

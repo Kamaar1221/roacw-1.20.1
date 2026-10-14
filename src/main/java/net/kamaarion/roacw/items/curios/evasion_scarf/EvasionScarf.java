@@ -4,9 +4,10 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.kamaarion.roacw.client.others.ModKeyMappings;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -36,32 +37,32 @@ import java.util.function.Consumer;
 public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public EvasionScarf(Properties rarity) {
-        super(ItemPropertiesHelper
-                .equipment()
+    public EvasionScarf(Properties properties) {
+        super(properties
                 .stacksTo(1)
                 .fireResistant()
                 .rarity(Rarity.EPIC)
         );
     }
 
+    @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private EvasionScarfRenderer renderer;
 
+            @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (this.renderer == null) {
-                    this.renderer = new EvasionScarfRenderer();
+                if (renderer == null) {
+                    renderer = new EvasionScarfRenderer();
                 }
 
-                return this.renderer;
+                return renderer;
             }
         });
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-
     }
 
     @Override
@@ -79,12 +80,14 @@ public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
         return PlayState.CONTINUE;
     }
 
-    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController[]{new AnimationController(this, "controller", 20, this::idlePredicate)});
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 20, this::idlePredicate));
     }
 
+    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+        return cache;
     }
 
     @Override
@@ -93,34 +96,67 @@ public class EvasionScarf extends CurioBaseItem implements ICurioItem, GeoItem {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
-        attr.put(Attributes.MOVEMENT_SPEED,
-                new AttributeModifier(uuid, "Movement Speed", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(ALObjects.Attributes.DODGE_CHANCE.get(),
-                new AttributeModifier(uuid, "Dodge Chance", 0.075, AttributeModifier.Operation.MULTIPLY_BASE));
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(
+            SlotContext slotContext,
+            UUID uuid,
+            ItemStack stack
+    ) {
+        Multimap<Attribute, AttributeModifier> attributes = LinkedHashMultimap.create();
 
-        return attr;
+        attributes.put(
+                Attributes.MOVEMENT_SPEED,
+                new AttributeModifier(
+                        uuid,
+                        "Movement Speed",
+                        0.15D,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
+
+        attributes.put(
+                ALObjects.Attributes.DODGE_CHANCE.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Dodge Chance",
+                        0.075D,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
+
+        return attributes;
     }
+
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        if (pLevel != null && pLevel.isClientSide()) {
-            net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+    public void appendHoverText(
+            ItemStack stack,
+            @Nullable Level level,
+            List<Component> tooltipComponents,
+            TooltipFlag tooltipFlag
+    ) {
+        if (level != null && level.isClientSide()) {
+            Font font = Minecraft.getInstance().font;
             int maxTooltipWidth = 240;
 
-            Component currentBoundKey = ModKeyMappings.DASH_KEY.getTranslatedKeyMessage()
-                    .copy().withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
+            Component currentBoundKey = ModKeyMappings.DASH_KEY
+                    .getTranslatedKeyMessage()
+                    .copy()
+                    .withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 
-            Component scarfTooltip = Component.translatable("item.roacw.evasion_scarf.desc", currentBoundKey).withStyle(ChatFormatting.GRAY);
+            Component scarfTooltip = Component.translatable(
+                    "item.roacw.evasion_scarf.desc",
+                    currentBoundKey
+            ).withStyle(ChatFormatting.GRAY);
 
-            font.getSplitter().splitLines(scarfTooltip, maxTooltipWidth, scarfTooltip.getStyle()).forEach(formattedText -> {
-                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(scarfTooltip.getStyle()));
-            });
-
+            font.getSplitter()
+                    .splitLines(scarfTooltip, maxTooltipWidth, scarfTooltip.getStyle())
+                    .forEach(formattedText ->
+                            tooltipComponents.add(
+                                    Component.literal(formattedText.getString())
+                                            .withStyle(scarfTooltip.getStyle())
+                            )
+                    );
         } else {
-            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+            super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         }
     }
-
-
 }

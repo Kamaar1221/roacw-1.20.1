@@ -27,7 +27,6 @@ public class EarthenPaladinOath extends SpellBook {
             new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             new AttributeContainer(GGAttributes.GEO_SPELL_POWER, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADDITION)
-            // add more AttributeContainer entries here as needed
     );
   }
 
@@ -45,7 +44,7 @@ public class EarthenPaladinOath extends SpellBook {
 
   @Override
   public Rarity getRarity(ItemStack stack) {
-    return Rarity.EPIC; // adjust to match its intended tier
+    return Rarity.EPIC;
   }
 
   @Override

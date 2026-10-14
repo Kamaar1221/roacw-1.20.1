@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TTT",
+    "TET",
+    "   "
+  ],
+  "key": {
+    "T": {
+      "item": "roacw:infected_plating"
+    },
+    "E": {
+      "tag": "roacw:craftable_with_tech_helm"
+    }
+  },
+
+  "result": {
+    "item": "roacw:plaguebringer_visor"
+  }
+}

@@ -20,21 +20,15 @@ import java.util.List;
 public class PlagueCloudEntity extends Entity {
 
     private static final EntityDataAccessor<Float> DATA_RADIUS =
-            SynchedEntityData.defineId(PlagueCloudEntity.class, EntityDataSerializers.FLOAT);
+            SynchedEntityData.defineId(
+                    PlagueCloudEntity.class,
+                    EntityDataSerializers.FLOAT
+            );
 
-    private static final int DAMAGE_INTERVAL = 20;    // Once per second
+    private static final int DAMAGE_INTERVAL = 20;
 
-    // Damage is now an instance field (default matches the old constant),
-    // so rocket/nuke bursts that never call setDamage(...) behave
-    // identically to before. PestilenceCloakSpell overrides this to a
-    // separate, lower value.
     private float damage = 6.0F;
-
-    // Lifetime stays a plain field - only read server-side (see tick()),
-    // so it never needs to be networked to clients. Radius drives
-    // client-side particle spawning, so it's synched via DATA_RADIUS above.
-    private int lifetime = 100; // 5 seconds
-
+    private int lifetime = 100;
     private int age;
 
     private LivingEntity owner;
@@ -48,7 +42,10 @@ public class PlagueCloudEntity extends Entity {
     private int burstGreenParticles = 120;
     private int burstRedParticles = 35;
 
-    public PlagueCloudEntity(EntityType<? extends PlagueCloudEntity> type, Level level) {
+    public PlagueCloudEntity(
+            EntityType<? extends PlagueCloudEntity> type,
+            Level level
+    ) {
         super(type, level);
     }
 
@@ -59,51 +56,46 @@ public class PlagueCloudEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        age = tag.getInt("Age");
-        burstOnly = tag.getBoolean("BurstOnly");
+        this.age = tag.getInt("Age");
+        this.burstOnly = tag.getBoolean("BurstOnly");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
-        tag.putInt("Age", age);
-        tag.putBoolean("BurstOnly", burstOnly);
+        tag.putInt("Age", this.age);
+        tag.putBoolean("BurstOnly", this.burstOnly);
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        age++;
+        this.age++;
 
-        if (level().isClientSide) {
-
-            if (burstOnly) {
-
+        if (this.level().isClientSide) {
+            if (this.burstOnly) {
                 PlagueParticleHelper.spawnCloud(
-                        level(),
-                        getX(),
-                        getY(),
-                        getZ(),
-                        burstRadius,
-                        burstHeight,
-                        burstCloudParticles,
-                        burstGreenParticles,
-                        burstRedParticles
+                        this.level(),
+                        this.getX(),
+                        this.getY(),
+                        this.getZ(),
+                        this.burstRadius,
+                        this.burstHeight,
+                        this.burstCloudParticles,
+                        this.burstGreenParticles,
+                        this.burstRedParticles
                 );
 
-                discard();
+                this.discard();
                 return;
             }
 
-            // Normal lingering plague cloud - reads the synched radius,
-            // so client-spawned particles actually reflect setRadius(...)
-            // called server-side.
             PlagueParticleHelper.spawnCloud(
-                    level(),
-                    getX(),
-                    getY(),
-                    getZ(),
-                    getRadius(),
+                    this.level(),
+                    this.getX(),
+                    this.getY(),
+                    this.getZ(),
+                    this.getRadius(),
                     3.5D,
                     40,
                     20,
@@ -113,45 +105,52 @@ public class PlagueCloudEntity extends Entity {
             return;
         }
 
-        if (age % DAMAGE_INTERVAL == 0) {
-            damageEntities();
+        if (this.age % DAMAGE_INTERVAL == 0) {
+            this.damageEntities();
         }
 
-        if (age >= lifetime) {
-            discard();
+        if (this.age >= this.lifetime) {
+            this.discard();
         }
     }
 
     protected void damageEntities() {
+        AABB area = this.getBoundingBox().inflate(this.getRadius());
+        List<LivingEntity> entities =
+                this.level().getEntitiesOfClass(LivingEntity.class, area);
 
-        AABB area = getBoundingBox().inflate(getRadius());
-        List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, area);
-        LivingEntity owner = getOwner();
+        LivingEntity owner = this.getOwner();
 
-        int amplifier = (owner != null) ? Utils.getNatureScaledPlagueAmplifier(owner) : 0;
+        int amplifier = owner != null
+                ? Utils.getNatureScaledPlagueAmplifier(owner)
+                : 0;
 
         for (LivingEntity entity : entities) {
-
-            if (entity == owner)
+            if (entity == owner) {
                 continue;
+            }
 
-            if (owner != null && owner.isAlliedTo(entity))
+            if (owner != null && owner.isAlliedTo(entity)) {
                 continue;
+            }
 
-            entity.hurt(getDamageSource(), damage);
+            entity.hurt(this.getDamageSource(), this.damage);
 
             entity.addEffect(
                     new MobEffectInstance(
                             ROACWEffectRegistry.PLAGUE.get(),
-                            200, amplifier, false, false, true
+                            200,
+                            amplifier,
+                            false,
+                            false,
+                            true
                     )
             );
         }
     }
 
-    /** Damage source used by the cloud's DOT. Override to change per-subclass. */
     protected DamageSource getDamageSource() {
-        return damageSources().generic();
+        return this.damageSources().generic();
     }
 
     public void setOwner(LivingEntity owner) {
@@ -162,7 +161,6 @@ public class PlagueCloudEntity extends Entity {
         this.burstOnly = burstOnly;
     }
 
-    /** Overrides the default cloud radius (affects damage area, particle spread). Synched to clients. */
     public void setRadius(float radius) {
         this.entityData.set(DATA_RADIUS, radius);
     }
@@ -171,44 +169,42 @@ public class PlagueCloudEntity extends Entity {
         return this.entityData.get(DATA_RADIUS);
     }
 
-    /** Overrides the default cloud lifetime in ticks. Server-only, no client dependency, so not synched. */
     public void setLifetime(int lifetime) {
         this.lifetime = lifetime;
     }
 
     protected int getLifetime() {
-        return lifetime;
+        return this.lifetime;
     }
 
     protected int getAge() {
-        return age;
+        return this.age;
     }
 
-    /** Overrides the default per-tick cloud damage. Server-only, no client dependency, so not synched. */
     public void setDamage(float damage) {
         this.damage = damage;
     }
 
     protected float getDamage() {
-        return damage;
+        return this.damage;
     }
 
-    public void setBurstSettings(float radius,
-                                 double height,
-                                 int cloudParticles,
-                                 int greenParticles,
-                                 int redParticles) {
-
+    public void setBurstSettings(
+            float radius,
+            double height,
+            int cloudParticles,
+            int greenParticles,
+            int redParticles
+    ) {
         this.burstRadius = radius;
         this.burstHeight = height;
-
         this.burstCloudParticles = cloudParticles;
         this.burstGreenParticles = greenParticles;
         this.burstRedParticles = redParticles;
     }
 
     public LivingEntity getOwner() {
-        return owner;
+        return this.owner;
     }
 
     @Override

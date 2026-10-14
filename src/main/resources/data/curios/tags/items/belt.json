@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "roacw:alchemical_decanter"
+    "roacw:alchemical_decanter",
+    "roacw:ethereal_talisman",
+    "roacw:eldritch_soul_artifact"
   ]
 }

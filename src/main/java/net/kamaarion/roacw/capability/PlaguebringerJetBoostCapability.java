@@ -5,7 +5,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -16,15 +20,18 @@ import org.jetbrains.annotations.Nullable;
 
 @Mod.EventBusSubscriber(modid = "roacw", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PlaguebringerJetBoostCapability {
-    public static final Capability<Data> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
-    public static final ResourceLocation KEY = new ResourceLocation("roacw", "plaguebringer_jet_boost_cooldown");
+    public static final Capability<Data> INSTANCE =
+            CapabilityManager.get(new CapabilityToken<>() {});
+
+    public static final ResourceLocation KEY =
+            ResourceLocation.fromNamespaceAndPath("roacw", "plaguebringer_jet_boost_cooldown");
 
     public static class Data {
         private long nextAvailableTick = 0L;
         private boolean jetBoostActive = false;
 
         public long getNextAvailableTick() {
-            return this.nextAvailableTick;
+            return nextAvailableTick;
         }
 
         public void setNextAvailableTick(long tick) {
@@ -32,7 +39,7 @@ public class PlaguebringerJetBoostCapability {
         }
 
         public boolean isJetBoostActive() {
-            return this.jetBoostActive;
+            return jetBoostActive;
         }
 
         public void setJetBoostActive(boolean active) {
@@ -55,8 +62,11 @@ public class PlaguebringerJetBoostCapability {
         private final LazyOptional<Data> optional = LazyOptional.of(() -> data);
 
         @Override
-        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-            return cap == INSTANCE ? optional.cast() : LazyOptional.empty();
+        public @NotNull <T> LazyOptional<T> getCapability(
+                @NotNull Capability<T> capability,
+                @Nullable Direction side
+        ) {
+            return capability == INSTANCE ? optional.cast() : LazyOptional.empty();
         }
 
         @Override
@@ -70,6 +80,10 @@ public class PlaguebringerJetBoostCapability {
         public void deserializeNBT(CompoundTag nbt) {
             data.loadNBT(nbt);
         }
+
+        public void invalidate() {
+            optional.invalidate();
+        }
     }
 
     @SubscribeEvent
@@ -80,7 +94,9 @@ public class PlaguebringerJetBoostCapability {
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player) {
-            event.addCapability(KEY, new Provider());
+            Provider provider = new Provider();
+            event.addCapability(KEY, provider);
+            event.addListener(provider::invalidate);
         }
     }
 }

@@ -83,7 +83,6 @@ public class QuickStrikeAoE extends AoeEntity {
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
         super.onHitEntity(pResult);
-        // We want to make sure this bypasses i-frames
         pResult.getEntity().invulnerableTime = 0;
     }
 

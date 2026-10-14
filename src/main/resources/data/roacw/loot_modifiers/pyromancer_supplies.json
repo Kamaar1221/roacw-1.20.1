@@ -1,0 +1,17 @@
+{
+  "type": "roacw:roacw_structure_loot",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "irons_spellbooks:chests/pyromancer_tower/pyromancer_supplies"
+    }
+  ],
+  "entries": [
+    {
+      "item": "roacw:yharon_feather",
+      "chance": 0.05,
+      "min_count": 1,
+      "max_count": 3
+    }
+  ]
+}

@@ -20,36 +20,23 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.common.ForgeMod;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
-import org.jetbrains.annotations.Nullable;
-
 
 public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Enemy {
 
-    private static final EntityDataAccessor<Integer> PHASE =
-            SynchedEntityData.defineId(EarthenPaladinEntity.class, EntityDataSerializers.INT);
-
     private static final EntityDataAccessor<Boolean> HAS_OATH =
             SynchedEntityData.defineId(EarthenPaladinEntity.class, EntityDataSerializers.BOOLEAN);
-
-
-    private static final float PHASE_2_HEALTH_PCT = 0.66F;
-    private static final float PHASE_3_HEALTH_PCT = 0.33F;
-
-    public static final RawAnimation PHASE_TRANSITION =
-            RawAnimation.begin().thenPlay("phase_transition");
 
     public static final RawAnimation SCYTHE_DOWNSLASH_SIDESLASH =
             RawAnimation.begin().thenPlay("scythe_downslash_sideslash");
@@ -62,26 +49,12 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
         this.xpReward = 20;
 
         this.getNavigation().setCanFloat(true);
-
-        // Water is traversable.
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
-
-        // Lava should be avoided.
         this.setPathfindingMalus(BlockPathTypes.LAVA, -1.0F);
 
-        // Equip the Paladin's fixed loadout immediately on construction
-        // rather than waiting for finalizeSpawn/populateDefaultEquipmentSlots.
-        // This ensures loot-mod/JEI/EMI icon rendering (which instantiates
-        // the entity directly without running a full spawn cycle) still
-        // shows the correct armor and weapon instead of the bare model.
         equipDefaultLoadout();
     }
 
-    /**
-     * Equips the Paladin's fixed armor and weapon. Called from the
-     * constructor so equipment is present even for entities that never
-     * go through finalizeSpawn (e.g. loot-viewer icon entities).
-     */
     private void equipDefaultLoadout() {
         this.setItemSlot(
                 EquipmentSlot.MAINHAND,
@@ -108,18 +81,13 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
                 new ItemStack(ROACWItemRegistry.EARTHEN_PALADIN_GREAVES.get())
         );
 
-        // Prevent the weapon from being dropped through
-        // Minecraft's normal equipment-drop system.
         this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
     }
 
     @Override
     protected GroundPathNavigation createNavigation(Level level) {
         GroundPathNavigation navigation = new GroundPathNavigation(this, level);
-
-        // Allow the Paladin to navigate through water.
         navigation.setCanFloat(true);
-
         return navigation;
     }
 
@@ -149,8 +117,6 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-
-        this.entityData.define(PHASE, 1);
         this.entityData.define(HAS_OATH, false);
     }
 
@@ -163,15 +129,8 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
                 new EarthenPaladinAttackGoal(this, 1.0D, 40, 60, 6.0D)
         );
 
-        this.goalSelector.addGoal(
-                2,
-                new RandomStrollGoal(this, 0.8D)
-        );
-
-        this.goalSelector.addGoal(
-                3,
-                new RandomLookAroundGoal(this)
-        );
+        this.goalSelector.addGoal(2, new RandomStrollGoal(this, 0.8D));
+        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
 
         this.targetSelector.addGoal(
                 1,
@@ -184,26 +143,10 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
         );
     }
 
-    /**
-     * Controls where the Earthen Paladin is allowed to naturally spawn.
-     *
-     * The Paladin must:
-     * - Be spawning underground
-     * - Not have direct access to the sky
-     * - Be in complete block darkness
-     * - Be below Y=20
-     * - Pass Minecraft's normal mob spawning rules
-     */
-    /**
-     * Checks whether there is enough open space for the Paladin to spawn.
-     */
     private static boolean hasEnoughOpenSpace(
             ServerLevelAccessor level,
-            BlockPos pos) {
-
-        // The Paladin is 2.9 blocks tall, so only check
-        // that the blocks directly above its spawn position
-        // aren't solid.
+            BlockPos pos
+    ) {
         for (int y = 0; y <= 2; y++) {
             BlockPos checkPos = pos.above(y);
 
@@ -217,33 +160,25 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
         return true;
     }
 
-    /**
-     * Controls where the Earthen Paladin is allowed to naturally spawn.
-     */
     public static boolean checkEarthenPaladinSpawnRules(
             EntityType<EarthenPaladinEntity> entityType,
             ServerLevelAccessor level,
             MobSpawnType spawnType,
             BlockPos pos,
-            RandomSource random) {
-
-        // Must be underground.
+            RandomSource random
+    ) {
         if (level.canSeeSky(pos)) {
             return false;
         }
 
-        // Don't spawn in water or lava.
         if (!level.getFluidState(pos).isEmpty()) {
             return false;
         }
 
-        // Make sure there is enough vertical clearance
-        // for the Paladin's 2.9 block tall hitbox.
         if (!hasEnoughOpenSpace(level, pos)) {
             return false;
         }
 
-        // Let Minecraft handle the normal monster spawning rules.
         return Mob.checkMobSpawnRules(
                 entityType,
                 level,
@@ -259,8 +194,8 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
             DifficultyInstance difficulty,
             MobSpawnType reason,
             @Nullable SpawnGroupData spawnData,
-            @Nullable CompoundTag dataTag) {
-
+            @Nullable CompoundTag dataTag
+    ) {
         SpawnGroupData spawnGroupData = super.finalizeSpawn(
                 level,
                 difficulty,
@@ -269,13 +204,7 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
                 dataTag
         );
 
-        // Equipment is already applied in the constructor via
-        // equipDefaultLoadout(), so it doesn't need to be repeated here.
-
-        // 25% chance to spawn with the Oath.
-        this.setHasOath(
-                level.getRandom().nextFloat() < 0.25F
-        );
+        this.setHasOath(level.getRandom().nextFloat() < 0.25F);
 
         return spawnGroupData;
     }
@@ -283,29 +212,21 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
     @Override
     protected void populateDefaultEquipmentSlots(
             RandomSource random,
-            DifficultyInstance difficulty) {
-
-        // Equipment is already applied in the constructor via
-        // equipDefaultLoadout(); nothing further needed here.
+            DifficultyInstance difficulty
+    ) {
     }
 
     @Override
     protected void dropCustomDeathLoot(
             net.minecraft.world.damagesource.DamageSource source,
             int looting,
-            boolean recentlyHit) {
-
-        super.dropCustomDeathLoot(
-                source,
-                looting,
-                recentlyHit
-        );
+            boolean recentlyHit
+    ) {
+        super.dropCustomDeathLoot(source, looting, recentlyHit);
 
         if (this.hasOath()) {
             this.spawnAtLocation(
-                    new ItemStack(
-                            ROACWItemRegistry.EARTHEN_PALADIN_OATH.get()
-                    )
+                    new ItemStack(ROACWItemRegistry.EARTHEN_PALADIN_OATH.get())
             );
         }
     }
@@ -318,40 +239,10 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
         this.entityData.set(HAS_OATH, hasOath);
     }
 
-    public int getPhase() {
-        return this.entityData.get(PHASE);
-    }
-
-    private void setPhase(int phase) {
-        this.entityData.set(PHASE, phase);
-        this.triggerAnim("action", "phase_transition");
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!this.level().isClientSide) {
-            updatePhase();
-        }
-    }
-
-    private void updatePhase() {
-        float healthPct = this.getHealth() / this.getMaxHealth();
-        int currentPhase = getPhase();
-
-        if (healthPct <= PHASE_3_HEALTH_PCT && currentPhase < 3) {
-            setPhase(3);
-        } else if (healthPct <= PHASE_2_HEALTH_PCT && currentPhase < 2) {
-            setPhase(2);
-        }
-    }
-
-
     @Override
     public void registerControllers(
-            AnimatableManager.ControllerRegistrar controllers) {
-
+            AnimatableManager.ControllerRegistrar controllers
+    ) {
         super.registerControllers(controllers);
 
         controllers.add(
@@ -361,10 +252,6 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
                         0,
                         state -> PlayState.STOP
                 )
-                        .triggerableAnim(
-                                "phase_transition",
-                                PHASE_TRANSITION
-                        )
                         .triggerableAnim(
                                 "scythe_downslash_sideslash",
                                 SCYTHE_DOWNSLASH_SIDESLASH

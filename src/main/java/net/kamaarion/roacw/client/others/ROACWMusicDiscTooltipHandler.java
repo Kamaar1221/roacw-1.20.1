@@ -24,16 +24,16 @@ public class ROACWMusicDiscTooltipHandler {
 
         Component desc2Line = Component.translatable(desc2Key);
         if (desc2Line.getString().equals(desc2Key)) {
-            return; // no .desc2 key defined for this disc, skip
+            return;
         }
 
         List<Component> tooltip = event.getToolTip();
         String descText = Component.translatable(descKey).getString();
 
-        int insertIndex = tooltip.size(); // fallback: end, in case desc line isn't found
+        int insertIndex = tooltip.size();
         for (int i = 0; i < tooltip.size(); i++) {
             if (tooltip.get(i).getString().equals(descText)) {
-                insertIndex = i + 1; // insert after the quote line
+                insertIndex = i + 1;
                 break;
             }
         }

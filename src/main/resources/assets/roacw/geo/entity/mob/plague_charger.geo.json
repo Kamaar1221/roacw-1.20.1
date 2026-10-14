@@ -1,0 +1,128 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "InfectedHornetBody",
+					"pivot": [0, 9.12661, 1.31726],
+					"rotation": [22.5, 0, 0],
+					"cubes": [
+						{"origin": [-2.5, 4.9316, -1.14364], "size": [5, 6, 5], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "InfectedHornetHead",
+					"parent": "InfectedHornetBody",
+					"pivot": [0, 10.4734, 0.3481],
+					"rotation": [-12.5, 0, 0],
+					"cubes": [
+						{"origin": [-3, 10.4734, -5.98997], "size": [3, 2, 1], "pivot": [0, 11.4734, -3.98997], "rotation": [0, 45, 0], "uv": [15, 0]},
+						{"origin": [0, 10.4734, -5.98997], "size": [3, 2, 1], "pivot": [0, 11.4734, -3.98997], "rotation": [0, -45, 0], "uv": [20, 28]},
+						{"origin": [-2, 9.4734, -4.97576], "size": [4, 4, 4], "pivot": [0, 10.9734, -2.97576], "rotation": [0, -45, 0], "uv": [19, 19]},
+						{"origin": [-2, 7.4734, -4.97576], "size": [2, 2, 2], "pivot": [0, 10.9734, -2.97576], "rotation": [0, -45, 0], "uv": [34, 27]},
+						{"origin": [1.2, 12.9734, -6.47576], "size": [0, 4, 4], "pivot": [1, 13.4734, -3.47576], "rotation": [15, -40, 0], "uv": [0, 27]},
+						{"origin": [-1.2, 12.9734, -4.47576], "size": [0, 2, 2], "pivot": [-1, 13.4734, -3.47576], "rotation": [15, 40, 0], "uv": [8, 35]},
+						{"origin": [-2, 8.7234, -2.97576], "size": [4, 4, 5], "pivot": [0, 11.4734, -0.97576], "rotation": [-10, 0, 0], "uv": [0, 12]},
+						{"origin": [0, 11.2234, -4.22576], "size": [0, 5, 7], "uv": [17, 25]},
+						{"origin": [0.51588, 10.4734, -4.39694], "size": [4, 4, 2], "pivot": [1.51588, 13.4734, -3.19694], "rotation": [9.54187, -55.55179, -7.2775], "uv": [32, 32]},
+						{"origin": [-4.51588, 10.4734, -4.39694], "size": [4, 4, 2], "pivot": [-1.51588, 13.4734, -3.19694], "rotation": [9.54187, 55.55179, 7.2775], "uv": [32, 32], "mirror": true}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerLeftMandible",
+					"parent": "InfectedHornetHead",
+					"pivot": [1.52047, 9.9148, -4.44405],
+					"rotation": [27.14787, -34.39275, -6.93255],
+					"cubes": [
+						{"origin": [0.0456, 9.9148, -6.94405], "size": [2, 0, 3], "uv": [9, 28]}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerRightMandible",
+					"parent": "InfectedHornetHead",
+					"pivot": [-1.52047, 9.9148, -4.44405],
+					"rotation": [27.14787, 34.39275, 6.93255],
+					"cubes": [
+						{"origin": [-2.0456, 9.9148, -6.94405], "size": [2, 0, 3], "uv": [9, 28], "mirror": true}
+					]
+				},
+				{
+					"name": "InfectedHornetAbdomen",
+					"parent": "InfectedHornetBody",
+					"pivot": [0, 4.9316, 0.85636],
+					"rotation": [-62.5, 0, 0],
+					"cubes": [
+						{"origin": [-1.5, 0.9316, -1.14364], "size": [3, 5, 3], "uv": [21, 0]},
+						{"origin": [0, -3.0684, -2.14364], "size": [0, 5, 3], "uv": [36, 16]}
+					]
+				},
+				{
+					"name": "InfectedHornetWings",
+					"parent": "InfectedHornetBody",
+					"pivot": [-0.5, 7.9316, 3.85636]
+				},
+				{
+					"name": "RightSmallWing",
+					"parent": "InfectedHornetWings",
+					"pivot": [-0.5, 7.9316, 3.85636],
+					"rotation": [-35.94717, 18.10058, -45.59722],
+					"cubes": [
+						{"origin": [-7.5, 6.9316, 3.85636], "size": [7, 4, 0], "uv": [0, 22], "mirror": true}
+					]
+				},
+				{
+					"name": "LeftBigWing",
+					"parent": "InfectedHornetWings",
+					"pivot": [0.5, 9.9316, 3.85636],
+					"rotation": [11.94059, -31.26946, -4.65204],
+					"cubes": [
+						{"origin": [0.5, 8.9316, 3.85636], "size": [10, 6, 0], "uv": [19, 12]}
+					]
+				},
+				{
+					"name": "RightBigWing",
+					"parent": "InfectedHornetWings",
+					"pivot": [-0.5, 9.9316, 3.85636],
+					"rotation": [11.94059, 31.26946, 4.65204],
+					"cubes": [
+						{"origin": [-10.5, 8.9316, 3.85636], "size": [10, 6, 0], "uv": [19, 12], "mirror": true}
+					]
+				},
+				{
+					"name": "LeftSmallWing",
+					"parent": "InfectedHornetWings",
+					"pivot": [0.5, 7.9316, 3.85636],
+					"rotation": [-35.94717, -18.10058, 45.59722],
+					"cubes": [
+						{"origin": [0.5, 6.9316, 3.85636], "size": [7, 4, 0], "uv": [0, 22]}
+					]
+				},
+				{
+					"name": "InfectedHornetLeftLeg",
+					"parent": "InfectedHornetBody",
+					"pivot": [2, 8.9316, -0.64364],
+					"cubes": [
+						{"origin": [0.5, 8.9316, -4.14364], "size": [3, 0, 4], "uv": [6, 32]}
+					]
+				},
+				{
+					"name": "InfectedHornetRightLeg",
+					"parent": "InfectedHornetBody",
+					"pivot": [-2, 8.9316, -0.64364],
+					"cubes": [
+						{"origin": [-3.5, 8.9316, -4.14364], "size": [3, 0, 4], "uv": [6, 32], "mirror": true}
+					]
+				}
+			]
+		}
+	]
+}

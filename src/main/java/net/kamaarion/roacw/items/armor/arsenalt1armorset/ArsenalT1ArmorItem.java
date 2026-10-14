@@ -21,12 +21,18 @@ public class ArsenalT1ArmorItem extends ImbuableChestplateArmorItem {
     private static final net.minecraft.network.chat.Style DARK_ORANGE = net.minecraft.network.chat.Style.EMPTY
             .withColor(net.minecraft.network.chat.TextColor.parseColor("#CC4723"));
 
-
-
     @Override
     @OnlyIn(Dist.CLIENT)
-    public GeoArmorRenderer<?> supplyRenderer() {
-        return new ArsenalT1ArmorRenderer(new ArsenalT1ArmorModel());
+    public GeoArmorRenderer<?> supplyRenderer() {return new ArsenalT1ArmorRenderer(new ArsenalT1ArmorModel());}
+
+    @Override
+    public int getEnchantmentValue() {
+        return 15;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
     }
 
     @Override
@@ -39,6 +45,9 @@ public class ArsenalT1ArmorItem extends ImbuableChestplateArmorItem {
             font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });
+
+            pTooltipComponents.add(Component.empty());
+
 
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);

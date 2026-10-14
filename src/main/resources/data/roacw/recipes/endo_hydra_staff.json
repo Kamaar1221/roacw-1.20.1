@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " AC",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:ascendant_spirit_essence"
+    },
+    "B": {
+      "item": "irons_spellbooks:ice_staff"
+    },
+    "C": {
+      "item": "cataclysm:cursium_ingot"
+    }
+  },
+
+  "result": {
+    "item": "roacw:endo_hydra_staff"
+  }
+}

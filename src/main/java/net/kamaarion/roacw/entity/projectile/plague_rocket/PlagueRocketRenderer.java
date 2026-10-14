@@ -3,7 +3,6 @@ package net.kamaarion.roacw.entity.projectile.plague_rocket;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.kamaarion.roacw.client.entity.projectile.PlagueRocketModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -14,45 +13,60 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import javax.annotation.Nullable;
 
 public class PlagueRocketRenderer extends GeoEntityRenderer<PlagueRocketEntity> {
+    private static final float MODEL_LAY_DOWN_DEGREES = 90.0F;
+    private static final float MODEL_CENTER_Y = 0.34375F;
 
     public PlagueRocketRenderer(EntityRendererProvider.Context context) {
         super(context, new PlagueRocketModel());
     }
 
     @Override
-    public void preRender(PoseStack poseStack,
-                          PlagueRocketEntity animatable,
-                          BakedGeoModel model,
-                          @Nullable MultiBufferSource bufferSource,
-                          @Nullable VertexConsumer buffer,
-                          boolean isReRender,
-                          float partialTick,
-                          int packedLight,
-                          int packedOverlay,
-                          float red,
-                          float green,
-                          float blue,
-                          float alpha) {
+    public void preRender(
+            PoseStack poseStack,
+            PlagueRocketEntity animatable,
+            BakedGeoModel model,
+            @Nullable MultiBufferSource bufferSource,
+            @Nullable VertexConsumer buffer,
+            boolean isReRender,
+            float partialTick,
+            int packedLight,
+            int packedOverlay,
+            float red,
+            float green,
+            float blue,
+            float alpha
+    ) {
+        if (!isReRender) {
+            Vec3 motion = animatable.getDeltaMovement();
 
-        Vec3 motion = animatable.getDeltaMovement();
+            poseStack.translate(0.0D, MODEL_CENTER_Y, 0.0D);
 
-        if (motion.lengthSqr() > 1.0E-6D) {
+            if (motion.lengthSqr() > 1.0E-6D) {
+                float xRot = (float) -(
+                        Mth.atan2(
+                                motion.y,
+                                motion.horizontalDistance()
+                        ) * Mth.RAD_TO_DEG
+                );
 
-            float xRot = (float)(-(Mth.atan2(
-                    motion.y,
-                    motion.horizontalDistance()
-            ) * Mth.RAD_TO_DEG));
+                float yRot = -(
+                        (float) (
+                                Mth.atan2(
+                                        motion.z,
+                                        motion.x
+                                ) * Mth.RAD_TO_DEG
+                        ) + 90.0F
+                ) + 180.0F;
 
-            float yRot = -((float)(Mth.atan2(
-                    motion.z,
-                    motion.x
-            ) * Mth.RAD_TO_DEG) + 90.0F) + 180.0F;
+                poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+                poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+            }
 
-            poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-            poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(animatable.getBankAngle()));
+            poseStack.mulPose(Axis.XP.rotationDegrees(MODEL_LAY_DOWN_DEGREES));
+
+            poseStack.translate(0.0D, -MODEL_CENTER_Y, 0.0D);
         }
-
-        poseStack.mulPose(Axis.ZP.rotationDegrees(animatable.getBankAngle()));
 
         super.preRender(
                 poseStack,

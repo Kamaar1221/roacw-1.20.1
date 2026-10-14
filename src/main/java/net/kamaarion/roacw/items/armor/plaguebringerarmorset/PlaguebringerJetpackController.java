@@ -1,7 +1,7 @@
 package net.kamaarion.roacw.items.armor.plaguebringerarmorset;
 
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.network.PacketPlaguebringerJetBoostStateS2C;
+import net.kamaarion.roacw.network.armorset_abilities.PacketPlaguebringerJetBoostStateS2C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.phys.Vec3;

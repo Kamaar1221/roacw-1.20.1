@@ -12,7 +12,7 @@ public class ROACWSoundRegistry {
     private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ROACW.MODID);
 
     public static RegistryObject<SoundEvent> ELECTRIC_SWORD_SWING = registerSoundEvent("electric_sword_swing");
-    // Cleanly added your dash sound event right below your existing sound
+
     public static RegistryObject<SoundEvent> DASH_WHOOSH = registerSoundEvent("dash_whoosh");
 
     public static RegistryObject<SoundEvent> AURIC_DASH_CHARGE = registerSoundEvent("auric_dash_charge");
@@ -45,13 +45,29 @@ public class ROACWSoundRegistry {
 
     public static RegistryObject<SoundEvent> DARK_RAVEN_SUMMON = registerSoundEvent("dark_raven_summon");
 
+    public static RegistryObject<SoundEvent> ENDO_HYDRA_SUMMON = registerSoundEvent("endo_hydra_summon");
 
+    public static RegistryObject<SoundEvent> ENDO_HYDRA_FIRING = registerSoundEvent("endo_hydra_firing");
+
+    public static RegistryObject<SoundEvent> DRAEDON_LAUGH = registerSoundEvent("draedon_laugh");
+
+    public static RegistryObject<SoundEvent> WEAPON_SWING = registerSoundEvent("weapon_swing");
+
+    public static RegistryObject<SoundEvent> MARS_MISSILE_EXPLOSION_1 = registerSoundEvent("mars_missile_explosion_1");
+
+    public static RegistryObject<SoundEvent> MARS_MISSILE_EXPLOSION_2 = registerSoundEvent("mars_missile_explosion_2");
+
+    public static RegistryObject<SoundEvent> MARS_MISSILE_EXPLOSION_3 = registerSoundEvent("mars_missile_explosion_3");
+
+    public static RegistryObject<SoundEvent> ENERGY_CANNON_CHARGE = registerSoundEvent("energy_cannon_charge");
+
+    public static RegistryObject<SoundEvent> ENERGY_CANNON_FIRE = registerSoundEvent("energy_cannon_fire");
+
+    public static RegistryObject<SoundEvent> TYRANT_ROAR = registerSoundEvent("tyrant_roar");
+
+    public static RegistryObject<SoundEvent> PHEONIX_REBIRTH = registerSoundEvent("pheonix_rebirth");
 
     public static final RegistryObject<SoundEvent> REMNANTS_OF_A_CRUEL_WORLD_TITLE = registerSoundEvent("remnants_of_a_cruel_world_title");
-
-
-
-
 
     public static void register(IEventBus eventBus) {
         SOUND_EVENTS.register(eventBus);

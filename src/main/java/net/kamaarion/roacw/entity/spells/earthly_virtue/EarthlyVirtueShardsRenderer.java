@@ -1,14 +1,13 @@
 package net.kamaarion.roacw.entity.spells.earthly_virtue;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.kamaarion.roacw.client.entity.projectile.EarthlyVirtueShardsModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class EarthlyVirtueShardsRenderer extends GeoEntityRenderer<EarthlyVirtueShards> {
 
-    private static final float RISE_DEPTH = 4.0F; // how far underground at offset -1
+    private static final float RISE_DEPTH = 4.0F;
 
     public EarthlyVirtueShardsRenderer(EntityRendererProvider.Context context) {
         super(context, new EarthlyVirtueShardsModel());

@@ -1,20 +1,32 @@
 package net.kamaarion.roacw.events;
 
 import net.kamaarion.roacw.client.others.CustomAnimatedParticle;
+import net.kamaarion.roacw.entity.armorset_summon.railgun_cannon.RailgunCannonRenderer;
+import net.kamaarion.roacw.entity.armorset_summon.unstable_energy_cannon.UnstableEnergyCannonRenderer;
 import net.kamaarion.roacw.entity.mob.earthen_paladin.EarthenPaladinRenderer;
 import net.kamaarion.roacw.entity.projectile.belladonna_petal.BelladonnaPetalRenderer;
+import net.kamaarion.roacw.entity.projectile.energy_cannon_beam.EnergyCannonBeamRenderer;
 import net.kamaarion.roacw.entity.projectile.god_killer_dart.GodKillerDartRenderer;
-import net.kamaarion.roacw.entity.projectile.plague_charger_stinger.PlagueChargerStingerRenderer;
+import net.kamaarion.roacw.entity.projectile.homing_plague_missile.HomingPlagueMissileRenderer;
+import net.kamaarion.roacw.entity.projectile.mars_missile.MarsMissileRenderer;
+import net.kamaarion.roacw.entity.projectile.plague_bee.PlagueBeeRenderer;
 import net.kamaarion.roacw.entity.projectile.plague_cloud.PlagueCloudRenderer;
+import net.kamaarion.roacw.entity.projectile.plague_missile.PlagueMissileRenderer;
 import net.kamaarion.roacw.entity.projectile.plague_nuke.PlagueNukeRenderer;
 import net.kamaarion.roacw.entity.projectile.plague_rocket.PlagueRocketRenderer;
 import net.kamaarion.roacw.entity.spells.burning_meteor.BurningMeteorRenderer;
+import net.kamaarion.roacw.entity.spells.dread.DreadPulseRenderer;
 import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueAoERenderer;
 import net.kamaarion.roacw.entity.spells.earthly_virtue.EarthlyVirtueShardsRenderer;
 import net.kamaarion.roacw.entity.spells.impaling_column.ImpalingColumnShardsRenderer;
+import net.kamaarion.roacw.entity.summon.baby_plaguebringer.BabyPlaguebringerRenderer;
 import net.kamaarion.roacw.entity.summon.belladonna_spirit.BelladonnaSpiritRenderer;
 import net.kamaarion.roacw.entity.summon.dark_raven.DarkRavenRenderer;
-import net.kamaarion.roacw.entity.summon.plague_charger.PlagueChargerRenderer;
+import net.kamaarion.roacw.entity.projectile.endo_hydra_beam.EndoHydraBeamRenderer;
+import net.kamaarion.roacw.entity.summon.endo_hydra.EndoHydraRenderer;
+import net.kamaarion.roacw.entity.summon.mini_plaguebringer.MiniPlaguebringerRenderer;
+import net.kamaarion.roacw.entity.mob.plague_charger.PlagueChargerRenderer;
+import net.kamaarion.roacw.entity.summon.virili.ViriliRenderer;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer;
 import net.kamaarion.roacw.particle.AuricChargeLightningParticle;
@@ -214,6 +226,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+
       event.registerEntityRenderer(
               ROACWEntityRegistry.IMPALING_COLUMN_SHARDS.get(),
               ImpalingColumnShardsRenderer::new
@@ -265,11 +278,6 @@ public class ClientEvents {
       );
 
       event.registerEntityRenderer(
-              ROACWEntityRegistry.PLAGUE_CHARGER_STINGER.get(),
-              PlagueChargerStingerRenderer::new
-      );
-
-      event.registerEntityRenderer(
               ROACWEntityRegistry.EARTHEN_PALADIN.get(),
               EarthenPaladinRenderer::new
       );
@@ -288,6 +296,72 @@ public class ClientEvents {
               ROACWEntityRegistry.BURNING_METEOR.get(),
               BurningMeteorRenderer::new
       );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.ENDO_HYDRA.get(),
+              EndoHydraRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.ENDO_HYDRA_BEAM.get(),
+              EndoHydraBeamRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.MINI_PLAGUEBRINGER.get(),
+              MiniPlaguebringerRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PLAGUE_MISSILE.get(),
+              PlagueMissileRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.HOMING_PLAGUE_MISSILE.get(),
+              HomingPlagueMissileRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.PLAGUE_BEE.get(),
+              PlagueBeeRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.VIRILI.get(),
+              ViriliRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.BABY_PLAGUEBRINGER.get(),
+              BabyPlaguebringerRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.RAILGUN_CANNON.get(),
+              RailgunCannonRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.UNSTABLE_ENERGY_CANNON.get(),
+              UnstableEnergyCannonRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.MARS_MISSILE.get(),
+              MarsMissileRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.ENERGY_CANNON_BEAM.get(),
+              EnergyCannonBeamRenderer::new
+      );
+
+      event.registerEntityRenderer(
+              ROACWEntityRegistry.DREAD_PULSE.get(),
+              DreadPulseRenderer::new
+      );
+
 
     }
 

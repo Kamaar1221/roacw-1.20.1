@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " A ",
+    " AC",
     "ABA",
-    " A "
+    "CA "
   ],
   "key": {
     "A": {
@@ -12,6 +12,9 @@
     },
     "B": {
       "item": "cataclysm:blazing_grips"
+    },
+    "C": {
+      "item": "minecraft:netherite_sword"
     }
   },
 

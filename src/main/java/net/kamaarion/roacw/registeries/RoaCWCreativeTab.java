@@ -51,6 +51,7 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.HIGH_RULER_SWORD.get());
                         output.accept(ROACWItemRegistry.THE_HIVE.get());
                         output.accept(ROACWItemRegistry.BURNING_SKY.get());
+                        output.accept(ROACWItemRegistry.DEFILED_GREATSWORD.get());
                         output.accept(ROACWItemRegistry.CORVID_HARBINGER_STAFF.get());
                         output.accept(ROACWItemRegistry.ENDO_HYDRA_STAFF.get());
                         output.accept(ROACWItemRegistry.BELLADONNA_SPIRIT_STAFF.get());
@@ -59,6 +60,10 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.EVASION_SCARF.get());
                         output.accept(ROACWItemRegistry.ELEMENTAL_GAUNTLET.get());
                         output.accept(ROACWItemRegistry.ALCHEMICAL_DECANTER.get());
+                        output.accept(ROACWItemRegistry.ETHEREAL_TALISMAN.get());
+                        output.accept(ROACWItemRegistry.ELEMENTAL_QUIVER.get());
+                        output.accept(ROACWItemRegistry.ELDRITCH_SOUL_ARTIFACT.get());
+                        output.accept(ROACWItemRegistry.WINGS_OF_REBIRTH.get());
                         output.accept(ROACWItemRegistry.NIGHTMARE_TOME.get());
                         output.accept(ROACWItemRegistry.AURIC_CODEX.get());
                         output.accept(ROACWItemRegistry.EARTHEN_PALADIN_OATH.get());
@@ -84,6 +89,13 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.PLAGUE_CORE.get());
                         output.accept(ROACWItemRegistry.DIVINE_CHUNK.get());
                         output.accept(ROACWItemRegistry.DIVINE_PEBBLE.get());
+                        output.accept(ROACWItemRegistry.DUBIOUS_PLATING.get());
+                        output.accept(ROACWItemRegistry.MYSTERIOUS_CIRCUITRY.get());
+                        output.accept(ROACWItemRegistry.EXO_CORE.get());
+                        output.accept(ROACWItemRegistry.MIRACLE_MATTER.get());
+                        output.accept(ROACWItemRegistry.YHARON_SOUL_FRAGMENT.get());
+                        output.accept(ROACWItemRegistry.YHARON_BONE.get());
+                        output.accept(ROACWItemRegistry.YHARON_FEATHER.get());
                         output.accept(ROACWItemRegistry.PLAGUE_CHARGER_SPAWN_EGG.get());
                         output.accept(ROACWItemRegistry.REMNANTS_OF_A_CRUEL_WORLD_DISC.get());
                     })

@@ -38,6 +38,6 @@ public class EvasionScarfBuffEffect extends MobEffect {
 
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) {
-        return true; // ensures applyEffectTick runs every tick so our own % 3 check works
+        return true;
     }
 }

@@ -12,13 +12,18 @@ import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanter;
 import net.kamaarion.roacw.items.curios.auric_codex.AuricCodex;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
 import net.kamaarion.roacw.items.curios.earthen_paladin_oath.EarthenPaladinOath;
+import net.kamaarion.roacw.items.curios.eldritch_soul_artifact.EldritchSoulArtifact;
 import net.kamaarion.roacw.items.curios.elemental_gauntlet.ElementalGauntlet;
+import net.kamaarion.roacw.items.curios.elemental_quiver.ElementalQuiver;
+import net.kamaarion.roacw.items.curios.ethereal_talisman.EtherealTalisman;
 import net.kamaarion.roacw.items.curios.evasion_scarf.EvasionScarf;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.items.curios.nightmare_tome.NightmareTome;
 import net.kamaarion.roacw.items.curios.stasis_curse.StatisCurse;
+import net.kamaarion.roacw.items.curios.wings_of_rebirth.WingsOfRebirth;
 import net.kamaarion.roacw.items.weapons.belladonna_spirit_staff.BelladonnaStaff;
 import net.kamaarion.roacw.items.weapons.corvid_harbinger_staff.CorvidHarbinger;
+import net.kamaarion.roacw.items.weapons.defiled_greatsword.DefiledGreatsword;
 import net.kamaarion.roacw.items.weapons.earth_splitter.EarthSplitter;
 import net.kamaarion.roacw.items.weapons.endo_hydra_staff.EndoHydraStaff;
 import net.kamaarion.roacw.items.weapons.high_ruler_sword.HighRulerSword;
@@ -89,6 +94,14 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> PLAGUE_CORE = ITEMS.register("plague_core", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> DIVINE_CHUNK = ITEMS.register("divine_chunk", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> DIVINE_PEBBLE = ITEMS.register("divine_pebble", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> DUBIOUS_PLATING = ITEMS.register("dubious_plating", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> MYSTERIOUS_CIRCUITRY = ITEMS.register("mysterious_circuitry", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> EXO_CORE = ITEMS.register("exo_core", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED)));
+    public static final RegistryObject<Item> YHARON_SOUL_FRAGMENT = ITEMS.register("yharon_soul_fragment", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> YHARON_BONE = ITEMS.register("yharon_bone", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> YHARON_FEATHER = ITEMS.register("yharon_feather", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> MIRACLE_MATTER = ITEMS.register("miracle_matter", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED)));
+
 
 
     // Food
@@ -101,6 +114,10 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> BURST_SHEATH = ITEMS.register("burst_sheath", () -> new BurstSheath(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
     public static final RegistryObject<Item> HIGH_RULER_SHIELD = ITEMS.register("high_ruler_shield", () -> new HighRulerShield(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> ALCHEMICAL_DECANTER = ITEMS.register("alchemical_decanter", () -> new AlchemicalDecanter(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> ETHEREAL_TALISMAN = ITEMS.register("ethereal_talisman", () -> new EtherealTalisman(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> ELEMENTAL_QUIVER = ITEMS.register("elemental_quiver", () -> new ElementalQuiver(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> ELDRITCH_SOUL_ARTIFACT = ITEMS.register("eldritch_soul_artifact", () -> new EldritchSoulArtifact(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> WINGS_OF_REBIRTH = ITEMS.register("wings_of_rebirth", () -> new WingsOfRebirth(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
 
     // Weapons
     public static final RegistryObject<Item> MURASAMA_BLADE = ITEMS.register("murasama_blade", () -> new MurasamaBlade(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
@@ -113,9 +130,7 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> CORVID_HARBINGER_STAFF = ITEMS.register("corvid_harbinger_staff", () -> new CorvidHarbinger(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> ENDO_HYDRA_STAFF = ITEMS.register("endo_hydra_staff", () -> new EndoHydraStaff(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> BELLADONNA_SPIRIT_STAFF = ITEMS.register("belladonna_spirit_staff", () -> new BelladonnaStaff(new Item.Properties().rarity(Rarity.RARE)));
-
-
-
+    public static final RegistryObject<Item> DEFILED_GREATSWORD = ITEMS.register("defiled_greatsword", () -> new DefiledGreatsword(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
 
     // Spellbooks
     public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("nightmare_tome", () -> new NightmareTome(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));

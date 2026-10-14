@@ -6,8 +6,8 @@ import software.bernie.geckolib.renderer.GeoItemRenderer;
 
 public class PhaseslayerRenderer extends GeoItemRenderer<Phaseslayer> {
 
-    public PhaseslayerRenderer()
-    {
+    public PhaseslayerRenderer() {
         super(new PhaseslayerModel());
+        addRenderLayer(new PhaseslayerLayer(this));
     }
 }

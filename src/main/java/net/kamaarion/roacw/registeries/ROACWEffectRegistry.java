@@ -25,7 +25,13 @@ public class ROACWEffectRegistry {
     public static final RegistryObject<MobEffect> PLAGUE = MOB_EFFECTS.register("plague", PlagueEffect::new);
     public static final RegistryObject<MobEffect> PESTILENCE_CLOAK_BUFF = MOB_EFFECTS.register("pestilence_cloak_buff", PestilenceCloakBuffEffect::new);
     public static final RegistryObject<MobEffect> GOD_SLAYER_INFERNO = MOB_EFFECTS.register("god_slayer_inferno", GodSlayerInfernoEffect::new);
-
+    public static final RegistryObject<MobEffect> DRAGONFIRE = MOB_EFFECTS.register("dragonfire", DragonfireEffect::new);
+    public static final RegistryObject<MobEffect> VOIDFROST = MOB_EFFECTS.register("voidfrost", VoidfrostEffect::new);
+    public static final RegistryObject<MobEffect> DREAD = MOB_EFFECTS.register("dread", DreadEffect::new);
+    public static final RegistryObject<MobEffect> HORRIFIED = MOB_EFFECTS.register("horrified", HorrifiedEffect::new);
+    public static final RegistryObject<MobEffect> AURIC_REBUKE = MOB_EFFECTS.register("auric_rebuke", AuricRebukeEffect::new);
+    public static final RegistryObject<MobEffect> INDULGENCE = MOB_EFFECTS.register("indulgence", IndulgenceEffect::new);
+    //public static final RegistryObject<MobEffect> BRIMSTONE_FLAMES = MOB_EFFECTS.register("brimstone_flames", IndulgenceEffect::new);
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

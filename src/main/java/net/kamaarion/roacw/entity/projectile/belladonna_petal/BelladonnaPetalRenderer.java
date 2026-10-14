@@ -3,7 +3,6 @@ package net.kamaarion.roacw.entity.projectile.belladonna_petal;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.kamaarion.roacw.client.entity.projectile.BelladonnaPetalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -15,8 +14,6 @@ import javax.annotation.Nullable;
 
 public class BelladonnaPetalRenderer extends GeoEntityRenderer<BelladonnaPetalEntity> {
 
-    // Corrective rotation for the model's own bind-pose axis (tip along +Y, not -Z).
-    // Adjust this single value to test - no Blockbench re-export needed, just recompile.
     private static final float MODEL_CORRECTION_DEGREES = 90.0F;
 
     public BelladonnaPetalRenderer(EntityRendererProvider.Context context) {

@@ -1,0 +1,95 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "MiniPlaguebringerBody",
+					"pivot": [0, 9.12661, 1.31726],
+					"rotation": [22.5, 0, 0],
+					"cubes": [
+						{"origin": [-2.5, 4.9316, -1.14364], "size": [5, 6, 5], "uv": [0, 12]}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerHead",
+					"parent": "MiniPlaguebringerBody",
+					"pivot": [0, 10.4734, 0.3481],
+					"rotation": [-12.5, 0, 0],
+					"cubes": [
+						{"origin": [-3, 10.4734, -5.98997], "size": [3, 2, 1], "pivot": [0, 11.4734, -3.98997], "rotation": [0, 45, 0], "uv": [12, 23], "mirror": true},
+						{"origin": [0, 10.4734, -5.98997], "size": [3, 2, 1], "pivot": [0, 11.4734, -3.98997], "rotation": [0, -45, 0], "uv": [12, 23]},
+						{"origin": [-2, 9.4734, -4.97576], "size": [4, 4, 4], "pivot": [0, 10.9734, -2.97576], "rotation": [0, -45, 0], "uv": [20, 21]},
+						{"origin": [-2, 8.7234, -2.97576], "size": [4, 4, 5], "pivot": [0, 11.4734, -0.97576], "rotation": [-10, 0, 0], "uv": [20, 0]},
+						{"origin": [0.51588, 10.4734, -4.39694], "size": [4, 4, 2], "pivot": [1.51588, 13.4734, -3.19694], "rotation": [9.54187, -55.55179, -7.2775], "uv": [24, 29]},
+						{"origin": [-4.51588, 10.4734, -4.39694], "size": [4, 4, 2], "pivot": [-1.51588, 13.4734, -3.19694], "rotation": [9.54187, 55.55179, 7.2775], "uv": [24, 29], "mirror": true},
+						{"origin": [0, 11.2234, -4.22576], "size": [0, 5, 7], "uv": [20, 9]}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerLeftMandible",
+					"parent": "MiniPlaguebringerHead",
+					"pivot": [0.97487, 8.9734, -4.24352],
+					"rotation": [10, -35, 0],
+					"cubes": [
+						{"origin": [0, 8.4734, -6.74352], "size": [2, 1, 3], "uv": [34, 17]}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerRightMandible",
+					"parent": "MiniPlaguebringerHead",
+					"pivot": [-0.97487, 8.9734, -4.24352],
+					"rotation": [10, 35, 0],
+					"cubes": [
+						{"origin": [-2, 8.4734, -6.74352], "size": [2, 1, 3], "uv": [34, 17], "mirror": true}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerLeftThruster",
+					"parent": "MiniPlaguebringerBody",
+					"pivot": [2.2682, 9.02438, 1.88331],
+					"rotation": [9.25748, -6.56696, -12.14845],
+					"cubes": [
+						{"origin": [4.2682, 5.52438, -0.61669], "size": [5, 7, 5], "uv": [0, 0]},
+						{"origin": [5.2682, 0.52438, 0.38331], "size": [3, 5, 3], "uv": [12, 29]},
+						{"origin": [9.2682, 6.52438, 0.38331], "size": [1, 5, 3], "uv": [34, 9]},
+						{"origin": [9.2682, 6.52438, 0.38331], "size": [1, 5, 3], "pivot": [6.7682, 9.02438, 1.88331], "rotation": [0, -90, 0], "uv": [34, 9]},
+						{"origin": [9.2682, 6.52438, 0.38331], "size": [1, 5, 3], "pivot": [6.7682, 9.02438, 1.88331], "rotation": [0, 90, 0], "uv": [34, 9]},
+						{"origin": [2.2682, 7.52438, 0.38331], "size": [2, 3, 3], "uv": [0, 33]}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerRightThruster",
+					"parent": "MiniPlaguebringerBody",
+					"pivot": [-2.2682, 9.02438, 1.88331],
+					"rotation": [9.25748, 6.56696, 12.14845],
+					"cubes": [
+						{"origin": [-9.2682, 5.52438, -0.61669], "size": [5, 7, 5], "uv": [0, 0], "mirror": true},
+						{"origin": [-8.2682, 0.52438, 0.38331], "size": [3, 5, 3], "uv": [12, 29], "mirror": true},
+						{"origin": [-10.2682, 6.52438, 0.38331], "size": [1, 5, 3], "uv": [34, 9], "mirror": true},
+						{"origin": [-10.2682, 6.52438, 0.38331], "size": [1, 5, 3], "pivot": [-6.7682, 9.02438, 1.88331], "rotation": [0, 90, 0], "uv": [34, 9], "mirror": true},
+						{"origin": [-10.2682, 6.52438, 0.38331], "size": [1, 5, 3], "pivot": [-6.7682, 9.02438, 1.88331], "rotation": [0, -90, 0], "uv": [34, 9], "mirror": true},
+						{"origin": [-4.2682, 7.52438, 0.38331], "size": [2, 3, 3], "uv": [0, 33], "mirror": true}
+					]
+				},
+				{
+					"name": "MiniPlaguebringerAbdomen",
+					"parent": "MiniPlaguebringerBody",
+					"pivot": [0, 4.9316, 0.85636],
+					"rotation": [-67.5, 0, 0],
+					"cubes": [
+						{"origin": [-1.5, -1.0684, -1.14364], "size": [3, 7, 3], "uv": [0, 23]}
+					]
+				}
+			]
+		}
+	]
+}

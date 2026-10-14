@@ -17,15 +17,9 @@ public class BoosterExhaustParticle extends FierySmokeParticle {
 
         super(level, x, y, z, sprites, xd, yd, zd);
 
-        // ISS's own tick() does `yd += rand/100 - gravity` every tick.
-        // Their gravity is -0.0025F (negative = an upward push, since it's
-        // subtracted). Flipping the sign here turns that same inherited
-        // logic into a downward pull instead - no tick() override needed.
-        this.gravity = 0.02F; // TODO: tune - higher sinks faster
+        this.gravity = 0.02F;
 
-        // Optional: shorten lifetime so exhaust dissipates before it could
-        // drift back toward the booster regardless of gravity direction.
-        this.lifetime = 8 + (int) (Math.random() * 10); // was 10 + rand*30
+        this.lifetime = 8 + (int) (Math.random() * 10);
     }
 
     @OnlyIn(Dist.CLIENT)

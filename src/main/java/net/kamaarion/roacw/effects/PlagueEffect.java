@@ -15,7 +15,7 @@ public class PlagueEffect extends MobEffect {
 
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) {
-        return true; // Tick every game tick
+        return true;
     }
 
     @Override
@@ -30,29 +30,19 @@ public class PlagueEffect extends MobEffect {
                 duration = effectInstance.getDuration();
             }
 
-            // =====================
-            // Damage
-            // =====================
             if (duration % 20 == 0) {
-                float damage = 1.0F + (amplifier * 0.5F);
+                float damage = 2.0F + (amplifier * 0.5F);
 
                 entity.invulnerableTime = 0;
                 entity.hurt(entity.damageSources().magic(), damage);
             }
 
             // =====================
-            // Particles - broadcast from the server via sendParticles().
-            // applyEffectTick() only ever ran client-side for the entity's
-            // OWNING player before, since vanilla doesn't sync full
-            // MobEffectInstance data to other clients for arbitrary
-            // entities - only a packed "effect color" for the default
-            // swirl. That's why this worked on players but never on mobs.
-            // =====================
             PlagueParticleHelper.spawnAroundEntityServer(
                     serverLevel,
                     entity,
-                    4, // green particles
-                    1  // red particles
+                    4,
+                    1
             );
         }
     }

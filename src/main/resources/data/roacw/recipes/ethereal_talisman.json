@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " AC",
+    "ABA",
+    "CA "
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:ascendant_spirit_essence"
+    },
+    "B": {
+      "item": "irons_spellbooks:divine_soulshard"
+    },
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    }
+  },
+
+  "result": {
+    "item": "roacw:ethereal_talisman"
+  }
+}

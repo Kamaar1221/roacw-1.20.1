@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " AC",
+    "ABA",
+    "CA "
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:ascendant_spirit_essence"
+    },
+    "B": {
+      "item": "cataclysm:cursed_bow"
+    },
+    "C": {
+      "item": "irons_spellbooks:arcane_ingot"
+    }
+  },
+
+  "result": {
+    "item": "roacw:elemental_quiver"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TET",
+    "T T",
+    "T T"
+  ],
+  "key": {
+    "T": {
+      "item": "roacw:infected_plating"
+    },
+    "E": {
+      "tag": "roacw:craftable_with_tech_leggings"
+    }
+  },
+
+  "result": {
+    "item": "roacw:plaguebringer_leggings"
+  }
+}

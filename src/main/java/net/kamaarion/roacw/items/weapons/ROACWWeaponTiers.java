@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.item.weapons.IronsWeaponTier;
 import io.redspace.ironsspellbooks.item.weapons.StaffTier;
+import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
 import net.kamaarion.roacw.registeries.ROACWAttributeRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -52,7 +53,14 @@ public class ROACWWeaponTiers extends StaffTier implements IronsWeaponTier {
     );
 
     public static ROACWWeaponTiers BELLADONNA_STAFF = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.OTHERWORLDLY), 5F, -3.0F,
-            new AttributeContainer(AttributeRegistry.NATURE_SPELL_POWER, .15, AttributeModifier.Operation.MULTIPLY_TOTAL)
+            new AttributeContainer(AttributeRegistry.NATURE_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
+
+    public static ROACWWeaponTiers DEFILED_GREATSWORD = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.OTHERWORLDLY), 20F, -3.0F,
+            new AttributeContainer(CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.LIGHTNING_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL)
+
     );
 
     float damage;

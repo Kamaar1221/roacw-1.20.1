@@ -21,7 +21,6 @@ public class HighRulerShieldModel extends DefaultedItemGeoModel<HighRulerShield>
 
     @Override
     public ResourceLocation getAnimationResource(HighRulerShield animatable) {
-        // Note: Ensure this file path matches your intended asset location
         return ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "animations/mars_armor.animation.json");
     }
 }

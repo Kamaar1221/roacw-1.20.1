@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BCB",
+    "A A",
+    "   "
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:divine_chunk"
+    },
+    "B": {
+      "item": "roacw:divine_pebble"
+    },
+    "C": {
+      "item": "minecraft:netherite_boots"
+    }
+  },
+
+  "result": {
+    "item": "roacw:earthen_paladin_greaves"
+  }
+}

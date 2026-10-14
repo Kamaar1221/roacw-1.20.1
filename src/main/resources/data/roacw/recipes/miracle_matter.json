@@ -1,0 +1,37 @@
+{
+  "type": "crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "roacw:charged_auric_ingot"
+    },
+    {
+      "item": "irons_spellbooks:blood_vial"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "roacw:yharon_feather"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    },
+    {
+      "item": "irons_spellbooks:frozen_bone"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "cataclysm:lacrima"
+    },
+    {
+      "item": "roacw:ascendant_spirit_essence"
+    }
+  ],
+  "result": {
+    "item": "roacw:miracle_matter",
+    "count": 4
+  }
+}

@@ -1,7 +1,7 @@
 package net.kamaarion.roacw.items.armor.marsarmorset;
 
-import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;
+import net.kamaarion.roacw.client.others.ModKeyMappings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.kamaarion.roacw.items.armor.ROACWArmorMaterials;
-import net.kamaarion.roacw.registeries.MarsRarityColorHelp;
+import net.kamaarion.roacw.client.others.MarsRarityColorHelp;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
@@ -48,7 +48,12 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
-        return new GenericCustomArmorRenderer<>(new MarsArmorModel());
+        return new MarsArmorRenderer(new MarsArmorModel());
+    }
+
+    @Override
+    public int getEnchantmentValue() {
+        return 15;
     }
 
     @Override
@@ -61,16 +66,33 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
             font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });
+
             pTooltipComponents.add(Component.empty());
-            Component tooltipText = Component.translatable("item.roacw.mars_engine.tooltip").withStyle(ChatFormatting.GRAY);
-            font.getSplitter().splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle()).forEach(formattedText -> {
-                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText.getStyle()));
+
+            Component tooltip1Name = Component.translatable("item.roacw.mars_engine.tooltip1.name")
+                    .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+            pTooltipComponents.add(tooltip1Name);
+
+            Component tooltipText1 = Component.translatable("item.roacw.mars_engine.tooltip1.desc").withStyle(ChatFormatting.GRAY);
+            font.getSplitter().splitLines(tooltipText1, maxTooltipWidth, tooltipText1.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText1.getStyle()));
             });
-            /*pTooltipComponents.add(Component.empty());
-            Component setBonusText = Component.literal("Full Set Bonus: Grants Creative Flight").withStyle(ChatFormatting.GOLD);
-            font.getSplitter().splitLines(setBonusText, maxTooltipWidth, setBonusText.getStyle()).forEach(formattedText -> {
-                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(setBonusText.getStyle()));
-            });*/
+
+            pTooltipComponents.add(Component.empty());
+
+            Component currentBoundKey = ModKeyMappings.MARS_CANNONS_KEY.getTranslatedKeyMessage()
+                    .copy().withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
+
+            Component tooltip2Name = Component.translatable("item.roacw.mars_engine.tooltip2.name")
+                    .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+            pTooltipComponents.add(tooltip2Name);
+
+            Component tooltipText2 = Component.translatable("item.roacw.mars_engine.tooltip2.desc", currentBoundKey).withStyle(ChatFormatting.GRAY);
+            font.getSplitter().splitLines(tooltipText2, maxTooltipWidth, tooltipText2.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText2.getStyle()));
+            });
+
+            pTooltipComponents.add(Component.empty());
 
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
@@ -81,7 +103,7 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
     @Override
     public Component getName(ItemStack stack) {
         return MarsRarityColorHelp.createRainbowWave(
-                super.getName(stack).getString()
+                super.getName(stack)
         );
     }
 
@@ -90,4 +112,3 @@ public class MarsArmorItem extends ImbuableChestplateArmorItem {
         return false;
     }
 }
-

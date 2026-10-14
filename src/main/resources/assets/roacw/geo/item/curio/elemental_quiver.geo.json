@@ -1,0 +1,117 @@
+{
+	"format_version": "1.21.110",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3,
+				"visible_bounds_offset": [0, 0.5, 0]
+			},
+			"bones": [
+				{
+					"name": "elementalQuiver",
+					"pivot": [0, 2, -1],
+					"rotation": [0, 0, -32.5],
+					"cubes": [
+						{"origin": [-2, -3, -1.5], "size": [3, 7, 4], "uv": [50, 35]},
+						{"origin": [-1.5, 3, -1.5], "size": [2, 2, 4], "inflate": 0.05, "pivot": [-0.5, 4, -0.5], "rotation": [0, 0, -45], "uv": [40, 51]},
+						{"origin": [-1.5, -4, -1.5], "size": [2, 2, 4], "inflate": 0.05, "pivot": [-0.5, -3, -0.5], "rotation": [0, 0, -45], "uv": [52, 46]},
+						{"origin": [-2, -9, -1], "size": [4, 16, 3], "uv": [0, 0]},
+						{"origin": [-4, -9, -1], "size": [2, 16, 3], "inflate": 0.025, "pivot": [-2, 7, 0], "rotation": [0, 0, -7.5], "uv": [14, 0]},
+						{"origin": [-3.5, 6.5, -1.5], "size": [6, 2, 4], "inflate": 0.025, "uv": [30, 58]},
+						{"origin": [-5, 6.5, -1], "size": [3, 2, 3], "pivot": [-3.5, 7.5, 0.5], "rotation": [0, 45, 0], "uv": [18, 59]},
+						{"origin": [-2, -11, -1], "size": [4, 2, 3], "inflate": 0.05, "pivot": [2, -9, 0], "rotation": [0, 0, 25], "uv": [0, 19]}
+					]
+				},
+				{
+					"name": "tilt",
+					"parent": "elementalQuiver",
+					"pivot": [-3.5, -2, -1],
+					"rotation": [0, 0, -22.5],
+					"cubes": [
+						{"origin": [-3.5, -2, -2], "size": [7, 2, 2], "pivot": [-3.5, -2, -1], "rotation": [0, 0, 45], "uv": [40, 0]},
+						{"origin": [1.5, -2, 0], "size": [2, 2, 3], "pivot": [-3.5, -2, 1], "rotation": [0, 0, 45], "uv": [0, 55]},
+						{"origin": [-3.5, -4, 0], "size": [2, 2, 2], "pivot": [-3.5, -2, 1], "rotation": [0, 0, -45], "uv": [36, 25]},
+						{"origin": [-3.5, -2, 1], "size": [7, 2, 2], "inflate": 0.025, "uv": [40, 4]},
+						{"origin": [-1.5, 0, 1], "size": [2, 5, 2], "uv": [42, 16]},
+						{"origin": [0.5, 3, 1], "size": [4, 2, 2], "uv": [37, 12]},
+						{"origin": [2.5, 5, 2], "size": [2, 2, 1], "uv": [49, 13]}
+					]
+				},
+				{
+					"name": "tilt3",
+					"parent": "tilt",
+					"pivot": [1.18438, -5.10199, 3],
+					"rotation": [0, 0, -10],
+					"cubes": [
+						{"origin": [-5.81562, -7.10199, -2], "size": [2, 2, 5], "uv": [50, 11]},
+						{"origin": [-3.81562, -7.10199, -2], "size": [4, 2, 2], "inflate": 0.025, "uv": [52, 22]},
+						{"origin": [-1.81562, -11.10199, -2], "size": [2, 4, 1], "pivot": [-0.81562, -7.10199, -2], "rotation": [22.5, 0, 0], "uv": [58, 26]},
+						{"origin": [-3.81562, -7.10199, 1], "size": [5, 2, 2], "inflate": 0.025, "uv": [50, 18]}
+					]
+				},
+				{
+					"name": "tilt2",
+					"parent": "tilt",
+					"pivot": [3.5, -2, -1],
+					"rotation": [0, 0, -45],
+					"cubes": [
+						{"origin": [3.5, -2, -2], "size": [2, 7, 2], "uv": [0, 44]},
+						{"origin": [5.5, 3, -2], "size": [4, 2, 1], "inflate": 0.025, "pivot": [5.5, 5, -1], "rotation": [0, 0, 22.5], "uv": [52, 8]},
+						{"origin": [3.5, -2, 0], "size": [2, 2, 3], "uv": [5, 50]}
+					]
+				},
+				{
+					"name": "crystalMeth",
+					"parent": "elementalQuiver",
+					"pivot": [2, -1, 2],
+					"rotation": [0, -45, 0]
+				},
+				{
+					"name": "crystal1",
+					"parent": "crystalMeth",
+					"pivot": [1, -2, 1],
+					"rotation": [-5.123, 21.93857, -18.4936],
+					"cubes": [
+						{"origin": [0, -2, 0], "size": [6, 3, 2], "uv": [16, 24]},
+						{"origin": [5, -1.5, 0], "size": [2, 2, 2], "inflate": 0.025, "pivot": [6, -0.5, 1], "rotation": [0, 0, -45], "uv": [0, 29]}
+					]
+				},
+				{
+					"name": "root1",
+					"parent": "crystal1",
+					"pivot": [1, -2, 2],
+					"rotation": [0, 0, 15],
+					"cubes": [
+						{"origin": [1, -2, 1], "size": [2, 4, 2], "uv": [24, 4]},
+						{"origin": [1, 0, -1], "size": [2, 2, 2], "uv": [24, 0]},
+						{"origin": [-1, -2, -1], "size": [4, 2, 1], "uv": [24, 10]}
+					]
+				},
+				{
+					"name": "crystal3",
+					"parent": "crystalMeth",
+					"pivot": [0, -5, 2],
+					"rotation": [0, 0, 22.5],
+					"cubes": [
+						{"origin": [-1, -5, 1], "size": [6, 3, 2], "uv": [0, 24]},
+						{"origin": [4, -4.5, 1], "size": [2, 2, 2], "inflate": 0.025, "pivot": [5, -3.5, 2], "rotation": [0, 0, -45], "uv": [8, 29]}
+					]
+				},
+				{
+					"name": "crystal4",
+					"parent": "crystalMeth",
+					"pivot": [-3.5, -1, 4],
+					"rotation": [14.34325, 28.23489, 30.65675],
+					"cubes": [
+						{"origin": [-7.5, -1, 4], "size": [4, 3, 2], "uv": [12, 38]},
+						{"origin": [-8.5, -0.5, 4], "size": [2, 2, 2], "inflate": 0.025, "pivot": [-7.5, 0.5, 5], "rotation": [0, 0, -45], "uv": [16, 43]}
+					]
+				}
+			]
+		}
+	]
+}

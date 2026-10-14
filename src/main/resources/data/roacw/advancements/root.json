@@ -1,0 +1,24 @@
+
+{
+  "display": {
+    "icon": {
+      "item": "roacw:auric_tesla_royal_helm"
+    },
+    "title": {
+      "text": "Remnants of a Cruel World"
+    },
+    "description": {
+      "text": "Your journey starts, in the remnants of a cruel world."
+    },
+    "background": "roacw:textures/block/raw_auric_block.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "first_join": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

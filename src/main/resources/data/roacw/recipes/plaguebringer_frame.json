@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "T T",
+    "TET",
+    "TCT"
+  ],
+  "key": {
+    "T": {
+      "item": "roacw:infected_plating"
+    },
+    "E": {
+      "tag": "roacw:craftable_with_tech_chest"
+    },
+    "C": {
+      "item": "roacw:plague_core"
+    }
+  },
+
+  "result": {
+    "item": "roacw:plaguebringer_frame"
+  }
+}

@@ -22,6 +22,7 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 @OnlyIn(Dist.CLIENT)
 public class ElementalGauntletCurioRenderer implements ICurioRenderer {
     private final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+
     private final Matrix4f reflectionMatrix = new Matrix4f(
             -1, 0, 0, 0,
             0, 1, 0, 0,
@@ -42,71 +43,82 @@ public class ElementalGauntletCurioRenderer implements ICurioRenderer {
             float partialTicks,
             float ageInTicks,
             float netHeadYaw,
-            float headPitch) {
-
+            float headPitch
+    ) {
         if (!slotContext.visible()) {
             return;
         }
 
-        if (renderLayerParent.getModel() instanceof HumanoidModel<?>) {
-            @SuppressWarnings("unchecked")
-            HumanoidModel<LivingEntity> humanoidModel = (HumanoidModel<LivingEntity>) renderLayerParent.getModel();
-            int slotIndex = slotContext.index();
-            LivingEntity wearer = slotContext.entity();
+        if (!(renderLayerParent.getModel() instanceof HumanoidModel<?>)) {
+            return;
+        }
 
-            // Detect if the wearer is using a Slim (Alex) model template
-            boolean isSlim = false;
-            if (wearer instanceof AbstractClientPlayer clientPlayer) {
-                isSlim = clientPlayer.getModelName().equals("slim");
-            }
+        @SuppressWarnings("unchecked")
+        HumanoidModel<LivingEntity> humanoidModel =
+                (HumanoidModel<LivingEntity>) renderLayerParent.getModel();
 
-            if (slotIndex == 0 && humanoidModel.rightArm.visible) {
-                // --- RIGHT ARM RENDERING ---
-                poseStack.pushPose();
-                humanoidModel.rightArm.translateAndRotate(poseStack);
+        int slotIndex = slotContext.index();
+        LivingEntity wearer = slotContext.entity();
 
-                // Adjust positioning slightly inward if skin is slim
-                double xOffset = isSlim ? -0.04875D : -0.08D;
-                poseStack.translate(xOffset, 0.5D, 0.0D);
+        boolean isSlim = wearer instanceof AbstractClientPlayer clientPlayer
+                && clientPlayer.getModelName().equals("slim");
 
-                // Slightly thin down the X-scale if player model is slim
-                float scaleX = isSlim ? 0.95f : 1.1f;
-                poseStack.scale(scaleX, 1.1f, 1.1f);
+        if (slotIndex == 0 && humanoidModel.rightArm.visible) {
+            poseStack.pushPose();
+            humanoidModel.rightArm.translateAndRotate(poseStack);
 
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            double xOffset = isSlim ? -0.04875D : -0.08D;
+            poseStack.translate(xOffset, 0.5D, 0.0D);
 
-                itemRenderer.renderStatic(
-                        wearer, stack, ItemDisplayContext.FIXED, false,
-                        poseStack, renderTypeBuffer, wearer.level(), light, OverlayTexture.NO_OVERLAY, 0
-                );
-                poseStack.popPose();
+            float scaleX = isSlim ? 0.95F : 1.1F;
+            poseStack.scale(scaleX, 1.1F, 1.1F);
 
-            } else if (slotIndex == 1 && humanoidModel.leftArm.visible) {
-                // --- LEFT ARM RENDERING ---
-                poseStack.pushPose();
-                humanoidModel.leftArm.translateAndRotate(poseStack);
+            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 
-                poseStack.translate(0.5D, 0.0D, 0.0D);
-                poseStack.mulPoseMatrix(reflectionMatrix);
-                poseStack.translate(0.5D, 0.0D, 0.0D);
+            itemRenderer.renderStatic(
+                    wearer,
+                    stack,
+                    ItemDisplayContext.FIXED,
+                    false,
+                    poseStack,
+                    renderTypeBuffer,
+                    wearer.level(),
+                    light,
+                    OverlayTexture.NO_OVERLAY,
+                    0
+            );
 
-                // Adjust positioning slightly outward to account for missing pixel row if slim
-                double xOffset = isSlim ? -0.065D : -0.08D;
-                poseStack.translate(xOffset, 0.5D, 0.0D);
+            poseStack.popPose();
+        } else if (slotIndex == 1 && humanoidModel.leftArm.visible) {
+            poseStack.pushPose();
+            humanoidModel.leftArm.translateAndRotate(poseStack);
 
-                // Thinner X-scaling factor for the mirrored left side if slim
-                float scaleX = isSlim ? 0.95f : 1.1f;
-                poseStack.scale(scaleX, 1.1f, 1.1f);
+            poseStack.translate(0.5D, 0.0D, 0.0D);
+            poseStack.mulPoseMatrix(reflectionMatrix);
+            poseStack.translate(0.5D, 0.0D, 0.0D);
 
-                poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            double xOffset = isSlim ? -0.065D : -0.08D;
+            poseStack.translate(xOffset, 0.5D, 0.0D);
 
-                itemRenderer.renderStatic(
-                        wearer, stack, ItemDisplayContext.FIXED, false,
-                        poseStack, renderTypeBuffer, wearer.level(), light, OverlayTexture.NO_OVERLAY, 0
-                );
+            float scaleX = isSlim ? 0.95F : 1.1F;
+            poseStack.scale(scaleX, 1.1F, 1.1F);
 
-                poseStack.popPose();
-            }
+            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+
+            itemRenderer.renderStatic(
+                    wearer,
+                    stack,
+                    ItemDisplayContext.FIXED,
+                    false,
+                    poseStack,
+                    renderTypeBuffer,
+                    wearer.level(),
+                    light,
+                    OverlayTexture.NO_OVERLAY,
+                    0
+            );
+
+            poseStack.popPose();
         }
     }
 }

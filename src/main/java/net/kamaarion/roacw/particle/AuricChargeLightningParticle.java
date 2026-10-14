@@ -19,7 +19,7 @@ public class AuricChargeLightningParticle extends TextureSheetParticle {
         this.yd = ySpeed;
         this.zd = zSpeed;
 
-        this.quadSize *= 1.5F * 0.50F; // same base as CustomAnimatedParticle, scaled to 0.15x
+        this.quadSize *= 1.5F * 0.50F;
         this.lifetime = 30;
         this.hasPhysics = true;
 
@@ -39,7 +39,7 @@ public class AuricChargeLightningParticle extends TextureSheetParticle {
 
     private void updateFastSprite() {
         float animationSpeedMultiplier = 0.5F;
-        int totalFrames = 4; // matches auric_charge_lightning.json
+        int totalFrames = 4;
 
         int currentFrame = (int)(this.age * animationSpeedMultiplier) % totalFrames;
         this.setSprite(this.sprites.get(currentFrame, totalFrames));

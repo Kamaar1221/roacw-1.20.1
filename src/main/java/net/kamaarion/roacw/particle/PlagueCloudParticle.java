@@ -16,11 +16,6 @@ public class PlagueCloudParticle extends TextureSheetParticle {
 
     private static final int TOTAL_FRAMES = 10;
 
-    // Max opacity this particle ever reaches. Was implicitly 1.0 (fully
-    // opaque) before - with many of these overlapping in a lingering cloud,
-    // that made it nearly impossible to see through while standing inside
-    // it. Lower this further if it's still too thick, or raise it if the
-    // cloud starts looking too faint to read as a hazard.
     private static final float PEAK_ALPHA = 0.4F;
 
     private final SpriteSet sprites;
@@ -67,17 +62,13 @@ public class PlagueCloudParticle extends TextureSheetParticle {
 
         move(this.xd, this.yd, this.zd);
 
-        // Slow drifting
         this.xd += (random.nextDouble() - 0.5D) * 0.0008D;
         this.zd += (random.nextDouble() - 0.5D) * 0.0008D;
 
-        // Gentle rise
         this.yd += 0.00025D;
 
-        // Very slow expansion
         this.quadSize *= 1.01F;
 
-        // Fade out over final 25% of life
         float fadeStart = lifetime * 0.75F;
 
         if (age > fadeStart) {

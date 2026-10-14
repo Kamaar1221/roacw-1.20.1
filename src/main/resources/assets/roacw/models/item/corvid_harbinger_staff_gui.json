@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "roacw:item/corvid_harbinger_staff_gui"
+    }
+}

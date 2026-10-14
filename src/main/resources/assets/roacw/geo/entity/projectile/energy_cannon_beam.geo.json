@@ -1,0 +1,181 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 18,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "Laser1Pars",
+					"pivot": [0, 7, -109]
+				},
+				{
+					"name": "Laser1Par1",
+					"parent": "Laser1Pars",
+					"pivot": [0, 7.5, -109],
+					"cubes": [
+						{"origin": [0, 5, -111.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par2",
+					"parent": "Laser1Pars",
+					"pivot": [0, 7.5, -109],
+					"cubes": [
+						{"origin": [0, 5, -111.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser1Par3",
+					"parent": "Laser1Pars",
+					"pivot": [0, 6.5, -109],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -111.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par4",
+					"parent": "Laser1Pars",
+					"pivot": [0, 6.5, -109],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -111.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser1Pars2",
+					"pivot": [0, 7, -66]
+				},
+				{
+					"name": "Laser1Par5",
+					"parent": "Laser1Pars2",
+					"pivot": [0, 7.5, -66],
+					"cubes": [
+						{"origin": [0, 5, -68.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par6",
+					"parent": "Laser1Pars2",
+					"pivot": [0, 7.5, -66],
+					"cubes": [
+						{"origin": [0, 5, -68.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser1Par7",
+					"parent": "Laser1Pars2",
+					"pivot": [0, 6.5, -66],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -68.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par8",
+					"parent": "Laser1Pars2",
+					"pivot": [0, 6.5, -66],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -68.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser1Pars3",
+					"pivot": [0, 7, -19]
+				},
+				{
+					"name": "Laser1Par9",
+					"parent": "Laser1Pars3",
+					"pivot": [0, 7.5, -19],
+					"cubes": [
+						{"origin": [0, 5, -21.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par10",
+					"parent": "Laser1Pars3",
+					"pivot": [0, 7.5, -19],
+					"cubes": [
+						{"origin": [0, 5, -21.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser1Par11",
+					"parent": "Laser1Pars3",
+					"pivot": [0, 6.5, -19],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -21.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par12",
+					"parent": "Laser1Pars3",
+					"pivot": [0, 6.5, -19],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -21.5], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser1Pars4",
+					"pivot": [0, 7, -146.5]
+				},
+				{
+					"name": "Laser1Par13",
+					"parent": "Laser1Pars4",
+					"pivot": [0, 7.5, -146.5],
+					"cubes": [
+						{"origin": [0, 5, -149], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par14",
+					"parent": "Laser1Pars4",
+					"pivot": [0, 7.5, -146.5],
+					"cubes": [
+						{"origin": [0, 5, -149], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser1Par15",
+					"parent": "Laser1Pars4",
+					"pivot": [0, 6.5, -146.5],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -149], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 5]}
+					]
+				},
+				{
+					"name": "Laser1Par16",
+					"parent": "Laser1Pars4",
+					"pivot": [0, 6.5, -146.5],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [0, 4, -149], "size": [0, 5, 5], "inflate": 0.01, "uv": [24, 0]}
+					]
+				},
+				{
+					"name": "Laser",
+					"pivot": [0, 7, 8],
+					"cubes": [
+						{"origin": [2, 9, 8], "size": [-4, -4, -32], "uv": [75, 36]},
+						{"origin": [-1, 6, -24], "size": [2, 2, 32], "uv": [12, 5]},
+						{"origin": [-1, 6, -56], "size": [2, 2, 32], "uv": [12, 5]},
+						{"origin": [2, 9, -24], "size": [-4, -4, -32], "uv": [75, 36]},
+						{"origin": [2, 9, -56], "size": [-4, -4, -32], "uv": [75, 76]},
+						{"origin": [-1, 6, -88], "size": [2, 2, 32], "uv": [12, 5]}
+					]
+				}
+			]
+		}
+	]
+}

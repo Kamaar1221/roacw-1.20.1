@@ -4,7 +4,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.kamaarion.roacw.registeries.ROACWAttributeRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -35,35 +34,32 @@ import java.util.function.Consumer;
 public class BurstSheath extends CurioBaseItem implements ICurioItem, GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public BurstSheath(Properties rarity) {
-        super(ItemPropertiesHelper
-                .equipment()
+    public BurstSheath(Properties properties) {
+        super(properties
                 .stacksTo(1)
                 .fireResistant()
                 .rarity(Rarity.EPIC)
         );
     }
 
+    @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private BurstSheathRenderer renderer;
 
+            @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (this.renderer == null) {
-                    this.renderer = new BurstSheathRenderer();
+                if (renderer == null) {
+                    renderer = new BurstSheathRenderer();
                 }
 
-                return this.renderer;
+                return renderer;
             }
         });
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-
-        // Runs every tick while worn
-        // You can leave this empty if you want
-
     }
 
     @Override
@@ -76,17 +72,19 @@ public class BurstSheath extends CurioBaseItem implements ICurioItem, GeoItem {
         return true;
     }
 
-    private PlayState idlePredicate(AnimationState<net.kamaarion.roacw.items.curios.stasis_curse.StatisCurse> event) {
+    private PlayState idlePredicate(AnimationState<BurstSheath> event) {
         event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
         return PlayState.CONTINUE;
     }
 
-    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController[]{new AnimationController(this, "controller", 20, this::idlePredicate)});
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 20, this::idlePredicate));
     }
 
+    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+        return cache;
     }
 
     @Override
@@ -95,17 +93,48 @@ public class BurstSheath extends CurioBaseItem implements ICurioItem, GeoItem {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
-        attr.put(ROACWAttributeRegistry.EXO_MAGIC_POWER.get(),
-                new AttributeModifier(uuid, "Exo Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(AttributeRegistry.MAX_MANA.get(),
-                new AttributeModifier(uuid, "Max Mana", 200, AttributeModifier.Operation.ADDITION));
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(
+            SlotContext slotContext,
+            UUID uuid,
+            ItemStack stack
+    ) {
+        Multimap<Attribute, AttributeModifier> attributes = LinkedHashMultimap.create();
 
-        return attr;
+        attributes.put(
+                ROACWAttributeRegistry.EXO_MAGIC_POWER.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Exo Spell Power",
+                        0.15,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
+
+        attributes.put(
+                AttributeRegistry.MAX_MANA.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Max Mana",
+                        200,
+                        AttributeModifier.Operation.ADDITION
+                )
+        );
+
+        return attributes;
     }
+
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.burst_sheath.desc").withStyle(ChatFormatting.DARK_RED));
+    public void appendHoverText(
+            ItemStack stack,
+            @Nullable Level level,
+            List<Component> tooltipComponents,
+            TooltipFlag tooltipFlag
+    ) {
+        super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
+
+        tooltipComponents.add(
+                Component.translatable("item.roacw.burst_sheath.desc")
+                        .withStyle(ChatFormatting.DARK_RED)
+        );
     }
 }

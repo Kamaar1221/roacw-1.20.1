@@ -31,12 +31,10 @@ public class AlchemicalDecanterCurioRenderer implements ICurioRenderer {
 
             humanoidModel.body.translateAndRotate(poseStack);
 
-            // Left hip
             poseStack.translate(0.25D, 0.8D, -0.1D);
 
             poseStack.scale(0.75F, 0.75F, 0.75F);
 
-            // Rotate so it hangs naturally at the hip
             poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
             poseStack.mulPose(Axis.YP.rotationDegrees(210F));
 

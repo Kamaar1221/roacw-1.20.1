@@ -3,7 +3,6 @@ package net.kamaarion.roacw.entity.projectile.god_killer_dart;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.kamaarion.roacw.client.entity.projectile.GodKillerDartModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -17,17 +16,10 @@ public class GodKillerDartRenderer extends GeoEntityRenderer<GodKillerDartEntity
 
     public GodKillerDartRenderer(EntityRendererProvider.Context context) {
         super(context, new GodKillerDartModel());
-        // Bump if the dart reads as too small/large at a distance — same
-        // shape of tweak as the Earthen Paladin's 1.5x scale.
+
         this.shadowRadius = 0.25f;
     }
 
-    /**
-     * Derives yaw/pitch directly from the dart's real motion vector rather
-     * than relying on GeoEntityRenderer's default rotation (which is tuned
-     * for Mob body-rotation, not a bare homing projectile). Same approach
-     * as PlagueRocketRenderer.
-     */
     @Override
     public void preRender(PoseStack poseStack,
                           GodKillerDartEntity animatable,

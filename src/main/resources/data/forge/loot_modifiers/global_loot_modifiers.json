@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "entries": [
+    "roacw:ignis_loot",
+    "roacw:maledictus_loot",
+    "roacw:leviathan_loot",
+    "roacw:harbinger_loot",
+    "roacw:prowler_loot",
+    "roacw:watcher_loot",
+    "roacw:monastery_loot",
+    "roacw:geomancer_basic_storage",
+    "roacw:geomancer_treasure_storage",
+    "roacw:pyromancer_basic_storage",
+    "roacw:pyromancer_supplies"
+  ]
+}

@@ -12,11 +12,10 @@ import java.util.UUID;
 
 public class SanctifiedBedrockEffect extends MobEffect {
     private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("6a4f216a-b21d-4f11-9a77-4b953d528b12");
-    private static final float HEAL_ON_EXPIRE = 6.0F; // 3 hearts
+    private static final float HEAL_ON_EXPIRE = 6.0F;
 
     public SanctifiedBedrockEffect() {
         super(MobEffectCategory.BENEFICIAL, 0xF0E68C);
-        // +10 armor while effect is active
         this.addAttributeModifier(
                 Attributes.ARMOR,
                 ARMOR_MODIFIER_UUID.toString(),
@@ -52,7 +51,7 @@ public class SanctifiedBedrockEffect extends MobEffect {
 
 
                     serverLevel.sendParticles(
-                            ParticleTypes.TOTEM_OF_UNDYING,
+                            ParticleTypes.HAPPY_VILLAGER,
                             x, y + 1.0, z,
                             25,
                             0.5, 0.5, 0.5,

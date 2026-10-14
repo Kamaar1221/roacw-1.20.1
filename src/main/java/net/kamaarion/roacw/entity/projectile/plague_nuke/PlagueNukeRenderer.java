@@ -3,7 +3,6 @@ package net.kamaarion.roacw.entity.projectile.plague_nuke;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.kamaarion.roacw.client.entity.projectile.PlagueNukeModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -14,6 +13,8 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import javax.annotation.Nullable;
 
 public class PlagueNukeRenderer extends GeoEntityRenderer<PlagueNukeEntity> {
+    private static final float MODEL_LAY_DOWN_DEGREES = 90.0F;
+    private static final float MODEL_CENTER_Y = 0.375F;
 
     public PlagueNukeRenderer(EntityRendererProvider.Context context) {
         super(context, new PlagueNukeModel());
@@ -21,37 +22,49 @@ public class PlagueNukeRenderer extends GeoEntityRenderer<PlagueNukeEntity> {
     }
 
     @Override
-    public void preRender(PoseStack poseStack,
-                          PlagueNukeEntity animatable,
-                          BakedGeoModel model,
-                          @Nullable MultiBufferSource bufferSource,
-                          @Nullable VertexConsumer buffer,
-                          boolean isReRender,
-                          float partialTick,
-                          int packedLight,
-                          int packedOverlay,
-                          float red,
-                          float green,
-                          float blue,
-                          float alpha) {
+    public void preRender(
+            PoseStack poseStack,
+            PlagueNukeEntity animatable,
+            BakedGeoModel model,
+            @Nullable MultiBufferSource bufferSource,
+            @Nullable VertexConsumer buffer,
+            boolean isReRender,
+            float partialTick,
+            int packedLight,
+            int packedOverlay,
+            float red,
+            float green,
+            float blue,
+            float alpha
+    ) {
+        if (!isReRender) {
+            Vec3 motion = animatable.getDeltaMovement();
 
-        Vec3 motion = animatable.getDeltaMovement();
+            if (motion.lengthSqr() > 1.0E-6D) {
+                float xRot = (float) -(
+                        Mth.atan2(
+                                motion.y,
+                                motion.horizontalDistance()
+                        ) * Mth.RAD_TO_DEG
+                );
 
-        // Don't try to rotate if the projectile is essentially stationary.
-        if (motion.lengthSqr() > 1.0E-6D) {
+                float yRot = -(
+                        (float) (
+                                Mth.atan2(
+                                        motion.z,
+                                        motion.x
+                                ) * Mth.RAD_TO_DEG
+                        ) + 90.0F
+                ) + 180.0F;
 
-            float xRot = (float)(-(Mth.atan2(
-                    motion.y,
-                    motion.horizontalDistance()
-            ) * Mth.RAD_TO_DEG));
+                poseStack.translate(0.0D, MODEL_CENTER_Y, 0.0D);
 
-            float yRot = -((float)(Mth.atan2(
-                    motion.z,
-                    motion.x
-            ) * Mth.RAD_TO_DEG) + 90.0F) + 180.0F;
+                poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+                poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+                poseStack.mulPose(Axis.XP.rotationDegrees(MODEL_LAY_DOWN_DEGREES));
 
-            poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-            poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+                poseStack.translate(0.0D, -MODEL_CENTER_Y, 0.0D);
+            }
         }
 
         super.preRender(

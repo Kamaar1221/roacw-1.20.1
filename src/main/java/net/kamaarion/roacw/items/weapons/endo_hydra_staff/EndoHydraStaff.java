@@ -63,7 +63,7 @@ public class EndoHydraStaff extends StaffItem implements GeoItem, IPresetSpellCo
             return;
         }
         var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
-        spellContainer.addSpell(ROACWSpellRegistry.SUMMON_DARK_RAVEN.get(), 5, true);
+        spellContainer.addSpell(ROACWSpellRegistry.SUMMON_ENDO_HYDRA.get(), 3, true);
         ISpellContainer.set(itemStack, spellContainer.toImmutable());
     }
 
@@ -73,7 +73,7 @@ public class EndoHydraStaff extends StaffItem implements GeoItem, IPresetSpellCo
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
             int maxTooltipWidth = 240;
 
-            Component loreText = Component.translatable("item.roacw.corvid_harbinger_staff.desc").withStyle(ChatFormatting.YELLOW);
+            Component loreText = Component.translatable("item.roacw.endo_hydra_staff.desc").withStyle(ChatFormatting.YELLOW);
             font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });

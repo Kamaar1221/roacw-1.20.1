@@ -177,6 +177,21 @@ public class HighRulerShield extends ShieldItem implements GeoItem {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.high_ruler_shield.desc").withStyle(ChatFormatting.AQUA));
+        if (pLevel != null && pLevel.isClientSide()) {
+            net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+            int maxTooltipWidth = 240;
+
+            Component loreText = Component.translatable("item.roacw.high_ruler_shield.desc").withStyle(ChatFormatting.AQUA);
+            font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
+                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
+            });
+
+            pTooltipComponents.add(Component.empty());
+
+
+        } else {
+            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        }
     }
+
 }

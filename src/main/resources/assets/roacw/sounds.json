@@ -102,6 +102,83 @@
       "roacw:dark_raven_summon"
     ]
   },
+  "endo_hydra_summon": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.endo_hydra_summon",
+    "sounds": [
+      "roacw:endo_hydra_summon"
+    ]
+  },
+  "endo_hydra_firing": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.endo_hydra_firing",
+    "sounds": [
+      "roacw:endo_hydra_firing"
+    ]
+  },
+  "draedon_laugh": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.draedon_laugh",
+    "sounds": [
+      "roacw:draedon_laugh"
+    ]
+  },
+  "weapon_swing": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.weapon_swing",
+    "sounds": [
+      "roacw:weapon_swing"
+    ]
+  },
+  "mars_missile_explosion_1": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.mars_missile_explosion_1",
+    "sounds": [
+      "roacw:mars_missile_explosion_1"
+    ]
+  },
+  "mars_missile_explosion_2": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.mars_missile_explosion_2",
+    "sounds": [
+      "roacw:mars_missile_explosion_2"
+    ]
+  },
+  "mars_missile_explosion_3": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.mars_missile_explosion_3",
+    "sounds": [
+      "roacw:mars_missile_explosion_3"
+    ]
+  },
+  "energy_cannon_charge": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.energy_cannon_charge",
+    "sounds": [
+      "roacw:energy_cannon_charge"
+    ]
+  },
+  "energy_cannon_fire": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.energy_cannon_fire",
+    "sounds": [
+      "roacw:energy_cannon_fire"
+    ]
+  },
+  "tyrant_roar": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.tyrant_roar",
+    "sounds": [
+      "roacw:tyrant_roar"
+    ]
+  },
+  "pheonix_rebirth": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.pheonix_rebirth",
+    "sounds": [
+      "roacw:pheonix_rebirth"
+    ]
+  },
   "roacw_title_intro": {
     "sounds": [
       {

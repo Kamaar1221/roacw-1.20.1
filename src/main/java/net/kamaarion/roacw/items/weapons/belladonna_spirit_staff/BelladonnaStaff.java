@@ -75,7 +75,7 @@ public class BelladonnaStaff extends StaffItem implements GeoItem, IPresetSpellC
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
             int maxTooltipWidth = 240;
 
-            Component loreText = Component.translatable("item.roacw.corvid_harbinger_staff.desc").withStyle(ChatFormatting.YELLOW);
+            Component loreText = Component.translatable("item.roacw.belladonna_spirit_staff.desc").withStyle(ChatFormatting.YELLOW);
             font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });

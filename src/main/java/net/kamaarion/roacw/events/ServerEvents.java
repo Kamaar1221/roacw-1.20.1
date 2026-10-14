@@ -3,6 +3,8 @@ package net.kamaarion.roacw.events;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import net.kamaarion.roacw.Utils;
+import net.kamaarion.roacw.effects.AuricRebukeEffect;
+import net.kamaarion.roacw.effects.HorrifiedEffect;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
@@ -12,21 +14,18 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Vector3f;
-import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 
@@ -62,6 +61,7 @@ public class ServerEvents {
             living.addEffect(new MobEffectInstance(ROACWEffectRegistry.AURIC_CHARGE.get(), 300, 0, false, false, true));
             return true;
         }
+
         return false;
     }
 
@@ -89,30 +89,24 @@ public class ServerEvents {
     public static void onLivingHurt(LivingHurtEvent event) {
         if (event.getEntity().level().isClientSide()) return;
 
-        // --- HighRulerShield: 5% passive block chance when equipped as a curio ---
         if (event.getEntity() instanceof Player player) {
-            // Only proc if not already actively blocking it in offhand
             ItemStack offhand = player.getOffhandItem();
             boolean blockingInHand = offhand.getItem() instanceof HighRulerShield && player.isUsingItem();
 
-            if (!blockingInHand) {
-                CuriosApi.getCuriosHelper()
-                        .findFirstCurio(player, s -> s.getItem() instanceof HighRulerShield)
-                        .ifPresent(result -> {
-                            if (player.getRandom().nextFloat() < 0.5f) {
-                                event.setCanceled(true);
-                                player.level().playSound(
-                                        null,
-                                        player.blockPosition(),
-                                        SoundEvents.SHIELD_BLOCK,
-                                        SoundSource.PLAYERS,
-                                        1.0f,
-                                        0.8f + player.getRandom().nextFloat() * 0.4f
-                                );
-                            }
-                        });
+            if (!blockingInHand && Utils.hasCurio(player, ROACWItemRegistry.HIGH_RULER_SHIELD.get())) {
+                if (player.getRandom().nextFloat() < 0.5f) {
+                    event.setCanceled(true);
+                    player.level().playSound(
+                            null,
+                            player.blockPosition(),
+                            SoundEvents.SHIELD_BLOCK,
+                            SoundSource.PLAYERS,
+                            1.0f,
+                            0.8f + player.getRandom().nextFloat() * 0.4f
+                    );
+                }
             }
-            // --- HighRulerShield: 10% AOE burst when actively blocking a hit ---
+
             if (blockingInHand && player.getRandom().nextFloat() < 0.50f) {
                 double radius = 3.0;
                 float damage = 4.0f;
@@ -136,13 +130,11 @@ public class ServerEvents {
                             }
                         });
 
-                // Play impact sound
                 player.level().playSound(null, player.blockPosition(),
                         SoundEvents.SHIELD_BLOCK,
                         SoundSource.PLAYERS,
                         1.5f, 0.5f);
 
-                // Spawn blastwave ring at player's feet
                 if (player.level() instanceof ServerLevel serverLevel) {
                     serverLevel.sendParticles(
                             new BlastwaveParticleOptions(
@@ -158,10 +150,10 @@ public class ServerEvents {
             }
         }
 
-        // --- Statis Curse: summon shadowflame proc ---
         Entity directSource = event.getSource().getDirectEntity();
         Entity trueSource = event.getSource().getEntity();
         IMagicSummon summon = null;
+        Player spellCaster = null;
 
         if (directSource instanceof IMagicSummon directSummon) {
             summon = directSummon;
@@ -174,23 +166,95 @@ public class ServerEvents {
         }
 
         if (summon != null && summon.getSummoner() instanceof Player summoner) {
+            spellCaster = summoner;
+        } else if (trueSource instanceof Player player) {
+            spellCaster = player;
+        } else if (directSource instanceof Projectile projectile && projectile.getOwner() instanceof Player player) {
+            spellCaster = player;
+        } else if (directSource instanceof OwnableEntity ownable && ownable.getOwner() instanceof Player player) {
+            spellCaster = player;
+        }
+
+        if (spellCaster instanceof net.minecraft.server.level.ServerPlayer serverPlayer
+                && Utils.hasCurio(serverPlayer, ROACWItemRegistry.AURIC_CODEX.get())) {
+            LivingEntity target = event.getEntity();
+
+            if (!target.hasEffect(ROACWEffectRegistry.AURIC_REBUKE.get())
+                    && !AuricRebukeEffect.isOnCooldown(target)) {
+                target.addEffect(new MobEffectInstance(
+                        ROACWEffectRegistry.AURIC_REBUKE.get(),
+                        100,
+                        0,
+                        false,
+                        true,
+                        true
+                ));
+
+                AuricRebukeEffect.setSource(target, serverPlayer);
+            }
+        }
+
+        if (summon != null && summon.getSummoner() instanceof Player summoner) {
             if (Utils.hasCurio(summoner, ROACWItemRegistry.STATIS_CURSE.get())) {
                 LivingEntity target = event.getEntity();
-                MobEffect shadowFlame = ROACWEffectRegistry.SHADOWFLAME.get();
+                MobEffectInstance shadowFlame = target.getEffect(ROACWEffectRegistry.SHADOWFLAME.get());
 
                 if (target.level().getRandom().nextFloat() >= 0.1f) {
                     return;
                 }
 
                 int currentAmplifier = 0;
-                if (target.hasEffect(shadowFlame)) {
-                    MobEffectInstance activeEffect = target.getEffect(shadowFlame);
-                    if (activeEffect != null) {
-                        currentAmplifier = Math.min(activeEffect.getAmplifier() + 1, 4);
-                    }
+                if (shadowFlame != null) {
+                    currentAmplifier = Math.min(shadowFlame.getAmplifier() + 1, 4);
                 }
 
-                target.addEffect(new MobEffectInstance(shadowFlame, 200, currentAmplifier, false, false, true));
+                target.addEffect(new MobEffectInstance(
+                        ROACWEffectRegistry.SHADOWFLAME.get(),
+                        200,
+                        currentAmplifier,
+                        false,
+                        false,
+                        true
+                ));
+            }
+        }
+
+        if (summon != null && summon.getSummoner() instanceof Player summoner) {
+            if (Utils.hasCurio(summoner, ROACWItemRegistry.NIGHTMARE_TOME.get())) {
+                LivingEntity target = event.getEntity();
+                MobEffectInstance fear = target.getEffect(ROACWEffectRegistry.HORRIFIED.get());
+
+                if (target != summoner && target.level().getRandom().nextFloat() < 0.9f) {
+                    target.addEffect(new MobEffectInstance(
+                            ROACWEffectRegistry.HORRIFIED.get(),
+                            60,
+                            0,
+                            false,
+                            false,
+                            true
+                    ));
+
+                    if (summoner instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                        HorrifiedEffect.setFearSource(target, serverPlayer);
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
+        LivingEntity entity = event.getEntity();
+        LivingEntity target = event.getNewTarget();
+
+        if (target == null) return;
+        if (!entity.hasEffect(ROACWEffectRegistry.HORRIFIED.get())) return;
+        if (!(target instanceof IMagicSummon summon)) return;
+
+        if (HorrifiedEffect.isSummonFromFearSource(entity, summon)) {
+            event.setNewTarget(null);
+            if (entity instanceof net.minecraft.world.entity.Mob mob) {
+                mob.setTarget(null);
             }
         }
     }

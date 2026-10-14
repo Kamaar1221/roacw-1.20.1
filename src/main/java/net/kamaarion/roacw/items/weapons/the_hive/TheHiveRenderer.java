@@ -28,8 +28,7 @@ public class TheHiveRenderer extends GeoItemRenderer<TheHive> {
         boolean isLeftHand = transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
 
         if (isFirstPerson) {
-            // Mirror sign for left hand so offsets push the correct direction
-            // instead of clipping into the arm/screen.
+
             float xSign = isLeftHand ? -1F : 1F;
 
             if (isLocalPlayerCharging(stack)) {
@@ -45,11 +44,6 @@ public class TheHiveRenderer extends GeoItemRenderer<TheHive> {
                 bufferSource, packedLight, packedOverlay);
     }
 
-    /**
-     * The item model JSON's display block has no concept of "currently in
-     * use" - it only defines static per-context poses - so detecting the
-     * charging state has to happen here in Java instead.
-     */
     private boolean isLocalPlayerCharging(ItemStack stack) {
         Player player = Minecraft.getInstance().player;
         return player != null

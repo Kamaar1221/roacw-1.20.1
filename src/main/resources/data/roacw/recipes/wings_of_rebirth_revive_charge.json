@@ -1,0 +1,9 @@
+{
+  "type": "roacw:wings_revive_smithing",
+  "base": {
+    "item": "roacw:wings_of_rebirth"
+  },
+  "addition": {
+    "item": "minecraft:totem_of_undying"
+  }
+}

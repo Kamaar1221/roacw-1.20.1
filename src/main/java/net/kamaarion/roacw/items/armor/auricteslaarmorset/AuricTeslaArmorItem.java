@@ -31,6 +31,16 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
     }
 
     @Override
+    public int getEnchantmentValue() {
+        return 15;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
+
+    @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         if (pLevel != null && pLevel.isClientSide()) {
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
@@ -66,10 +76,13 @@ public class AuricTeslaArmorItem extends ImbuableChestplateArmorItem {
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText2.getStyle()));
             });
 
+            pTooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         }
     }
+
     @Override
     public boolean isDamageable(ItemStack stack) {
         return false;

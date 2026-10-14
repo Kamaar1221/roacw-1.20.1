@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import net.acetheeldritchking.cataclysm_spellbooks.registries.SpellRegistries;
 import net.kamaarion.roacw.items.weapons.ROACWWeaponTiers;
-import net.kamaarion.roacw.registeries.MarsRarityColorHelp;
+import net.kamaarion.roacw.client.others.MarsRarityColorHelp;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -34,7 +34,7 @@ public class Phaseslayer extends StaffItem implements GeoItem, IPresetSpellConta
     @Override
     public Component getName(ItemStack stack) {
         return MarsRarityColorHelp.createRainbowWave(
-                super.getName(stack).getString()
+                super.getName(stack)
         );
     }
 

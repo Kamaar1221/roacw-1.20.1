@@ -44,11 +44,11 @@ public class ImpalingColumnSpell extends AbstractSpell {
             .build();
 
     public ImpalingColumnSpell() {
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 25;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 5;
         this.castTime = 15;
-        this.baseManaCost = 40;
+        this.baseManaCost = 50;
     }
 
     @Override

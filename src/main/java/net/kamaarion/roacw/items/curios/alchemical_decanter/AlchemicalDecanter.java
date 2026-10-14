@@ -2,19 +2,14 @@ package net.kamaarion.roacw.items.curios.alchemical_decanter;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import dev.shadowsoffire.attributeslib.api.ALObjects;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
-import net.kamaarion.roacw.client.others.ModKeyMappings;
-import net.kamaarion.roacw.items.curios.evasion_scarf.EvasionScarfRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -39,32 +34,32 @@ import java.util.function.Consumer;
 public class AlchemicalDecanter extends CurioBaseItem implements ICurioItem, GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public AlchemicalDecanter(Properties rarity) {
-        super(ItemPropertiesHelper
-                .equipment()
+    public AlchemicalDecanter(Properties properties) {
+        super(properties
                 .stacksTo(1)
                 .fireResistant()
                 .rarity(Rarity.EPIC)
         );
     }
 
+    @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private AlchemicalDecanterRenderer renderer;
 
+            @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (this.renderer == null) {
-                    this.renderer = new AlchemicalDecanterRenderer();
+                if (renderer == null) {
+                    renderer = new AlchemicalDecanterRenderer();
                 }
 
-                return this.renderer;
+                return renderer;
             }
         });
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-
     }
 
     @Override
@@ -82,12 +77,14 @@ public class AlchemicalDecanter extends CurioBaseItem implements ICurioItem, Geo
         return PlayState.CONTINUE;
     }
 
-    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController[]{new AnimationController(this, "controller", 20, this::idlePredicate)});
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 20, this::idlePredicate));
     }
 
+    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+        return cache;
     }
 
     @Override
@@ -96,23 +93,48 @@ public class AlchemicalDecanter extends CurioBaseItem implements ICurioItem, Geo
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create();
-        attr.put(CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(),
-                new AttributeModifier(uuid, "Technomancy Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE));
-        attr.put(AttributeRegistry.NATURE_SPELL_POWER.get(),
-                new AttributeModifier(uuid, "Nature Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE));
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(
+            SlotContext slotContext,
+            UUID uuid,
+            ItemStack stack
+    ) {
+        Multimap<Attribute, AttributeModifier> attributes = LinkedHashMultimap.create();
 
-        return attr;
+        attributes.put(
+                CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Technomancy Spell Power",
+                        0.1,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
+
+        attributes.put(
+                AttributeRegistry.NATURE_SPELL_POWER.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Nature Spell Power",
+                        0.1,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
+
+        return attributes;
     }
+
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        // Allows Iron's Spells to render the slots, spell details, and modded attributes first
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(
+            ItemStack stack,
+            @Nullable Level level,
+            List<Component> tooltipComponents,
+            TooltipFlag tooltipFlag
+    ) {
+        super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
 
-        // Adds your custom mod lore/description text directly underneath
-        pTooltipComponents.add(Component.translatable("item.roacw.alchemical_decanter.desc").withStyle(ChatFormatting.GREEN));
+        tooltipComponents.add(
+                Component.translatable("item.roacw.alchemical_decanter.desc")
+                        .withStyle(ChatFormatting.GREEN)
+        );
     }
-
-
 }

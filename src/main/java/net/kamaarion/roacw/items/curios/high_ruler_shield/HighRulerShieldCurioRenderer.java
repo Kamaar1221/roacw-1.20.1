@@ -38,7 +38,6 @@ public class HighRulerShieldCurioRenderer implements ICurioRenderer {
         ICurioRenderer.translateIfSneaking(poseStack, entity);
         ICurioRenderer.rotateIfSneaking(poseStack, entity);
 
-        // Attach to the player's body bone so it follows custom animations
         M model = renderLayerParent.getModel();
         if (model instanceof HumanoidModel<?> humanoidModel) {
             humanoidModel.body.translateAndRotate(poseStack);

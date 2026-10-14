@@ -67,10 +67,6 @@ public class PlagueNanoParticle extends TextureSheetParticle {
         return LightTexture.FULL_BRIGHT;
     }
 
-    // ===========================
-    // GREEN PROVIDER
-    // ===========================
-
     public static class GreenProvider implements ParticleProvider<SimpleParticleType> {
 
         private final SpriteSet sprites;
@@ -101,10 +97,6 @@ public class PlagueNanoParticle extends TextureSheetParticle {
             );
         }
     }
-
-    // ===========================
-    // RED PROVIDER
-    // ===========================
 
     public static class RedProvider implements ParticleProvider<SimpleParticleType> {
 

@@ -2,8 +2,8 @@ package net.kamaarion.roacw.client.others;
 
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.network.ModMessages;
-import net.kamaarion.roacw.network.PacketAuricTeslaDashC2S;
-import net.kamaarion.roacw.network.PacketEvasionScarfDashC2S;
+import net.kamaarion.roacw.network.armorset_abilities.PacketAuricTeslaDashC2S;
+import net.kamaarion.roacw.network.armorset_abilities.PacketEvasionScarfDashC2S;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;

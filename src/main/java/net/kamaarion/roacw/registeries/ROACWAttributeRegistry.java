@@ -13,37 +13,70 @@ import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = ROACW.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ROACWAttributeRegistry {
-    private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, ROACW.MODID);
 
+    private static final DeferredRegister<Attribute> ATTRIBUTES =
+            DeferredRegister.create(ForgeRegistries.ATTRIBUTES, ROACW.MODID);
+
+    // ============================================================
     // Exo Magic
-    public static final RegistryObject<Attribute> EXO_MAGIC_RESIST = registerResistanceAttribute("exo");
-    public static final RegistryObject<Attribute> EXO_MAGIC_POWER = registerPowerAttribute("exo");
+    // ============================================================
+
+    public static final RegistryObject<Attribute> EXO_MAGIC_RESIST =
+            registerResistanceAttribute("exo");
+
+    public static final RegistryObject<Attribute> EXO_MAGIC_POWER =
+            registerPowerAttribute("exo");
+
+
+    // ============================================================
+    // Brimstone Magic
+    // ============================================================
+
+    public static final RegistryObject<Attribute> BRIMSTONE_MAGIC_RESIST =
+            registerResistanceAttribute("brimstone");
+
+    public static final RegistryObject<Attribute> BRIMSTONE_MAGIC_POWER =
+            registerPowerAttribute("brimstone");
 
 
     @SubscribeEvent
-    public static void modifyEntityAttributes(EntityAttributeModificationEvent event)
-    {
-
-        event.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> event.add(entity, attribute.get())));
+    public static void modifyEntityAttributes(EntityAttributeModificationEvent event) {
+        event.getTypes().forEach(entity ->
+                ATTRIBUTES.getEntries().forEach(attribute ->
+                        event.add(entity, attribute.get())
+                )
+        );
     }
 
-    // ;_;
-    private static RegistryObject<Attribute> registerResistanceAttribute(String id)
-    {
+
+    // ============================================================
+    // Attribute Registration Helpers
+    // ============================================================
+
+    private static RegistryObject<Attribute> registerResistanceAttribute(String id) {
         return ATTRIBUTES.register(id + "_magic_resist", () ->
-                (new MagicRangedAttribute("attribute.roacw." + id + "_magic_resist",
-                        1.0D, 0, 10).setSyncable(true)));
+                new MagicRangedAttribute(
+                        "attribute.roacw." + id + "_magic_resist",
+                        1.0D,
+                        0,
+                        10
+                ).setSyncable(true)
+        );
     }
 
-    private static RegistryObject<Attribute> registerPowerAttribute(String id)
-    {
+    private static RegistryObject<Attribute> registerPowerAttribute(String id) {
         return ATTRIBUTES.register(id + "_spell_power", () ->
-                (new MagicRangedAttribute("attribute.roacw." + id + "_spell_power",
-                        1.0D, 0, 10).setSyncable(true)));
+                new MagicRangedAttribute(
+                        "attribute.roacw." + id + "_spell_power",
+                        1.0D,
+                        0,
+                        10
+                ).setSyncable(true)
+        );
     }
 
-    public static void register(IEventBus eventBus)
-    {
+
+    public static void register(IEventBus eventBus) {
         ATTRIBUTES.register(eventBus);
     }
 }

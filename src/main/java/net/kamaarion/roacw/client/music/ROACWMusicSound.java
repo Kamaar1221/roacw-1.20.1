@@ -18,26 +18,15 @@ public class ROACWMusicSound extends AbstractTickableSoundInstance {
                 RandomSource.create()
         );
 
-        /*
-         * Minecraft handles looping when this is true.
-         */
         this.looping = looping;
-
         this.delay = 0;
-        this.volume = initialVolume;
+        this.volume = Math.max(0.0F, Math.min(1.0F, initialVolume));
         this.pitch = 1.0F;
-
-        /*
-         * Music isn't affected by distance from a position.
-         */
         this.relative = true;
     }
 
     @Override
     public void tick() {
-        /*
-         * Volume is controlled by ROACWTitleMusic.
-         */
     }
 
     @Override
@@ -51,9 +40,6 @@ public class ROACWMusicSound extends AbstractTickableSoundInstance {
     }
 
     public void setMusicVolume(float volume) {
-        this.volume = Math.max(
-                0.0F,
-                Math.min(1.0F, volume)
-        );
+        this.volume = Math.max(0.0F, Math.min(1.0F, volume));
     }
 }

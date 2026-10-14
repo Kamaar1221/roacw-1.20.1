@@ -4,7 +4,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import dev.shadowsoffire.attributeslib.api.ALObjects;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -35,32 +34,32 @@ import java.util.function.Consumer;
 public class ElementalGauntlet extends CurioBaseItem implements ICurioItem, GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public ElementalGauntlet(Properties rarity) {
-        super(ItemPropertiesHelper
-                .equipment()
+    public ElementalGauntlet(Properties properties) {
+        super(properties
                 .stacksTo(1)
                 .fireResistant()
                 .rarity(Rarity.EPIC)
         );
     }
 
+    @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private ElementalGauntletRenderer renderer;
 
+            @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (this.renderer == null) {
-                    this.renderer = new ElementalGauntletRenderer();
+                if (renderer == null) {
+                    renderer = new ElementalGauntletRenderer();
                 }
 
-                return this.renderer;
+                return renderer;
             }
         });
     }
 
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
-
     }
 
     @Override
@@ -78,12 +77,14 @@ public class ElementalGauntlet extends CurioBaseItem implements ICurioItem, GeoI
         return PlayState.CONTINUE;
     }
 
-    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController[]{new AnimationController(this, "controller", 20, this::idlePredicate)});
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 20, this::idlePredicate));
     }
 
+    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+        return cache;
     }
 
     @Override
@@ -92,25 +93,59 @@ public class ElementalGauntlet extends CurioBaseItem implements ICurioItem, GeoI
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> attr = LinkedHashMultimap.create(super.getAttributeModifiers(slotContext, uuid, stack));
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(
+            SlotContext slotContext,
+            UUID uuid,
+            ItemStack stack
+    ) {
+        Multimap<Attribute, AttributeModifier> attributes =
+                LinkedHashMultimap.create(super.getAttributeModifiers(slotContext, uuid, stack));
 
-        attr.put(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(uuid, "Attack Damage", 5.0D, AttributeModifier.Operation.ADDITION));
+        attributes.put(
+                Attributes.ATTACK_DAMAGE,
+                new AttributeModifier(
+                        uuid,
+                        "Attack Damage",
+                        5.0D,
+                        AttributeModifier.Operation.ADDITION
+                )
+        );
 
-        attr.put(Attributes.ATTACK_SPEED,
-                new AttributeModifier(uuid, "Attack Speed", 0.15D, AttributeModifier.Operation.MULTIPLY_BASE));
+        attributes.put(
+                Attributes.ATTACK_SPEED,
+                new AttributeModifier(
+                        uuid,
+                        "Attack Speed",
+                        0.15D,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
 
-        attr.put(ALObjects.Attributes.CRIT_CHANCE.get(),
-                new AttributeModifier(uuid, "Crit Chance", 0.15D, AttributeModifier.Operation.MULTIPLY_BASE));
+        attributes.put(
+                ALObjects.Attributes.CRIT_CHANCE.get(),
+                new AttributeModifier(
+                        uuid,
+                        "Crit Chance",
+                        0.15D,
+                        AttributeModifier.Operation.MULTIPLY_BASE
+                )
+        );
 
-        // }
-
-        return attr;
+        return attributes;
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.roacw.elemental_gauntlet.desc").withStyle(ChatFormatting.AQUA));
+    public void appendHoverText(
+            ItemStack stack,
+            @Nullable Level level,
+            List<Component> tooltipComponents,
+            TooltipFlag tooltipFlag
+    ) {
+        super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
+
+        tooltipComponents.add(
+                Component.translatable("item.roacw.elemental_gauntlet.desc")
+                        .withStyle(ChatFormatting.AQUA)
+        );
     }
 }

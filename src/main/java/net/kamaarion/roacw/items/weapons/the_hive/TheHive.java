@@ -3,7 +3,6 @@ package net.kamaarion.roacw.items.weapons.the_hive;
 import net.kamaarion.roacw.entity.projectile.plague_rocket.PlagueRocketEntity;
 import net.kamaarion.roacw.entity.projectile.plague_nuke.PlagueNukeEntity;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
-
 import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -30,41 +28,31 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TheHive extends Item implements GeoItem, GeoAnimatable {
-
+public class TheHive extends Item implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private static final int NUKE_CHARGE_TICKS = 80; // 2 seconds
-    private static final int NUKE_CHARGE_SOUND_START = 5; // Half a second
+    private static final int NUKE_CHARGE_TICKS = 80;
+    private static final int NUKE_CHARGE_SOUND_START = 5;
 
     private static final int ROCKET_COUNT = 4;
     private static final float ROCKET_VELOCITY = 1.5F;
     private static final float NUKE_VELOCITY = 0.9F;
 
-    // Spread expressed as {rightOffsetDegrees, upOffsetDegrees} relative to
-    // the player's own local right/up vectors - NOT yaw/pitch. Offsetting in
-    // yaw/pitch directly causes gimbal lock: near straight up/down, yaw
-    // stops meaning anything (all yaw values converge on one direction), so
-    // the two yaw-offset rockets visually collapse into one, making a
-    // 4-rocket burst look like only 3 distinct directions. Local right/up
-    // offsets don't have that problem at any look angle.
+    private static final float DIAGONAL_SPREAD_DEGREES = 3.5355F;
+
     private static final float[][] ROCKET_SPREAD_OFFSETS = {
-            {-5.0F, 0.0F},
-            {5.0F, 0.0F},
-            {0.0F, -5.0F},
-            {0.0F, 5.0F}
+            {-DIAGONAL_SPREAD_DEGREES, DIAGONAL_SPREAD_DEGREES},
+            {DIAGONAL_SPREAD_DEGREES, DIAGONAL_SPREAD_DEGREES},
+            {-DIAGONAL_SPREAD_DEGREES, -DIAGONAL_SPREAD_DEGREES},
+            {DIAGONAL_SPREAD_DEGREES, -DIAGONAL_SPREAD_DEGREES}
     };
 
-    // Muzzle offset relative to the player's own forward/right/up vectors -
-    // moves the spawn point to roughly where the launcher's barrel actually
-    // is instead of the player's face. Starting guess - these need visual
-    // tuning against the actual held model.
     private static final double MUZZLE_FORWARD = 1.1D;
     private static final double MUZZLE_RIGHT = 0.35D;
     private static final double MUZZLE_UP = -0.2D;
 
-    private static final int ROCKET_COOLDOWN_TICKS = 60;  // 3s
-    private static final int NUKE_COOLDOWN_TICKS = 100;   // 20s - much stronger, much longer cooldown
+    private static final int ROCKET_COOLDOWN_TICKS = 60;
+    private static final int NUKE_COOLDOWN_TICKS = 100;
 
     public TheHive(Properties properties) {
         super(properties);
@@ -73,20 +61,22 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
-            private TheHiveRenderer renderer = null;
+            private TheHiveRenderer renderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (this.renderer == null) {
-                    this.renderer = new TheHiveRenderer();
+                if (renderer == null) {
+                    renderer = new TheHiveRenderer();
                 }
-                return this.renderer;
+
+                return renderer;
             }
         });
     }
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -112,7 +102,7 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW; // matches Cataclysm's own shoulder-mounted launcher
+        return UseAnim.BOW;
     }
 
     @Override
@@ -121,7 +111,6 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
 
         int ticksHeld = getUseDuration(stack) - remainingUseTicks;
 
-        // Begin charging sound after holding for a short time
         if (ticksHeld == NUKE_CHARGE_SOUND_START && !level.isClientSide) {
             level.playSound(
                     null,
@@ -135,7 +124,6 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
             );
         }
 
-        // Fully charged cue
         if (ticksHeld == NUKE_CHARGE_TICKS && !level.isClientSide) {
             level.playSound(
                     null,
@@ -160,7 +148,7 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
             return;
         }
 
-        int ticksHeld = this.getUseDuration(stack) - timeLeft;
+        int ticksHeld = getUseDuration(stack) - timeLeft;
         boolean fireNuke = ticksHeld >= NUKE_CHARGE_TICKS;
 
         if (!level.isClientSide) {
@@ -174,19 +162,15 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
         }
     }
 
-    /**
-     * Builds a right-handed local basis (forward, right, up) from the
-     * player's look direction, switching the reference "world up" axis when
-     * looking nearly straight up/down to avoid the same gimbal-lock
-     * degeneracy the spread offsets are designed to avoid - cross(forward,
-     * worldUp) collapses to a zero-length vector exactly when forward is
-     * parallel to worldUp.
-     */
     private static Vec3[] computeLocalBasis(Player player) {
         Vec3 forward = player.getLookAngle().normalize();
-        Vec3 worldUp = Math.abs(forward.y) > 0.99D ? new Vec3(1.0D, 0.0D, 0.0D) : new Vec3(0.0D, 1.0D, 0.0D);
+        Vec3 worldUp = Math.abs(forward.y) > 0.99D
+                ? new Vec3(1.0D, 0.0D, 0.0D)
+                : new Vec3(0.0D, 1.0D, 0.0D);
+
         Vec3 right = forward.cross(worldUp).normalize();
         Vec3 up = right.cross(forward).normalize();
+
         return new Vec3[]{forward, right, up};
     }
 
@@ -222,15 +206,26 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
                     .add(up.scale(Math.sin(upRad)))
                     .normalize();
 
-            rocket.shoot(direction.x, direction.y, direction.z, ROCKET_VELOCITY, 0.0F);
+            rocket.shoot(
+                    direction.x,
+                    direction.y,
+                    direction.z,
+                    ROCKET_VELOCITY,
+                    0.0F
+            );
 
             level.addFreshEntity(rocket);
         }
 
         level.playSound(
-                null, player.getX(), player.getY(), player.getZ(),
-                ROACWSoundRegistry.HIVE_ROCKET_LAUNCH.get(), SoundSource.PLAYERS,
-                1.0F, 0.9F
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                ROACWSoundRegistry.HIVE_ROCKET_LAUNCH.get(),
+                SoundSource.PLAYERS,
+                1.0F,
+                0.9F
         );
     }
 
@@ -246,37 +241,66 @@ public class TheHive extends Item implements GeoItem, GeoAnimatable {
         );
 
         nuke.setPos(muzzle.x, muzzle.y, muzzle.z);
-        nuke.shoot(forward.x, forward.y, forward.z, NUKE_VELOCITY, 0.0F);
+        nuke.shoot(
+                forward.x,
+                forward.y,
+                forward.z,
+                NUKE_VELOCITY,
+                0.0F
+        );
 
         level.addFreshEntity(nuke);
 
         level.playSound(
-                null, player.getX(), player.getY(), player.getZ(),
-                ROACWSoundRegistry.HIVE_NUKE_LAUNCH.get(), SoundSource.PLAYERS,
-                1.0F, 0.6F
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                ROACWSoundRegistry.HIVE_NUKE_LAUNCH.get(),
+                SoundSource.PLAYERS,
+                1.0F,
+                0.6F
         );
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        if (pLevel != null && pLevel.isClientSide()) {
+    public void appendHoverText(
+            ItemStack stack,
+            @Nullable Level level,
+            List<Component> tooltipComponents,
+            TooltipFlag tooltipFlag
+    ) {
+        if (level != null && level.isClientSide()) {
             net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
             int maxTooltipWidth = 240;
 
-            Component loreText = Component.translatable("item.roacw.the_hive.desc").withStyle(ChatFormatting.GREEN);
-            font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
-                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
-            });
+            Component loreText = Component.translatable("item.roacw.the_hive.desc")
+                    .withStyle(ChatFormatting.GREEN);
 
-            pTooltipComponents.add(Component.empty());
+            font.getSplitter()
+                    .splitLines(loreText, maxTooltipWidth, loreText.getStyle())
+                    .forEach(formattedText ->
+                            tooltipComponents.add(
+                                    Component.literal(formattedText.getString())
+                                            .withStyle(loreText.getStyle())
+                            )
+                    );
 
-            Component tooltipText = Component.translatable("item.roacw.the_hive.tooltip").withStyle(ChatFormatting.GRAY);
-            font.getSplitter().splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle()).forEach(formattedText -> {
-                pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText.getStyle()));
-            });
+            tooltipComponents.add(Component.empty());
 
+            Component tooltipText = Component.translatable("item.roacw.the_hive.tooltip")
+                    .withStyle(ChatFormatting.GRAY);
+
+            font.getSplitter()
+                    .splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle())
+                    .forEach(formattedText ->
+                            tooltipComponents.add(
+                                    Component.literal(formattedText.getString())
+                                            .withStyle(tooltipText.getStyle())
+                            )
+                    );
         } else {
-            super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+            super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         }
     }
 }

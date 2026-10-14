@@ -29,7 +29,6 @@ public class StatisCurseCurioRenderer implements ICurioRenderer {
 
             poseStack.pushPose();
             humanoidModel.body.translateAndRotate(poseStack);
-            // x = sideways, y = up/down, z = forward/back
             poseStack.translate(0.0D, 0.2D, 0.0D);
             poseStack.scale(1.1f, 1.1f, 1.3f);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));

@@ -39,7 +39,6 @@ public class BelladonnaSpiritWanderGoal extends Goal {
         if (owner == null)
             return;
 
-        // Too far away? Fly straight back to the owner.
         if (spirit.distanceToSqr(owner) > RETURN_DISTANCE * RETURN_DISTANCE) {
 
             spirit.getMoveControl().setWantedPosition(
@@ -52,7 +51,6 @@ public class BelladonnaSpiritWanderGoal extends Goal {
             return;
         }
 
-        // Pick a random hover point around the owner.
         double angle = spirit.getRandom().nextDouble() * Math.PI * 2.0D;
         double radius = 1.5D + spirit.getRandom().nextDouble() * IDLE_RADIUS;
 
