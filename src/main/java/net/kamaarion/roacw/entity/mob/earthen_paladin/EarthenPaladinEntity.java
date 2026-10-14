@@ -1,5 +1,6 @@
 package net.kamaarion.roacw.entity.mob.earthen_paladin;
 
+import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -33,10 +37,17 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 
+import java.util.UUID;
+
 public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Enemy {
 
     private static final EntityDataAccessor<Boolean> HAS_OATH =
             SynchedEntityData.defineId(EarthenPaladinEntity.class, EntityDataSerializers.BOOLEAN);
+
+    private static final UUID ARMOR_CANCELLATION_UUID =
+            UUID.fromString("a78e9d31-5c62-4b70-91a3-3ef48b620001");
+
+    private double lastArmorCancellation = Double.NaN;
 
     public static final RawAnimation SCYTHE_DOWNSLASH_SIDESLASH =
             RawAnimation.begin().thenPlay("scythe_downslash_sideslash");
@@ -84,6 +95,68 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
         this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
     }
 
+    private void updateArmorCancellation() {
+        AttributeInstance armorAttribute = this.getAttribute(Attributes.ARMOR);
+
+        if (armorAttribute == null) {
+            return;
+        }
+
+        double armorToCancel = 0.0D;
+
+        EquipmentSlot[] armorSlots = {
+                EquipmentSlot.HEAD,
+                EquipmentSlot.CHEST,
+                EquipmentSlot.LEGS,
+                EquipmentSlot.FEET
+        };
+
+        for (EquipmentSlot slot : armorSlots) {
+            ItemStack stack = this.getItemBySlot(slot);
+
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            Multimap<Attribute, AttributeModifier> modifiers =
+                    stack.getAttributeModifiers(slot);
+
+            for (AttributeModifier modifier : modifiers.get(Attributes.ARMOR)) {
+                if (modifier.getOperation() == AttributeModifier.Operation.ADDITION) {
+                    armorToCancel += modifier.getAmount();
+                }
+            }
+        }
+
+        if (Double.compare(this.lastArmorCancellation, armorToCancel) == 0) {
+            return;
+        }
+
+        armorAttribute.removeModifier(ARMOR_CANCELLATION_UUID);
+
+        if (armorToCancel != 0.0D) {
+            armorAttribute.addTransientModifier(
+                    new AttributeModifier(
+                            ARMOR_CANCELLATION_UUID,
+                            "Earthen Paladin armor cancellation",
+                            -armorToCancel,
+                            AttributeModifier.Operation.ADDITION
+                    )
+            );
+        }
+
+        this.lastArmorCancellation = armorToCancel;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!this.level().isClientSide) {
+            updateArmorCancellation();
+        }
+    }
+
     @Override
     protected GroundPathNavigation createNavigation(Level level) {
         GroundPathNavigation navigation = new GroundPathNavigation(this, level);
@@ -103,10 +176,10 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
 
     public static AttributeSupplier.Builder createAttributes() {
         return PathfinderMob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 150.0D)
-                .add(Attributes.ARMOR, 12.0D)
+                .add(Attributes.MAX_HEALTH, 80.0D)
+                .add(Attributes.ARMOR, 20.0D)
                 .add(Attributes.ARMOR_TOUGHNESS, 6.0D)
-                .add(Attributes.ATTACK_DAMAGE, 9.0D)
+                .add(Attributes.ATTACK_DAMAGE, 8.0D)
                 .add(Attributes.ATTACK_KNOCKBACK, 0.5D)
                 .add(Attributes.MOVEMENT_SPEED, 0.22D)
                 .add(Attributes.FOLLOW_RANGE, 32.0D)
