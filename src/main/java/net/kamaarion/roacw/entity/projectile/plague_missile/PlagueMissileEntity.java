@@ -5,8 +5,10 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import net.kamaarion.roacw.entity.summon.mini_plaguebringer.MiniPlaguebringerEntity;
 import net.kamaarion.roacw.particle.PlagueParticleHelper;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -379,6 +381,17 @@ public class PlagueMissileEntity
             this.discard();
             return;
         }
+
+        this.level().playSound(
+                null,
+                this.getX(),
+                this.getY(),
+                this.getZ(),
+                ROACWSoundRegistry.PLAGUE_MISSILE_EXPLOSION.get(),
+                SoundSource.HOSTILE,
+                1.0F,
+                1.0F
+        );
 
         if (directHit instanceof LivingEntity living
                 && this.shouldAffect(living)) {

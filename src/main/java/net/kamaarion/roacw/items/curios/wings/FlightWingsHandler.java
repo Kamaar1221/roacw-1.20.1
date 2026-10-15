@@ -2,7 +2,6 @@ package net.kamaarion.roacw.items.curios.wings;
 
 import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.mixin.ServerGamePacketListenerImplAccessor;
 import net.kamaarion.roacw.network.ModMessages;
 import net.kamaarion.roacw.network.misc.PacketFlightWingsTimeS2C;
 import net.minecraft.nbt.CompoundTag;
@@ -63,7 +62,7 @@ public final class FlightWingsHandler {
         boolean gliding = player.isFallFlying();
 
         if (!grounded && player.connection != null) {
-            ((ServerGamePacketListenerImplAccessor) player.connection).roacw$setAboveGroundTickCount(0);
+            player.connection.aboveGroundTickCount = 0;
         }
 
         if (grounded) {

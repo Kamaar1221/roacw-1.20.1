@@ -1,20 +1,22 @@
 package net.kamaarion.roacw.entity.summon.virili;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import net.kamaarion.roacw.entity.projectile.homing_plague_missile.HomingPlagueMissileEntity;
 import net.kamaarion.roacw.entity.projectile.plague_bee.PlagueBeeEntity;
 import net.kamaarion.roacw.entity.summon.baby_plaguebringer.BabyPlaguebringerEntity;
+import net.kamaarion.roacw.entity.summon.mini_plaguebringer.MiniPlaguebringerEntity;
 import net.kamaarion.roacw.network.ModMessages;
 import net.kamaarion.roacw.network.bonespawn.PacketViriliMissileSpawnC2S;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWParticleRegistry;
 import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -29,6 +31,8 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -72,14 +76,6 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
     private static final double MISSILE_BONE_LOCAL_Z = -0.3828125D;
     private static final double MISSILE_VOLLEY_SIDE_SPACING = 0.50D;
     private static final long MISSILE_SPAWN_SYNC_MAX_STALENESS_TICKS = 3L;
-
-    private Vec3 clientMissileSpawnPosition = Vec3.ZERO;
-    private Vec3 clientPreviousMissileSpawnPosition = Vec3.ZERO;
-
-    @Nullable
-    private Vec3 serverMissileSpawnPosition;
-
-    private long serverMissileSpawnPositionTick = Long.MIN_VALUE;
 
     private static final EntityDataAccessor<Boolean> DATA_CHARGING =
             SynchedEntityData.defineId(
@@ -130,6 +126,13 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
             );
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    @Nullable
+    private Vec3 serverMissileSpawnPosition;
+
+    private Vec3 clientMissileSpawnPosition = Vec3.ZERO;
+    private Vec3 clientPreviousMissileSpawnPosition = Vec3.ZERO;
+    private long serverMissileSpawnPositionTick = Long.MIN_VALUE;
 
     @Nullable
     private UUID ownerUUID;
@@ -225,14 +228,151 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
                         10,
                         true,
                         false,
-                        target -> target != this.getOwner()
-                                && !target.isSpectator()
+                        this::isValidTarget
                 )
         );
     }
 
+    private boolean isValidTarget(@Nullable LivingEntity candidate) {
+        if (candidate == null
+                || candidate == this
+                || !candidate.isAlive()
+                || candidate.isSpectator()
+                || candidate.isRemoved()) {
+            return false;
+        }
+
+        LivingEntity owner = this.getOwner();
+
+        if (candidate == owner) {
+            return false;
+        }
+
+        if (owner != null && areSameOrAllied(owner, candidate)) {
+            return false;
+        }
+
+        if (candidate instanceof ViriliEntity otherVirili) {
+            UUID otherOwnerUUID = otherVirili.getOwnerUUID();
+
+            if (this.ownerUUID != null
+                    && this.ownerUUID.equals(otherOwnerUUID)) {
+                return false;
+            }
+
+            LivingEntity otherOwner = otherVirili.getOwner();
+
+            if (owner != null
+                    && otherOwner != null
+                    && areSameOrAllied(owner, otherOwner)) {
+                return false;
+            }
+        }
+
+        if (candidate instanceof MiniPlaguebringerEntity miniPlaguebringer) {
+            LivingEntity otherOwner = miniPlaguebringer.getSummonOwner();
+
+            if (owner != null
+                    && otherOwner != null
+                    && areSameOrAllied(owner, otherOwner)) {
+                return false;
+            }
+        }
+
+        Entity candidateOwner = getResolvedSummonOwner(candidate);
+
+        if (candidateOwner != null) {
+            if (candidateOwner == this || candidateOwner == owner) {
+                return false;
+            }
+
+            if (owner != null && areSameOrAllied(owner, candidateOwner)) {
+                return false;
+            }
+        }
+
+        if (candidate.isAlliedTo(this) || this.isAlliedTo(candidate)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean areSameOrAllied(
+            @Nullable Entity first,
+            @Nullable Entity second
+    ) {
+        if (first == null || second == null) {
+            return false;
+        }
+
+        return first == second
+                || first.isAlliedTo(second)
+                || second.isAlliedTo(first);
+    }
+
+    @Nullable
+    private Entity getResolvedSummonOwner(Entity entity) {
+        if (entity instanceof ViriliEntity virili) {
+            LivingEntity owner = virili.getOwner();
+
+            if (owner != null) {
+                return owner;
+            }
+        }
+
+        if (entity instanceof MiniPlaguebringerEntity miniPlaguebringer) {
+            LivingEntity owner = miniPlaguebringer.getSummonOwner();
+
+            if (owner != null) {
+                return owner;
+            }
+        }
+
+        Entity owner = SummonManager.getOwner(entity);
+
+        if (owner != null && owner != entity) {
+            return owner;
+        }
+
+        return null;
+    }
+
+    public void playChargeSound() {
+        this.playViriliSound(ROACWSoundRegistry.VIRILI_CHARGE.get());
+    }
+
+    public void playSummonSound() {
+        this.playViriliSound(ROACWSoundRegistry.VIRILI_SUMMON.get());
+    }
+
+    public void playRandomPhaseSwitchSound() {
+        SoundEvent sound = this.getRandom().nextBoolean()
+                ? ROACWSoundRegistry.VIRILI_PHASE_1.get()
+                : ROACWSoundRegistry.VIRILI_PHASE_2.get();
+
+        this.playViriliSound(sound);
+    }
+
+    private void playViriliSound(SoundEvent sound) {
+        if (this.level().isClientSide) {
+            return;
+        }
+
+        this.level().playSound(
+                null,
+                this.getX(),
+                this.getY(),
+                this.getZ(),
+                sound,
+                SoundSource.HOSTILE,
+                1.0F,
+                1.0F
+        );
+    }
+
     public void fireRocketAt(LivingEntity target) {
-        if (this.level().isClientSide || target == null || !target.isAlive()) {
+        if (this.level().isClientSide || !this.isValidTarget(target)) {
             return;
         }
 
@@ -255,7 +395,7 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
     }
 
     private void tickClientMissileSpawnSync() {
-        if (!this.level().isClientSide || this.clientMissileSpawnPosition == null) {
+        if (!this.level().isClientSide) {
             return;
         }
 
@@ -301,9 +441,11 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
 
     private Vec3 resolveMissileSpawnPosition() {
         if (this.serverMissileSpawnPosition != null) {
-            long staleness = this.level().getGameTime() - this.serverMissileSpawnPositionTick;
+            long staleness = this.level().getGameTime()
+                    - this.serverMissileSpawnPositionTick;
 
-            if (staleness >= 0 && staleness <= MISSILE_SPAWN_SYNC_MAX_STALENESS_TICKS) {
+            if (staleness >= 0
+                    && staleness <= MISSILE_SPAWN_SYNC_MAX_STALENESS_TICKS) {
                 return this.serverMissileSpawnPosition;
             }
         }
@@ -316,7 +458,7 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
     }
 
     public void fireHomingPlagueMissileAt(LivingEntity target, double sideOffset) {
-        if (this.level().isClientSide || target == null || !target.isAlive()) {
+        if (this.level().isClientSide || !this.isValidTarget(target)) {
             return;
         }
 
@@ -355,7 +497,7 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
     }
 
     public void fireHomingPlagueMissileVolley(LivingEntity target) {
-        if (this.level().isClientSide || target == null || !target.isAlive()) {
+        if (this.level().isClientSide || !this.isValidTarget(target)) {
             return;
         }
 
@@ -365,15 +507,14 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
     }
 
     public void spawnSwarmSupport(@Nullable LivingEntity target) {
-        if (this.level().isClientSide || !(this.level() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
-        if (target == null || !target.isAlive()) {
+        if (this.level().isClientSide
+                || !(this.level() instanceof ServerLevel serverLevel)
+                || !this.isValidTarget(target)) {
             return;
         }
 
         Vec3 spawnPosition = this.resolveMissileSpawnPosition();
+        boolean spawnedBee = false;
 
         for (int spreadIndex = 0; spreadIndex < 3; spreadIndex++) {
             PlagueBeeEntity bee = new PlagueBeeEntity(
@@ -388,7 +529,13 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
             bee.setDeltaMovement(Vec3.ZERO);
             bee.setSpellPower(this.spellPower);
 
-            serverLevel.addFreshEntity(bee);
+            if (serverLevel.addFreshEntity(bee)) {
+                spawnedBee = true;
+            }
+        }
+
+        if (spawnedBee) {
+            this.playSummonSound();
         }
 
         serverLevel.sendParticles(
@@ -405,11 +552,9 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
     }
 
     public void spawnBabyPlaguebringer(@Nullable LivingEntity target) {
-        if (this.level().isClientSide || !(this.level() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
-        if (target == null || !target.isAlive()) {
+        if (this.level().isClientSide
+                || !(this.level() instanceof ServerLevel serverLevel)
+                || !this.isValidTarget(target)) {
             return;
         }
 
@@ -434,7 +579,11 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
         baby.setSpellPower(this.spellPower);
         baby.setTarget(target);
 
-        serverLevel.addFreshEntity(baby);
+        if (!serverLevel.addFreshEntity(baby)) {
+            return;
+        }
+
+        this.playSummonSound();
 
         serverLevel.sendParticles(
                 ROACWParticleRegistry.PLAGUE_CLOUD.get(),
@@ -469,6 +618,12 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
         }
 
         if (!this.level().isClientSide) {
+            LivingEntity target = this.getTarget();
+
+            if (target != null && !this.isValidTarget(target)) {
+                this.setTarget(null);
+            }
+
             if (this.isCharging() && !this.isChargeAnimating() && !this.isChargeEnding()) {
                 this.chargeStartAnimationTicks++;
 
@@ -507,10 +662,7 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
         for (LivingEntity candidate : this.level().getEntitiesOfClass(
                 LivingEntity.class,
                 searchBox,
-                entity -> entity != this
-                        && entity.isAlive()
-                        && !entity.isSpectator()
-                        && entity != this.getOwner()
+                this::isValidTarget
         )) {
             double distance = this.distanceToSqr(candidate);
 
@@ -756,11 +908,9 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
             return null;
         }
 
-        ServerPlayer player = serverLevel.getServer()
+        return serverLevel.getServer()
                 .getPlayerList()
                 .getPlayer(this.ownerUUID);
-
-        return player;
     }
 
     public void setOwnerUUID(@Nullable UUID uuid) {
@@ -843,7 +993,11 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+    public boolean causeFallDamage(
+            float fallDistance,
+            float damageMultiplier,
+            DamageSource damageSource
+    ) {
         return false;
     }
 

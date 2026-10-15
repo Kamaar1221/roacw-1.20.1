@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = ROACW.MODID)
 public class PacketEarthenPaladinPulseC2S {
-    private static final int COOLDOWN_TICKS = 600;
+    private static final int COOLDOWN_TICKS = 1800;
     private static final int DURATION_TICKS = 300;
     private static final double ALLY_RADIUS = 10.0D;
 

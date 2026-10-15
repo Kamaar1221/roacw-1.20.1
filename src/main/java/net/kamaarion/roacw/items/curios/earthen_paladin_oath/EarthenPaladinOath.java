@@ -8,6 +8,8 @@ import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +23,7 @@ import java.util.Map;
 
 public class EarthenPaladinOath extends SpellBook {
   public EarthenPaladinOath(Properties properties) {
-    super(10, properties);
+    super(10, properties.stacksTo(1));
 
     withSpellbookAttributes(
             new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
@@ -35,7 +37,9 @@ public class EarthenPaladinOath extends SpellBook {
     if (itemStack == null) {
       return;
     }
+
     super.initializeSpellContainer(itemStack);
+
     AffinityData.set(itemStack, new AffinityData(Map.of(
             ROACWSpellRegistry.IMPALING_COLUMN.get().getSpellResource(), 2,
             ROACWSpellRegistry.EARTHLY_VIRTUE.get().getSpellResource(), 2
@@ -58,22 +62,28 @@ public class EarthenPaladinOath extends SpellBook {
     }
 
     if (pLevel != null && pLevel.isClientSide()) {
-      net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+      Font font = Minecraft.getInstance().font;
       int maxTooltipWidth = 240;
 
-      Component loreText = Component.translatable("item.roacw.earthen_paladin_oath.desc").withStyle(ChatFormatting.GOLD);
-      font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText -> {
-        pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
-      });
+      Component loreText = Component.translatable("item.roacw.earthen_paladin_oath.desc")
+              .withStyle(ChatFormatting.GOLD);
+
+      font.getSplitter().splitLines(loreText, maxTooltipWidth, loreText.getStyle()).forEach(formattedText ->
+              pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()))
+      );
 
       pTooltipComponents.add(Component.empty());
 
-      Component tooltipText = Component.translatable("item.roacw.earthen_paladin_oath.tooltip.desc").withStyle(ChatFormatting.GRAY);
-      font.getSplitter().splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle()).forEach(formattedText -> {
-        pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText.getStyle()));
-      });
+      Component tooltipText = Component.translatable("item.roacw.earthen_paladin_oath.tooltip.desc")
+              .withStyle(ChatFormatting.GRAY);
+
+      font.getSplitter().splitLines(tooltipText, maxTooltipWidth, tooltipText.getStyle()).forEach(formattedText ->
+              pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(tooltipText.getStyle()))
+      );
     } else {
-      pTooltipComponents.add(Component.translatable("item.roacw.earthen_paladin_oath.desc").withStyle(ChatFormatting.GOLD));
+      pTooltipComponents.add(
+              Component.translatable("item.roacw.earthen_paladin_oath.desc").withStyle(ChatFormatting.GOLD)
+      );
     }
   }
 }

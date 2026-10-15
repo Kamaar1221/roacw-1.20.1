@@ -2,6 +2,7 @@ package net.kamaarion.roacw.network.armorset_abilities;
 
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
+import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.capability.PlaguebringerJetBoostCapability;
 import net.kamaarion.roacw.entity.projectile.plague_bee.PlagueBeeEntity;
@@ -38,7 +39,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = ROACW.MODID)
 public class PacketPlaguebringerJetBoostC2S {
 
-    private static final int COOLDOWN_TICKS = 100;
+    private static final int COOLDOWN_TICKS = 2400;
     private static final int DURATION_TICKS = 400;
     private static final int PLAGUE_BEE_INTERVAL = 100;
     private static final int MIN_BEES_PER_WAVE = 1;
@@ -71,7 +72,7 @@ public class PacketPlaguebringerJetBoostC2S {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
 
-            if (player == null) {
+            if (player == null || !Config.ENABLE_PLAGUEBRINGER_JET_BOOST.get()) {
                 return;
             }
 
@@ -162,6 +163,22 @@ public class PacketPlaguebringerJetBoostC2S {
         }
 
         long now = server.overworld().getGameTime();
+
+        // Config toggled off while a jet boost was active: end it right away so flight,
+        // bee waves and client visuals don't linger until the timer runs out.
+        if (!Config.ENABLE_PLAGUEBRINGER_JET_BOOST.get() && !ACTIVE_JETBOOST_PLAYERS.isEmpty()) {
+            for (UUID uuid : new HashSet<>(ACTIVE_JETBOOST_PLAYERS)) {
+                ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+
+                if (player != null) {
+                    revokeFlight(player);
+                }
+
+                ACTIVE_JETBOOST_PLAYERS.remove(uuid);
+                JETBOOST_EXPIRY.remove(uuid);
+                PLAGUE_BEE_NEXT_SPAWN.remove(uuid);
+            }
+        }
 
         for (UUID uuid : new HashSet<>(ACTIVE_JETBOOST_PLAYERS)) {
             ServerPlayer player = server.getPlayerList().getPlayer(uuid);

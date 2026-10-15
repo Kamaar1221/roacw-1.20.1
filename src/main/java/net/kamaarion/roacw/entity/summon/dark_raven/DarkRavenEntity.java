@@ -13,8 +13,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -37,10 +37,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -106,7 +106,6 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
 
     private static final int OWNER_TARGET_FRESHNESS_TICKS = 100;
     private static final double MAX_TARGET_DISTANCE_FROM_OWNER = 24.0D;
-
     private static final double MAX_TARGET_DISTANCE_FROM_OWNER_SQR =
             MAX_TARGET_DISTANCE_FROM_OWNER * MAX_TARGET_DISTANCE_FROM_OWNER;
 
@@ -116,7 +115,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
     @Nullable
     private UUID ownerUUID;
 
-    private boolean aiNeedsResume = false;
+    private boolean aiNeedsResume;
     private float spellPower = 2.0F;
 
     @Nullable
@@ -127,8 +126,8 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
 
     private int chargeTicks = -1;
     private int chargeAnimReleaseTicks = -1;
-    private boolean finishedCharge = false;
-    private float chargeYaw = 0.0F;
+    private boolean finishedCharge;
+    private float chargeYaw;
     private int idleSoundCooldownTicks;
     private double chargeCeilingY = Double.POSITIVE_INFINITY;
 
@@ -158,7 +157,8 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new DarkRavenAttackGoal(this));
-        this.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(2, new DarkRavenFollowOwnerGoal(this));
+        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
         this.targetSelector.addGoal(
@@ -492,6 +492,10 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
 
     @Override
     public void push(Entity entity) {
+    }
+
+    @Override
+    public void push(double x, double y, double z) {
     }
 
     @Override

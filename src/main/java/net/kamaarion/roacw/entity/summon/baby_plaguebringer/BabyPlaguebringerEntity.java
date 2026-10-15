@@ -123,8 +123,22 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
     protected void registerGoals() {
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 12.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(
+                this,
+                Player.class,
+                10,
+                true,
+                false,
+                this::isValidTarget
+        ));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(
+                this,
+                Monster.class,
+                10,
+                true,
+                false,
+                this::isValidTarget
+        ));
     }
 
     @Override
@@ -183,6 +197,12 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
         }
 
         if (this.isCharging()) {
+            if (!this.isValidTarget(this.getTarget())) {
+                this.cancelCharge();
+                this.findTarget();
+                return;
+            }
+
             this.tickCharge();
             return;
         }
@@ -209,6 +229,8 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
             LivingEntity target = this.getTarget();
             if (this.isValidTarget(target)) {
                 this.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            } else {
+                this.findTarget();
             }
 
             if (this.chargeCooldown <= 0) {
@@ -221,6 +243,7 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
         LivingEntity target = this.getTarget();
 
         if (!this.isValidTarget(target)) {
+            this.setTarget(null);
             this.findTarget();
             target = this.getTarget();
         }
@@ -235,11 +258,9 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
             return;
         }
 
-        AABB searchBox = this.getBoundingBox().inflate(TARGET_RANGE);
-
         List<LivingEntity> candidates = serverLevel.getEntitiesOfClass(
                 LivingEntity.class,
-                searchBox,
+                this.getBoundingBox().inflate(TARGET_RANGE),
                 this::isValidTarget
         );
 
@@ -247,25 +268,33 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
 
         if (!candidates.isEmpty()) {
             this.setTarget(candidates.get(0));
+        } else {
+            this.setTarget(null);
         }
     }
 
     private boolean isValidTarget(@Nullable LivingEntity target) {
         if (target == null
+                || target == this
                 || !target.isAlive()
                 || target.isRemoved()
-                || target == this
                 || target.isSpectator()
                 || target instanceof BabyPlaguebringerEntity
-                || this.isFriendlyToOwner(target)) {
+                || target instanceof ViriliEntity
+                || this.distanceToSqr(target) > TARGET_RANGE * TARGET_RANGE) {
             return false;
         }
 
-        return this.distanceToSqr(target) <= TARGET_RANGE * TARGET_RANGE;
+        if (this.isAlliedTo(target) || target.isAlliedTo(this)) {
+            return false;
+        }
+
+        return !this.isFriendlyToOwner(target);
     }
 
     public void setOwnerUUID(@Nullable UUID uuid) {
         this.ownerUUID = uuid;
+        this.setTarget(null);
     }
 
     public void setSpellPower(float spellPower) {
@@ -287,17 +316,13 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
             return null;
         }
 
-        Entity player = serverLevel.getServer().getPlayerList().getPlayer(this.ownerUUID);
-        if (player instanceof LivingEntity living) {
-            return living;
-        }
-
         Entity resolved = serverLevel.getEntity(this.ownerUUID);
+
         if (resolved instanceof LivingEntity living) {
             return living;
         }
 
-        return null;
+        return serverLevel.getServer().getPlayerList().getPlayer(this.ownerUUID);
     }
 
     private boolean isFriendlyToOwner(LivingEntity target) {
@@ -309,13 +334,50 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
             return true;
         }
 
+        if (target instanceof BabyPlaguebringerEntity baby
+                && this.ownerUUID.equals(baby.getOwnerUUID())) {
+            return true;
+        }
+
         if (target instanceof ViriliEntity virili
                 && this.ownerUUID.equals(virili.getOwnerUUID())) {
             return true;
         }
 
         LivingEntity owner = this.getOwner();
-        return owner != null && owner.isAlliedTo(target);
+
+        if (owner == null) {
+            return false;
+        }
+
+        if (target == owner || owner.isAlliedTo(target) || target.isAlliedTo(owner)) {
+            return true;
+        }
+
+        Entity targetOwner = this.resolveTargetOwner(target);
+
+        if (targetOwner == null) {
+            return false;
+        }
+
+        if (targetOwner == owner || this.ownerUUID.equals(targetOwner.getUUID())) {
+            return true;
+        }
+
+        return owner.isAlliedTo(targetOwner) || targetOwner.isAlliedTo(owner);
+    }
+
+    @Nullable
+    private Entity resolveTargetOwner(LivingEntity target) {
+        if (target instanceof BabyPlaguebringerEntity baby) {
+            return baby.getOwner();
+        }
+
+        if (target instanceof ViriliEntity virili) {
+            return virili.getOwner();
+        }
+
+        return null;
     }
 
     private void tryStartNextCharge() {
@@ -327,6 +389,7 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
         LivingEntity target = this.getTarget();
 
         if (!this.isValidTarget(target)) {
+            this.setTarget(null);
             this.findTarget();
             target = this.getTarget();
         }
@@ -363,6 +426,8 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
 
         if (!this.isValidTarget(target)) {
             this.cancelCharge();
+            this.setTarget(null);
+            this.findTarget();
             return;
         }
 
@@ -410,7 +475,7 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
 
         LivingEntity chargeTarget = this.getTarget();
 
-        if (chargeTarget != null) {
+        if (this.isValidTarget(chargeTarget)) {
             double distanceSqr = this.distanceToSqr(chargeTarget);
 
             if (distanceSqr < this.closestChargeDistanceSqr) {
@@ -466,8 +531,7 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
 
         this.lastChargeCheckPosition = this.position();
 
-        AABB searchBox = new AABB(previousCenter, currentCenter)
-                .inflate(CHARGE_HIT_DISTANCE + 2.0D);
+        AABB searchBox = new AABB(previousCenter, currentCenter).inflate(CHARGE_HIT_DISTANCE + 2.0D);
 
         List<LivingEntity> entities = this.level().getEntitiesOfClass(
                 LivingEntity.class,
@@ -495,7 +559,7 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
             }
         }
 
-        if (closest == null) {
+        if (closest == null || !this.isValidTarget(closest)) {
             return;
         }
 
@@ -525,11 +589,12 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
     }
 
     private void damageChargeTarget(LivingEntity target) {
+        if (!this.isValidTarget(target)) {
+            return;
+        }
+
         boolean finalCharge = this.chargeCount >= MAX_CHARGES - 1;
-
-        float damage = (finalCharge ? FINAL_CHARGE_DAMAGE : NORMAL_CHARGE_DAMAGE)
-                * this.spellPower;
-
+        float damage = (finalCharge ? FINAL_CHARGE_DAMAGE : NORMAL_CHARGE_DAMAGE) * this.spellPower;
         LivingEntity summonOwner = this.getOwner();
 
         if (summonOwner == null) {
@@ -603,7 +668,11 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
 
         this.chargeCooldown = CHARGE_INTERVAL_TICKS;
         this.chargeHitTarget = null;
-        this.findTarget();
+
+        if (!this.isValidTarget(this.getTarget())) {
+            this.setTarget(null);
+            this.findTarget();
+        }
     }
 
     private void cancelCharge() {
@@ -687,6 +756,10 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
         Entity attacker = source.getEntity();
 
         if (attacker == this) {
+            return false;
+        }
+
+        if (attacker instanceof LivingEntity living && !this.isValidTarget(living)) {
             return false;
         }
 

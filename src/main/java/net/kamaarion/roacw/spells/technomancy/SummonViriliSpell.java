@@ -13,11 +13,13 @@ import net.kamaarion.roacw.entity.summon.virili.ViriliEntity;
 import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanterEvents;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWParticleRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SummonViriliSpell extends AbstractSpell {
@@ -162,6 +165,16 @@ public class SummonViriliSpell extends AbstractSpell {
     @Override
     public AnimationHolder getCastFinishAnimation() {
         return SpellAnimations.ANIMATION_LONG_CAST_FINISH;
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(ROACWSoundRegistry.PLAGUE_ENTITY_SPAWN.get());
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
     }
 
     @Override

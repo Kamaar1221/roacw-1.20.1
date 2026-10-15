@@ -16,6 +16,8 @@ public class Config {
 
     public static final ForgeConfigSpec.BooleanValue ENABLE_EARTHEN_PALADIN_PULSE;
 
+    public static final ForgeConfigSpec.BooleanValue ENABLE_PLAGUEBRINGER_JET_BOOST;
+
     public static final ForgeConfigSpec.BooleanValue ENABLE_MARS_FLIGHT;
     public static final ForgeConfigSpec.BooleanValue ENABLE_MARS_CANNONS;
 
@@ -39,6 +41,11 @@ public class Config {
         SERVER_BUILDER.push("Earthen Paladin Armor Abilities");
         ENABLE_EARTHEN_PALADIN_PULSE = SERVER_BUILDER.comment("Enables/disables Earthen Paladin Armor Pulse.")
                 .define("enableEarthenPaladinPulse", true);
+        SERVER_BUILDER.pop();
+
+        SERVER_BUILDER.push("Plaguebringer Armor Abilities");
+        ENABLE_PLAGUEBRINGER_JET_BOOST = SERVER_BUILDER.comment("Enables/disables Plaguebringer Jet Boost.")
+                .define("enablePlaguebringerJetBoost", true);
         SERVER_BUILDER.pop();
 
         SERVER_BUILDER.push("Flight Wings");

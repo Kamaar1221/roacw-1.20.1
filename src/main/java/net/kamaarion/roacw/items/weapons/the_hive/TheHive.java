@@ -55,7 +55,7 @@ public class TheHive extends Item implements GeoItem {
     private static final int NUKE_COOLDOWN_TICKS = 100;
 
     public TheHive(Properties properties) {
-        super(properties);
+        super(properties.stacksTo(1));
     }
 
     @Override

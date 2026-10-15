@@ -20,7 +20,7 @@ import java.util.List;
 
 public class AuricCodex extends SpellBook {
     public AuricCodex(Properties properties) {
-        super(15, properties);
+        super(15, properties.stacksTo(1));
 
         withSpellbookAttributes(
                 new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),

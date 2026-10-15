@@ -53,6 +53,27 @@
       "roacw:hive_rocket_launch"
     ]
   },
+  "plague_missile_explosion": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.plague_missile_explosion",
+    "sounds": [
+      "roacw:plague_missile_explosion"
+    ]
+  },
+  "plague_missile_launch": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.plague_missile_launch",
+    "sounds": [
+      "roacw:plague_missile_launch"
+    ]
+  },
+  "homing_plague_missile_exposion": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.homing_plague_missile_explosion",
+    "sounds": [
+      "roacw:homing_plague_missile_explosion"
+    ]
+  },
   "hive_nuke_ready": {
     "category": "player",
     "subtitle": "subtitles.roacw.hive_nuke_ready",
@@ -177,6 +198,41 @@
     "subtitle": "subtitles.roacw.pheonix_rebirth",
     "sounds": [
       "roacw:pheonix_rebirth"
+    ]
+  },
+  "virili_charge": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.virili_charge",
+    "sounds": [
+      "roacw:virili_charge"
+    ]
+  },
+  "virili_summon": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.virili_summon",
+    "sounds": [
+      "roacw:virili_summon"
+    ]
+  },
+  "virili_phase_switch_1": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.virili_phase_switch_1",
+    "sounds": [
+      "roacw:virili_phase_switch_1"
+    ]
+  },
+  "virili_phase_switch_2": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.virili_phase_switch_2",
+    "sounds": [
+      "roacw:virili_phase_switch_2"
+    ]
+  },
+  "plague_entity_spawn": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.plague_entity_spawn",
+    "sounds": [
+      "roacw:plague_entity_spawn"
     ]
   },
   "roacw_title_intro": {

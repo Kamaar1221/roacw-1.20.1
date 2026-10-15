@@ -146,7 +146,8 @@ public class SummonDarkRavenSpell extends AbstractSpell {
                 return;
             }
 
-            SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
+            SummonedEntitiesCastData summonedEntitiesCastData =
+                    new SummonedEntitiesCastData();
 
             int summonTime = 20 * 60 * 10;
             int summonCount = getSummonCountForLevel(spellLevel);
@@ -159,6 +160,8 @@ public class SummonDarkRavenSpell extends AbstractSpell {
                         ROACWEntityRegistry.DARK_RAVEN.get(),
                         serverLevel
                 );
+
+                raven.setOwnerUUID(entity.getUUID());
 
                 double angle = (Math.PI * 2.0D / summonCount) * i;
                 double radius = 2.0D;
@@ -237,12 +240,15 @@ public class SummonDarkRavenSpell extends AbstractSpell {
 
     private float getRavenDamage(int spellLevel, @Nullable LivingEntity caster) {
         if (caster == null) {
-            return this.baseSpellPower + ((spellLevel - 1) * this.spellPowerPerLevel);
+            return this.baseSpellPower
+                    + ((spellLevel - 1) * this.spellPowerPerLevel);
         }
 
         float baseDamage = getSpellPower(spellLevel, caster);
 
-        float eldritchPower = (float) SchoolRegistry.ELDRITCH.get().getPowerFor(caster);
+        float eldritchPower = (float) SchoolRegistry.ELDRITCH
+                .get()
+                .getPowerFor(caster);
 
         float eldritchBonus = 1.0F
                 + ((eldritchPower - 1.0F) * ELDRITCH_SPELL_POWER_SCALING);

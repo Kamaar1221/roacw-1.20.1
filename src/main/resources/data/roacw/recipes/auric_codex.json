@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CAD",
+    "ABA",
+    "EAF"
+  ],
+  "key": {
+    "A": {
+      "item": "roacw:charged_auric_bar"
+    },
+    "B": {
+      "item": "irons_spellbooks:ancient_codex"
+    },
+    "C": {
+      "item": "roacw:yharon_soul_fragment"
+    },
+    "D": {
+      "item": "irons_spellbooks:lightning_bottle"
+    },
+    "E": {
+      "item": "roacw:exo_core"
+    },
+    "F": {
+      "item": "roacw:ascendant_spirit_essence"
+    }
+  },
+
+  "result": {
+    "item": "roacw:auric_codex"
+  }
+}

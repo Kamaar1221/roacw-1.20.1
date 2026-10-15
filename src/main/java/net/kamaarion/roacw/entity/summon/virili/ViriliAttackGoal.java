@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ViriliAttackGoal extends Goal {
-
     private static final int FORWARD_CHARGES_BEFORE_BARRAGE = 6;
 
     private static final int CIRCLE_MIN_TICKS = 20;
@@ -34,6 +33,7 @@ public class ViriliAttackGoal extends Goal {
     private static final int CHARGE_HEIGHT_ADJUST_MAX_TICKS = 20;
     private static final int CHARGE_WINDUP_TICKS = 8;
     private static final int CHARGE_ACTIVE_MAX_TICKS = 12;
+    private static final double CHARGE_SOUND_DISTANCE = 2.0D;
 
     private static final float DIVE_CHANCE = 0.20F;
     private static final double DIVE_HEIGHT_ABOVE = 5.0D;
@@ -61,6 +61,7 @@ public class ViriliAttackGoal extends Goal {
     private static final double BARRAGE_MISSILE_SPACING =
             BARRAGE_FINAL_MISSILE_DISTANCE / BARRAGE_MISSILES_PER_CHARGE;
     private static final int BARRAGE_FINISH_SNAP_TICKS = 2;
+    private static final double BARRAGE_CHARGE_SOUND_DISTANCE = 3.0D;
 
     private static final double SWARM_HOVER_HEIGHT = 5.0D;
     private static final double SWARM_HOVER_DISTANCE = CIRCLE_MIN_RADIUS;
@@ -106,9 +107,12 @@ public class ViriliAttackGoal extends Goal {
 
     private float barrageLockedYaw;
     private double barrageDistanceTravelled;
+    private double chargeDistanceTravelled;
 
     private boolean chargeIsDive;
     private boolean chargeDivePastCenter;
+    private boolean chargeSoundPlayed;
+    private boolean barrageChargeSoundPlayed;
     private boolean swarmActive;
 
     private enum Phase {
@@ -172,12 +176,15 @@ public class ViriliAttackGoal extends Goal {
         this.forwardChargeCount = 0;
         this.barrageChargeCount = 0;
         this.barrageDistanceTravelled = 0.0D;
+        this.chargeDistanceTravelled = 0.0D;
         this.barrageMissilesFired = 0;
         this.barragePauseTicks = 0;
         this.barrageLockedYaw = this.mob.getYRot();
         this.swarmActive = false;
         this.swarmActiveTicks = 0;
         this.swarmHoverOffset = Vec3.ZERO;
+        this.chargeSoundPlayed = false;
+        this.barrageChargeSoundPlayed = false;
         this.chargeHitEntities.clear();
 
         this.initializeCircleState(this.target);
@@ -191,11 +198,14 @@ public class ViriliAttackGoal extends Goal {
         this.forwardChargeCount = 0;
         this.barrageChargeCount = 0;
         this.barrageDistanceTravelled = 0.0D;
+        this.chargeDistanceTravelled = 0.0D;
         this.barrageMissilesFired = 0;
         this.barragePauseTicks = 0;
         this.swarmActive = false;
         this.swarmActiveTicks = 0;
         this.swarmHoverOffset = Vec3.ZERO;
+        this.chargeSoundPlayed = false;
+        this.barrageChargeSoundPlayed = false;
 
         this.mob.setDeltaMovement(Vec3.ZERO);
         this.mob.setFlightControlLocked(false);
@@ -222,11 +232,14 @@ public class ViriliAttackGoal extends Goal {
             this.forwardChargeCount = 0;
             this.barrageChargeCount = 0;
             this.barrageDistanceTravelled = 0.0D;
+            this.chargeDistanceTravelled = 0.0D;
             this.barrageMissilesFired = 0;
             this.barragePauseTicks = 0;
             this.swarmActive = false;
             this.swarmActiveTicks = 0;
             this.swarmHoverOffset = Vec3.ZERO;
+            this.chargeSoundPlayed = false;
+            this.barrageChargeSoundPlayed = false;
             this.chargeHitEntities.clear();
             return;
         }
@@ -391,6 +404,8 @@ public class ViriliAttackGoal extends Goal {
         );
 
         this.chargeHitEntities.clear();
+        this.chargeDistanceTravelled = 0.0D;
+        this.chargeSoundPlayed = false;
         this.mob.setFlightControlLocked(true);
         this.mob.setAttackRotationLocked(false);
         this.mob.setDeltaMovement(Vec3.ZERO);
@@ -557,6 +572,8 @@ public class ViriliAttackGoal extends Goal {
     private void beginActiveCharge() {
         this.phase = Phase.CHARGE_ACTIVE;
         this.phaseTicks = 0;
+        this.chargeDistanceTravelled = 0.0D;
+        this.chargeSoundPlayed = false;
         this.mob.setChargeWindupActive(false);
         this.chargeDivePastCenter = false;
         this.chargeDirection = this.chargeDirection.normalize();
@@ -624,9 +641,22 @@ public class ViriliAttackGoal extends Goal {
 
         double movementDistance = Math.min(CHARGE_SPEED, remainingDistance);
         Vec3 movement = this.chargeDirection.scale(movementDistance);
-        Vec3 previousPosition = current;
+        Vec3 previousPosition = this.mob.position();
 
         this.mob.move(MoverType.SELF, movement);
+
+        Vec3 currentAfterMove = this.mob.position();
+        double actualMovementDistance = currentAfterMove.distanceTo(previousPosition);
+
+        if (actualMovementDistance > 0.001D) {
+            this.chargeDistanceTravelled += actualMovementDistance;
+
+            if (!this.chargeSoundPlayed && this.chargeDistanceTravelled >= CHARGE_SOUND_DISTANCE) {
+                this.chargeSoundPlayed = true;
+                this.mob.playChargeSound();
+            }
+        }
+
         this.mob.setDeltaMovement(movement);
         this.mob.forceAttackRotation();
         this.checkChargeHit(previousPosition, movement);
@@ -851,6 +881,7 @@ public class ViriliAttackGoal extends Goal {
         this.phaseTicks = 0;
         this.barrageDistanceTravelled = 0.0D;
         this.barrageMissilesFired = 0;
+        this.barrageChargeSoundPlayed = false;
 
         this.mob.setFlightControlLocked(true);
         this.mob.setChargeWindupActive(false);
@@ -896,7 +927,16 @@ public class ViriliAttackGoal extends Goal {
         Vec3 currentAfterMove = this.mob.position();
         double actualMovementDistance = currentAfterMove.distanceTo(currentBeforeMove);
 
-        this.barrageDistanceTravelled += actualMovementDistance;
+        if (actualMovementDistance > 0.001D) {
+            this.barrageDistanceTravelled += actualMovementDistance;
+
+            if (!this.barrageChargeSoundPlayed
+                    && this.barrageDistanceTravelled >= BARRAGE_CHARGE_SOUND_DISTANCE) {
+                this.barrageChargeSoundPlayed = true;
+                this.mob.playChargeSound();
+            }
+        }
+
         this.mob.setDeltaMovement(movement);
 
         while (this.barrageMissilesFired < BARRAGE_MISSILES_PER_CHARGE) {
@@ -1066,6 +1106,7 @@ public class ViriliAttackGoal extends Goal {
 
             this.swarmHoverOffset = horizontalOffset;
             this.mob.setAttackRotationLocked(false);
+            this.mob.playRandomPhaseSwitchSound();
             this.phase = Phase.SWARM;
             this.phaseTicks = 0;
             this.swarmActive = false;

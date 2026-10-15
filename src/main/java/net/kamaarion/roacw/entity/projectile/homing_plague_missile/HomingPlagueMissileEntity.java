@@ -8,13 +8,13 @@ import net.kamaarion.roacw.entity.summon.mini_plaguebringer.MiniPlaguebringerEnt
 import net.kamaarion.roacw.entity.summon.virili.ViriliEntity;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -240,7 +240,7 @@ public class HomingPlagueMissileEntity extends AbstractHurtingProjectile impleme
         double contactReach = (this.getBbWidth() * 0.5D) + HIT_TOLERANCE;
 
         if (this.target != null
-                && this.target.isAlive()
+                && this.isValidTarget(this.target)
                 && this.target.getBoundingBox()
                 .inflate(contactReach)
                 .contains(this.position())) {
@@ -431,7 +431,7 @@ public class HomingPlagueMissileEntity extends AbstractHurtingProjectile impleme
     }
 
     private boolean isValidTarget(@Nullable LivingEntity candidate) {
-        if (candidate == null || !candidate.isAlive()) {
+        if (candidate == null || !candidate.isAlive() || candidate.isSpectator()) {
             return false;
         }
 
@@ -447,27 +447,75 @@ public class HomingPlagueMissileEntity extends AbstractHurtingProjectile impleme
             return false;
         }
 
-        if (projectileOwner != null
-                && (projectileOwner.isAlliedTo(candidate)
-                || candidate.isAlliedTo(projectileOwner))) {
+        if (projectileOwner != null && areSameOrAllied(projectileOwner, candidate)) {
             return false;
         }
 
-        if (summonOwner != null
-                && (summonOwner.isAlliedTo(candidate)
-                || candidate.isAlliedTo(summonOwner))) {
+        if (summonOwner != null && areSameOrAllied(summonOwner, candidate)) {
             return false;
         }
 
-        if (candidate instanceof MiniPlaguebringerEntity otherMini) {
-            LivingEntity otherOwner = otherMini.getSummonOwner();
+        if (candidate.isAlliedTo(this) || this.isAlliedTo(candidate)) {
+            return false;
+        }
 
-            if (summonOwner != null && otherOwner == summonOwner) {
+        Entity candidateOwner = this.getResolvedSummonOwner(candidate);
+
+        if (candidateOwner != null) {
+            if (candidateOwner == projectileOwner || candidateOwner == summonOwner) {
+                return false;
+            }
+
+            if (summonOwner != null && areSameOrAllied(summonOwner, candidateOwner)) {
+                return false;
+            }
+
+            if (projectileOwner != null && areSameOrAllied(projectileOwner, candidateOwner)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private static boolean areSameOrAllied(
+            @Nullable Entity first,
+            @Nullable Entity second
+    ) {
+        if (first == null || second == null) {
+            return false;
+        }
+
+        return first == second
+                || first.isAlliedTo(second)
+                || second.isAlliedTo(first);
+    }
+
+    @Nullable
+    private Entity getResolvedSummonOwner(Entity entity) {
+        if (entity instanceof ViriliEntity virili) {
+            LivingEntity owner = virili.getOwner();
+
+            if (owner != null) {
+                return owner;
+            }
+        }
+
+        if (entity instanceof MiniPlaguebringerEntity miniPlaguebringer) {
+            LivingEntity owner = miniPlaguebringer.getSummonOwner();
+
+            if (owner != null) {
+                return owner;
+            }
+        }
+
+        Entity owner = SummonManager.getOwner(entity);
+
+        if (owner != null && owner != entity) {
+            return owner;
+        }
+
+        return null;
     }
 
     @Override
@@ -487,17 +535,21 @@ public class HomingPlagueMissileEntity extends AbstractHurtingProjectile impleme
     protected void onHit(HitResult result) {
         if (result.getType() == HitResult.Type.ENTITY
                 && result instanceof EntityHitResult entityHitResult
-                && entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-            if (this.isValidTarget(livingEntity)) {
-                this.hitTarget(livingEntity);
-                return;
-            }
+                && entityHitResult.getEntity() instanceof LivingEntity livingEntity
+                && this.isValidTarget(livingEntity)) {
+            this.hitTarget(livingEntity);
+            return;
         }
 
         this.discard();
     }
 
     private void hitTarget(LivingEntity target) {
+        if (!this.isValidTarget(target)) {
+            this.target = null;
+            return;
+        }
+
         LivingEntity summoner = this.getSummonOwner();
 
         if (summoner == null) {
@@ -533,18 +585,18 @@ public class HomingPlagueMissileEntity extends AbstractHurtingProjectile impleme
                     ),
                     summoner
             );
-
-            this.level().playSound(
-                    null,
-                    target.getX(),
-                    target.getY(),
-                    target.getZ(),
-                    SoundEvents.GENERIC_EXPLODE,
-                    SoundSource.HOSTILE,
-                    0.35F,
-                    1.0F
-            );
         }
+
+        this.level().playSound(
+                null,
+                this.getX(),
+                this.getY(),
+                this.getZ(),
+                ROACWSoundRegistry.HOMING_PLAGUE_MISSILE_EXPLOSION.get(),
+                SoundSource.HOSTILE,
+                1.0F,
+                1.0F
+        );
 
         this.discard();
     }

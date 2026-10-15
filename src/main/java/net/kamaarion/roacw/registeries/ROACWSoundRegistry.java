@@ -27,6 +27,12 @@ public class ROACWSoundRegistry {
 
     public static RegistryObject<SoundEvent> HIVE_ROCKET_LAUNCH = registerSoundEvent("hive_rocket_launch");
 
+    public static RegistryObject<SoundEvent> PLAGUE_MISSILE_EXPLOSION = registerSoundEvent("plague_missile_explosion");
+
+    public static RegistryObject<SoundEvent> PLAGUE_MISSILE_LAUNCH = registerSoundEvent("plague_missile_launch");
+
+    public static RegistryObject<SoundEvent> HOMING_PLAGUE_MISSILE_EXPLOSION = registerSoundEvent("homing_plague_missile_explosion");
+
     public static RegistryObject<SoundEvent> HIVE_NUKE_READY = registerSoundEvent("hive_nuke_ready");
 
     public static RegistryObject<SoundEvent> HIVE_NUKE_CHARGE = registerSoundEvent("hive_nuke_charge");
@@ -66,6 +72,16 @@ public class ROACWSoundRegistry {
     public static RegistryObject<SoundEvent> TYRANT_ROAR = registerSoundEvent("tyrant_roar");
 
     public static RegistryObject<SoundEvent> PHEONIX_REBIRTH = registerSoundEvent("pheonix_rebirth");
+
+    public static RegistryObject<SoundEvent> VIRILI_CHARGE = registerSoundEvent("virili_charge");
+
+    public static RegistryObject<SoundEvent> VIRILI_SUMMON = registerSoundEvent("virili_summon");
+
+    public static RegistryObject<SoundEvent> VIRILI_PHASE_1 = registerSoundEvent("virili_phase_switch_1");
+
+    public static RegistryObject<SoundEvent> VIRILI_PHASE_2 = registerSoundEvent("virili_phase_switch_2");
+
+    public static RegistryObject<SoundEvent> PLAGUE_ENTITY_SPAWN = registerSoundEvent("plague_entity_spawn");
 
     public static final RegistryObject<SoundEvent> REMNANTS_OF_A_CRUEL_WORLD_TITLE = registerSoundEvent("remnants_of_a_cruel_world_title");
 

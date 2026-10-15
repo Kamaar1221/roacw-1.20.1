@@ -190,8 +190,7 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
             LivingEntity viriliOwner = virili.getOwner();
 
             if (viriliOwner != null) {
-                this.summonOwner = viriliOwner;
-                this.summonOwnerUUID = viriliOwner.getUUID();
+                this.setSummonOwner(viriliOwner);
                 return;
             }
         }
@@ -199,14 +198,12 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
         Entity resolvedOwner = SummonManager.getOwner(owner);
 
         if (resolvedOwner instanceof LivingEntity living) {
-            this.summonOwner = living;
-            this.summonOwnerUUID = living.getUUID();
+            this.setSummonOwner(living);
             return;
         }
 
         if (owner instanceof LivingEntity living) {
-            this.summonOwner = living;
-            this.summonOwnerUUID = living.getUUID();
+            this.setSummonOwner(living);
             return;
         }
 
@@ -236,8 +233,14 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
                 : null;
     }
 
-    private boolean isFriendlyEntity(Entity entity) {
-        if (entity == this || entity == this.getOwner()) {
+    private boolean isFriendlyEntity(@Nullable Entity entity) {
+        if (entity == null || entity == this) {
+            return true;
+        }
+
+        Entity projectileOwner = this.getOwner();
+
+        if (entity == projectileOwner) {
             return true;
         }
 
@@ -247,56 +250,12 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
             return true;
         }
 
-        if (entity instanceof PlagueBeeEntity otherBee) {
-            LivingEntity otherOwner = otherBee.getSummonOwner();
+        LivingEntity entitySummoner = this.getEntitySummonOwner(entity);
 
-            if (actualSummoner != null
-                    && otherOwner != null
-                    && sameOwner(actualSummoner, otherOwner)) {
-                return true;
-            }
-
+        if (this.summonOwnerUUID != null
+                && entitySummoner != null
+                && this.summonOwnerUUID.equals(entitySummoner.getUUID())) {
             return true;
-        }
-
-        if (entity instanceof ViriliEntity virili) {
-            LivingEntity viriliOwner = virili.getOwner();
-
-            if (actualSummoner != null
-                    && viriliOwner != null
-                    && sameOwner(actualSummoner, viriliOwner)) {
-                return true;
-            }
-        }
-
-        if (entity instanceof BabyPlaguebringerEntity baby) {
-            LivingEntity babyOwner = baby.getOwner();
-
-            if (actualSummoner != null
-                    && babyOwner != null
-                    && sameOwner(actualSummoner, babyOwner)) {
-                return true;
-            }
-        }
-
-        if (entity instanceof MiniPlaguebringerEntity mini) {
-            LivingEntity miniOwner = mini.getSummonOwner();
-
-            if (actualSummoner != null
-                    && miniOwner != null
-                    && sameOwner(actualSummoner, miniOwner)) {
-                return true;
-            }
-        }
-
-        if (entity instanceof IMagicSummon) {
-            Entity magicSummonOwner = SummonManager.getOwner(entity);
-
-            if (actualSummoner != null
-                    && magicSummonOwner instanceof LivingEntity livingOwner
-                    && sameOwner(actualSummoner, livingOwner)) {
-                return true;
-            }
         }
 
         if (actualSummoner != null) {
@@ -308,25 +267,80 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
                     && living.isAlliedTo(actualSummoner)) {
                 return true;
             }
+
+            if (entitySummoner != null
+                    && areOwnersAllied(actualSummoner, entitySummoner)) {
+                return true;
+            }
+        }
+
+        if (entity instanceof PlagueBeeEntity otherBee) {
+            LivingEntity otherSummoner = otherBee.getSummonOwner();
+
+            if (actualSummoner != null && otherSummoner != null) {
+                return areOwnersAllied(actualSummoner, otherSummoner);
+            }
+
+            return this.summonOwnerUUID != null
+                    && otherBee.summonOwnerUUID != null
+                    && this.summonOwnerUUID.equals(otherBee.summonOwnerUUID);
         }
 
         return false;
     }
 
-    private boolean sameOwner(LivingEntity first, LivingEntity second) {
-        return first == second || first.getUUID().equals(second.getUUID());
+    @Nullable
+    private LivingEntity getEntitySummonOwner(Entity entity) {
+        if (entity instanceof PlagueBeeEntity bee) {
+            return bee.getSummonOwner();
+        }
+
+        if (entity instanceof ViriliEntity virili) {
+            return virili.getOwner();
+        }
+
+        if (entity instanceof BabyPlaguebringerEntity baby) {
+            return baby.getOwner();
+        }
+
+        if (entity instanceof MiniPlaguebringerEntity mini) {
+            return mini.getSummonOwner();
+        }
+
+        if (entity instanceof IMagicSummon) {
+            Entity owner = SummonManager.getOwner(entity);
+
+            if (owner instanceof LivingEntity living) {
+                return living;
+            }
+        }
+
+        return null;
     }
 
-    private boolean isValidTarget(Entity entity) {
+    private boolean areOwnersAllied(
+            LivingEntity first,
+            LivingEntity second
+    ) {
+        if (first == second || first.getUUID().equals(second.getUUID())) {
+            return true;
+        }
+
+        return first.isAlliedTo(second) || second.isAlliedTo(first);
+    }
+
+    private boolean isValidTarget(@Nullable Entity entity) {
         if (!(entity instanceof LivingEntity living)) {
             return false;
         }
 
-        if (!living.isAlive() || living.isSpectator()) {
+        if (!living.isAlive()
+                || living.isRemoved()
+                || living.isSpectator()) {
             return false;
         }
 
-        return !this.isFriendlyEntity(entity);
+        return !this.isFriendlyEntity(living);
     }
 
     private Vec3 getSpreadDirection(@Nullable LivingEntity target) {
@@ -415,28 +429,31 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
             movement = spreadDirection.scale(SPREAD_SPEED);
             this.setDeltaMovement(movement);
         } else if (target != null && this.isValidTarget(target)) {
-            Vec3 desiredDirection = target.getEyePosition()
-                    .subtract(this.position())
-                    .normalize();
+            Vec3 targetDirection = target.getEyePosition()
+                    .subtract(this.position());
 
-            if (movement.lengthSqr() < 0.0001D) {
-                movement = desiredDirection.scale(INITIAL_SPEED);
-            } else {
-                Vec3 currentDirection = movement.normalize();
+            if (targetDirection.lengthSqr() > 0.0001D) {
+                Vec3 desiredDirection = targetDirection.normalize();
 
-                Vec3 newDirection = currentDirection
-                        .lerp(desiredDirection, HOMING_STRENGTH)
-                        .normalize();
+                if (movement.lengthSqr() < 0.0001D) {
+                    movement = desiredDirection.scale(INITIAL_SPEED);
+                } else {
+                    Vec3 currentDirection = movement.normalize();
 
-                double newSpeed = Math.min(
-                        movement.length() + ACCELERATION,
-                        MAX_SPEED
-                );
+                    Vec3 newDirection = currentDirection
+                            .lerp(desiredDirection, HOMING_STRENGTH)
+                            .normalize();
 
-                movement = newDirection.scale(newSpeed);
+                    double newSpeed = Math.min(
+                            movement.length() + ACCELERATION,
+                            MAX_SPEED
+                    );
+
+                    movement = newDirection.scale(newSpeed);
+                }
+
+                this.setDeltaMovement(movement);
             }
-
-            this.setDeltaMovement(movement);
         }
 
         movement = this.getDeltaMovement();
@@ -503,7 +520,7 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
             return;
         }
 
-        if (!this.isValidTarget(target) || this.level().isClientSide) {
+        if (this.level().isClientSide || !this.isValidTarget(target)) {
             return;
         }
 
@@ -518,12 +535,8 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
             }
         }
 
-        if (actualSummoner == null) {
+        if (actualSummoner == null || this.isFriendlyEntity(target)) {
             this.discard();
-            return;
-        }
-
-        if (this.isFriendlyEntity(target)) {
             return;
         }
 
@@ -605,6 +618,8 @@ public class PlagueBeeEntity extends Projectile implements GeoEntity {
                     }
                 }
             }
+        } else {
+            this.summonOwnerUUID = null;
         }
     }
 

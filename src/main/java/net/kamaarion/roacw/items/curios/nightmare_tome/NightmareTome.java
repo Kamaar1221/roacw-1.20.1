@@ -19,7 +19,7 @@ import java.util.List;
 
 public class NightmareTome extends SpellBook {
   public NightmareTome(Properties properties) {
-    super(12, properties);
+    super(12, properties.stacksTo(1));
 
     withSpellbookAttributes(
             new AttributeContainer(AttributeRegistry.ICE_SPELL_POWER, 0.2, AttributeModifier.Operation.MULTIPLY_BASE),

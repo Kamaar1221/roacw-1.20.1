@@ -4,8 +4,11 @@ import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.kamaarion.roacw.entity.projectile.homing_plague_missile.HomingPlagueMissileEntity;
 import net.kamaarion.roacw.entity.projectile.plague_missile.PlagueMissileEntity;
+import net.kamaarion.roacw.entity.summon.baby_plaguebringer.BabyPlaguebringerEntity;
+import net.kamaarion.roacw.entity.summon.virili.ViriliEntity;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,6 +16,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -78,6 +82,7 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
 
     private static final float ATTACK_DAMAGE = 8.0F;
     private static final int ATTACK_COOLDOWN = 30;
+    private static final int ATTACK_STAGGER_TICKS = 10;
     private static final int ATTACK_ANIMATION_TICKS = 14;
     private static final int ATTACK_FIRE_TICK = 7;
     private static final float HOMING_MISSILE_CHANCE = 0.35F;
@@ -122,7 +127,6 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-
         this.entityData.define(DATA_ATTACKING, false);
         this.entityData.define(DATA_FORMATION_INDEX, 0);
         this.entityData.define(DATA_FORMATION_COUNT, 1);
@@ -136,7 +140,14 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(
                 2,
-                new NearestAttackableTargetGoal<>(this, Monster.class, true)
+                new NearestAttackableTargetGoal<>(
+                        this,
+                        Monster.class,
+                        10,
+                        true,
+                        false,
+                        this::isValidTarget
+                )
         );
     }
 
@@ -144,34 +155,35 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     public void tick() {
         super.tick();
 
-        if (!this.level().isClientSide) {
-            if (this.attackCooldown > 0) {
-                this.attackCooldown--;
-            }
-
-            if (this.attackAnimationTicks > 0) {
-                this.attackAnimationTicks--;
-
-                int elapsedTicks = ATTACK_ANIMATION_TICKS - this.attackAnimationTicks;
-
-                if (!this.missileFired && elapsedTicks == ATTACK_FIRE_TICK) {
-                    this.fireMissile();
-                    this.missileFired = true;
-                }
-
-                if (this.attackAnimationTicks <= 0) {
-                    this.setAttacking(false);
-                }
-            }
-        }
-
         if (this.level().isClientSide) {
             return;
+        }
+
+        if (this.attackCooldown > 0) {
+            this.attackCooldown--;
+        }
+
+        if (this.attackAnimationTicks > 0) {
+            this.attackAnimationTicks--;
+
+            int elapsedTicks = ATTACK_ANIMATION_TICKS - this.attackAnimationTicks;
+
+            if (!this.missileFired && elapsedTicks == ATTACK_FIRE_TICK) {
+                this.fireMissile();
+                this.missileFired = true;
+            }
+
+            if (this.attackAnimationTicks <= 0) {
+                this.setAttacking(false);
+                this.pendingAttackTarget = null;
+            }
         }
 
         LivingEntity owner = this.getSummonOwner();
 
         if (owner == null || !owner.isAlive()) {
+            this.setTarget(null);
+            this.pendingAttackTarget = null;
             return;
         }
 
@@ -183,17 +195,16 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
                 && ownerTarget.isAlive()
                 && ownerTarget != owner
                 && owner.distanceToSqr(ownerTarget) <= TARGET_RANGE * TARGET_RANGE
-                && owner.getLastHurtMobTimestamp() >= owner.tickCount - OWNER_TARGET_FRESHNESS_TICKS) {
-            if (!this.isFriendlySummon(ownerTarget)) {
-                this.setTarget(ownerTarget);
-            }
+                && owner.getLastHurtMobTimestamp()
+                >= owner.tickCount - OWNER_TARGET_FRESHNESS_TICKS
+                && this.isValidTarget(ownerTarget)) {
+            this.setTarget(ownerTarget);
         }
 
         LivingEntity target = this.getTarget();
 
         if (target != null
-                && (!target.isAlive()
-                || this.isFriendlySummon(target)
+                && (!this.isValidTarget(target)
                 || owner.distanceToSqr(target) > TARGET_RANGE * TARGET_RANGE)) {
             this.setTarget(null);
             target = null;
@@ -236,7 +247,7 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     }
 
     public boolean isTargetInAttackRange(@Nullable LivingEntity target) {
-        if (target == null) {
+        if (!this.isValidTarget(target)) {
             return false;
         }
 
@@ -248,7 +259,7 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     }
 
     public boolean isTargetInTargetRange(@Nullable LivingEntity target) {
-        if (target == null) {
+        if (!this.isValidTarget(target)) {
             return false;
         }
 
@@ -391,7 +402,16 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     }
 
     public boolean canAttackNow() {
-        return this.attackCooldown <= 0;
+        if (this.attackCooldown > 0) {
+            return false;
+        }
+
+        int count = Math.max(1, this.getFormationCount());
+        int cycleTicks = Math.max(ATTACK_COOLDOWN, count * ATTACK_STAGGER_TICKS);
+        int slotStart = (Math.max(0, this.getFormationIndex()) % count) * ATTACK_STAGGER_TICKS;
+        long phase = this.level().getGameTime() % cycleTicks;
+
+        return phase >= slotStart && phase < slotStart + ATTACK_STAGGER_TICKS;
     }
 
     public void performAttack(LivingEntity target) {
@@ -410,7 +430,10 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     private void fireMissile() {
         LivingEntity target = this.pendingAttackTarget;
 
-        if (!this.isValidTarget(target) || !this.isTargetInAttackRange(target)) {
+        if (!this.isValidTarget(target)
+                || !this.isTargetInAttackRange(target)) {
+            this.pendingAttackTarget = null;
+            this.setTarget(null);
             return;
         }
 
@@ -428,20 +451,32 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
             return;
         }
 
+        this.level().playSound(
+                null,
+                this.getX(),
+                this.getY(),
+                this.getZ(),
+                ROACWSoundRegistry.PLAGUE_MISSILE_LAUNCH.get(),
+                SoundSource.HOSTILE,
+                1.0F,
+                1.0F
+        );
+
         float missileDamage = Math.max(1.0F, this.getSpellPower());
         float missileSplashDamage = Math.max(0.25F, this.getSpellPower() * 0.25F);
 
         boolean fireHoming = this.random.nextFloat() < HOMING_MISSILE_CHANCE;
 
         if (fireHoming) {
-            HomingPlagueMissileEntity homingMissile = new HomingPlagueMissileEntity(
-                    serverLevel,
-                    this,
-                    target,
-                    missileDamage,
-                    spawnPosition,
-                    ROACWSpellRegistry.SUMMON_MINI_PLAGUEBRINGER.get()
-            );
+            HomingPlagueMissileEntity homingMissile =
+                    new HomingPlagueMissileEntity(
+                            serverLevel,
+                            this,
+                            target,
+                            missileDamage,
+                            spawnPosition,
+                            ROACWSpellRegistry.SUMMON_MINI_PLAGUEBRINGER.get()
+                    );
 
             serverLevel.addFreshEntity(homingMissile);
             return;
@@ -464,10 +499,23 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     }
 
     private boolean isValidTarget(@Nullable LivingEntity target) {
-        return target != null
-                && target.isAlive()
-                && target != this
-                && !this.isFriendlySummon(target);
+        if (target == null
+                || target == this
+                || !target.isAlive()
+                || target.isRemoved()
+                || target.isSpectator()) {
+            return false;
+        }
+
+        if (this.isFriendlySummon(target)) {
+            return false;
+        }
+
+        LivingEntity owner = this.getSummonOwner();
+
+        return owner != null
+                && owner.isAlive()
+                && owner.distanceToSqr(target) <= TARGET_RANGE * TARGET_RANGE;
     }
 
     private void triggerAttackAnimation() {
@@ -477,44 +525,84 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
 
     @Nullable
     public LivingEntity getSummonOwner() {
-        var owner = SummonManager.getOwner(this);
-
+        Entity owner = SummonManager.getOwner(this);
         return owner instanceof LivingEntity living ? living : null;
     }
 
+    @Nullable
+    private LivingEntity getEntitySummonOwner(Entity entity) {
+        if (entity instanceof MiniPlaguebringerEntity mini) {
+            return mini.getSummonOwner();
+        }
+
+        if (entity instanceof ViriliEntity virili) {
+            return virili.getOwner();
+        }
+
+        if (entity instanceof BabyPlaguebringerEntity baby) {
+            return baby.getOwner();
+        }
+
+        if (entity instanceof IMagicSummon) {
+            Entity owner = SummonManager.getOwner(entity);
+
+            if (owner instanceof LivingEntity living) {
+                return living;
+            }
+        }
+
+        return null;
+    }
+
     public boolean isFriendlySummon(@Nullable LivingEntity entity) {
-        if (entity == null) {
-            return false;
+        if (entity == null || entity == this) {
+            return entity == this;
         }
 
         LivingEntity owner = this.getSummonOwner();
 
         if (owner == null) {
-            return false;
+            return this.isSummonEntity(entity);
         }
 
-        if (entity == owner) {
+        if (entity == owner || entity.getUUID().equals(owner.getUUID())) {
             return true;
         }
 
-        if (entity.isAlliedTo(owner)) {
+        if (entity.isAlliedTo(owner) || owner.isAlliedTo(entity)) {
             return true;
         }
 
-        if (entity instanceof MiniPlaguebringerEntity other) {
-            LivingEntity otherOwner = other.getSummonOwner();
-            return otherOwner != null && otherOwner == owner;
+        LivingEntity targetOwner = this.getEntitySummonOwner(entity);
+
+        if (targetOwner != null) {
+            if (owner.getUUID().equals(targetOwner.getUUID())) {
+                return true;
+            }
+
+            if (owner.isAlliedTo(targetOwner) || targetOwner.isAlliedTo(owner)) {
+                return true;
+            }
+        } else if (this.isSummonEntity(entity)) {
+            return true;
         }
 
         return false;
     }
 
+    private boolean isSummonEntity(Entity entity) {
+        return entity instanceof IMagicSummon
+                || entity instanceof MiniPlaguebringerEntity
+                || entity instanceof BabyPlaguebringerEntity
+                || entity instanceof ViriliEntity;
+    }
+
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        LivingEntity owner = this.getSummonOwner();
+        Entity attacker = source.getEntity();
 
-        if (source.getEntity() instanceof LivingEntity attacker
-                && (attacker == owner || this.isFriendlySummon(attacker))) {
+        if (attacker instanceof LivingEntity livingAttacker
+                && this.isFriendlySummon(livingAttacker)) {
             return false;
         }
 
@@ -653,7 +741,7 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        return !this.isFriendlySummon(target) && super.canAttack(target);
+        return this.isValidTarget(target) && super.canAttack(target);
     }
 
     @Override
@@ -668,8 +756,9 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
 
     @Override
     public void setTarget(@Nullable LivingEntity target) {
-        if (target != null && this.isFriendlySummon(target)) {
+        if (target != null && !this.isValidTarget(target)) {
             super.setTarget(null);
+            this.pendingAttackTarget = null;
             return;
         }
 
@@ -694,8 +783,7 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
         public boolean canUse() {
             LivingEntity target = this.plaguebringer.getTarget();
 
-            return target != null
-                    && target.isAlive()
+            return this.plaguebringer.isValidTarget(target)
                     && this.plaguebringer.isTargetInAttackRange(target);
         }
 
@@ -703,8 +791,7 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
         public boolean canContinueToUse() {
             LivingEntity target = this.plaguebringer.getTarget();
 
-            return target != null
-                    && target.isAlive()
+            return this.plaguebringer.isValidTarget(target)
                     && this.plaguebringer.isTargetInAttackRange(target);
         }
 
@@ -712,7 +799,8 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
         public void tick() {
             LivingEntity target = this.plaguebringer.getTarget();
 
-            if (target == null) {
+            if (!this.plaguebringer.isValidTarget(target)) {
+                this.plaguebringer.setTarget(null);
                 return;
             }
 

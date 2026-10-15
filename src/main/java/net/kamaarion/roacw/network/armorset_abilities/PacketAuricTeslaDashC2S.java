@@ -81,7 +81,7 @@ public class PacketAuricTeslaDashC2S {
                 return;
             }
 
-            AURIC_COOLDOWN_TRACKER.put(player.getUUID(), currentServerTick + 60);
+            AURIC_COOLDOWN_TRACKER.put(player.getUUID(), currentServerTick + 600);
 
             Vec3 lookDirection = player.getLookAngle();
             double auricDashSpeed = 4.0D;
