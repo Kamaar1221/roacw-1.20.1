@@ -23,26 +23,16 @@ public final class ROACWScrollTextureRegistry {
     public static void register() {
         TAG_MODELS.clear();
 
-        registerTag(
-                ROACWTags.PLAGUE_SPELLS,
-                "item/scroll_plague"
-        );
-
-        registerTag(
-                ROACWTags.DRAGONFIRE_SPELLS,
-                "item/scroll_dragonfire"
-        );
-
-        registerTag(
-                ROACWTags.EARTHEN_SPELLS,
-                "item/scroll_earthen"
-        );
+        registerTag(ROACWTags.PLAGUE_SPELLS, "item/scroll_plague");
+        registerTag(ROACWTags.DRAGONFIRE_SPELLS, "item/scroll_dragonfire");
+        registerTag(ROACWTags.EARTHEN_SPELLS, "item/scroll_earthen");
     }
 
-    private static void registerTag(
-            TagKey<AbstractSpell> tag,
-            String modelPath
-    ) {
+    private static void registerTag(TagKey<AbstractSpell> tag, String modelPath) {
+        if (tag == null || modelPath == null || modelPath.isBlank()) {
+            return;
+        }
+
         ResourceLocation modelLocation = ResourceLocation.fromNamespaceAndPath(
                 ROACW.MODID,
                 modelPath
@@ -52,30 +42,35 @@ public final class ROACWScrollTextureRegistry {
     }
 
     public static ResourceLocation getModel(AbstractSpell spell) {
-        if (spell == null) {
+        if (spell == null || TAG_MODELS.isEmpty()) {
             return null;
         }
 
-        IForgeRegistry<AbstractSpell> registry = SpellRegistry.REGISTRY.get();
+        try {
+            IForgeRegistry<AbstractSpell> registry = SpellRegistry.REGISTRY.get();
 
-        if (registry == null) {
-            return null;
-        }
-
-        ITagManager<AbstractSpell> tagManager = registry.tags();
-
-        if (tagManager == null) {
-            return null;
-        }
-
-        for (Map.Entry<TagKey<AbstractSpell>, ResourceLocation> entry :
-                TAG_MODELS.entrySet()) {
-
-            var tag = tagManager.getTag(entry.getKey());
-
-            if (tag != null && tag.contains(spell)) {
-                return entry.getValue();
+            if (registry == null) {
+                return null;
             }
+
+            ITagManager<AbstractSpell> tagManager = registry.tags();
+
+            if (tagManager == null) {
+                return null;
+            }
+
+            for (Map.Entry<TagKey<AbstractSpell>, ResourceLocation> entry :
+                    TAG_MODELS.entrySet()) {
+                try {
+                    var tag = tagManager.getTag(entry.getKey());
+
+                    if (tag != null && tag.contains(spell)) {
+                        return entry.getValue();
+                    }
+                } catch (RuntimeException ignored) {
+                }
+            }
+        } catch (RuntimeException ignored) {
         }
 
         return null;

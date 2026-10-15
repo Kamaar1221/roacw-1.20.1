@@ -75,6 +75,10 @@ public class ViriliAttackGoal extends Goal {
     private static final int PLAGUE_AMPLIFIER = 0;
     private static final int SWARM_BABY_PLAGUEBRINGER_INTERVAL_TICKS = 40;
 
+    private static final double MAX_TARGET_DISTANCE_SQR = 24.0D * 24.0D;
+    private static final double MIN_MOVEMENT_SQR = 0.0001D;
+    private static final double COLLISION_CHECK_STEP = 0.25D;
+
     private final ViriliEntity mob;
     private final Set<UUID> chargeHitEntities = new HashSet<>();
 
@@ -136,34 +140,35 @@ public class ViriliAttackGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        LivingEntity target = this.mob.getTarget();
+        LivingEntity candidate = this.mob.getTarget();
 
-        if (target == null || !target.isAlive() || target == this.mob.getOwner()) {
+        if (!this.isValidTarget(candidate)) {
             return false;
         }
 
-        if (this.mob.distanceToSqr(target) > 24.0D * 24.0D) {
+        if (this.mob.distanceToSqr(candidate) > MAX_TARGET_DISTANCE_SQR) {
             return false;
         }
 
-        this.target = target;
+        this.target = candidate;
         return true;
     }
 
     @Override
     public boolean canContinueToUse() {
-        LivingEntity target = this.mob.getTarget();
+        LivingEntity currentTarget = this.mob.getTarget();
 
-        if (target == null || !target.isAlive() || target == this.mob.getOwner()) {
-            return false;
+        if (currentTarget != null && this.isValidTarget(currentTarget)) {
+            this.target = currentTarget;
+            return true;
         }
 
-        if (this.mob.distanceToSqr(target) > 24.0D * 24.0D) {
-            return false;
+        if (this.isValidTarget(this.target)) {
+            this.mob.setTarget(this.target);
+            return true;
         }
 
-        this.target = target;
-        return true;
+        return false;
     }
 
     @Override
@@ -221,44 +226,133 @@ public class ViriliAttackGoal extends Goal {
 
     @Override
     public void tick() {
-        LivingEntity target = this.mob.getTarget();
+        LivingEntity candidate = this.mob.getTarget();
 
-        if (target == null || !target.isAlive() || target == this.mob.getOwner()
-                || this.mob.distanceToSqr(target) > 24.0D * 24.0D) {
-            this.mob.setTarget(null);
+        if (!this.isValidTarget(candidate)) {
+            this.mob.setDeltaMovement(Vec3.ZERO);
+            this.mob.setFlightControlLocked(false);
+            this.mob.setChargeWindupActive(false);
+            this.mob.finishChargeAnimation();
+            this.mob.finishRemoteChargeAnimation();
+            this.mob.setRemoteCharging(false);
+            this.mob.setAttackRotationLocked(false);
             this.mob.resetTransientAiState();
-            this.phase = Phase.CIRCLE;
-            this.phaseTicks = 0;
-            this.forwardChargeCount = 0;
-            this.barrageChargeCount = 0;
-            this.barrageDistanceTravelled = 0.0D;
-            this.chargeDistanceTravelled = 0.0D;
-            this.barrageMissilesFired = 0;
-            this.barragePauseTicks = 0;
-            this.swarmActive = false;
-            this.swarmActiveTicks = 0;
-            this.swarmHoverOffset = Vec3.ZERO;
-            this.chargeSoundPlayed = false;
-            this.barrageChargeSoundPlayed = false;
-            this.chargeHitEntities.clear();
+            this.mob.setTarget(null);
+            this.resetAttackState();
             return;
         }
 
-        this.target = target;
+        this.target = candidate;
         this.phaseTicks++;
 
         switch (this.phase) {
-            case CIRCLE -> this.tickCircle(target);
-            case CHARGE_APPROACH -> this.tickChargeApproach(target);
-            case CHARGE_WINDUP -> this.tickChargeWindup(target);
-            case CHARGE_ACTIVE -> this.tickChargeActive(target);
-            case CHARGE_END -> this.tickChargeEnd(target);
-            case BARRAGE_APPROACH -> this.tickBarrageApproach(target);
-            case BARRAGE_CHARGE -> this.tickBarrageCharge(target);
-            case BARRAGE_PAUSE -> this.tickBarragePause(target);
-            case BARRAGE_FINISH -> this.tickBarrageFinish(target);
-            case SWARM -> this.tickSwarm(target);
-            case REST -> this.tickRest(target);
+            case CIRCLE -> this.tickCircle(candidate);
+            case CHARGE_APPROACH -> this.tickChargeApproach(candidate);
+            case CHARGE_WINDUP -> this.tickChargeWindup(candidate);
+            case CHARGE_ACTIVE -> this.tickChargeActive(candidate);
+            case CHARGE_END -> this.tickChargeEnd(candidate);
+            case BARRAGE_APPROACH -> this.tickBarrageApproach(candidate);
+            case BARRAGE_CHARGE -> this.tickBarrageCharge(candidate);
+            case BARRAGE_PAUSE -> this.tickBarragePause(candidate);
+            case BARRAGE_FINISH -> this.tickBarrageFinish(candidate);
+            case SWARM -> this.tickSwarm(candidate);
+            case REST -> this.tickRest(candidate);
+        }
+    }
+
+    private boolean isValidTarget(LivingEntity candidate) {
+        return candidate != null
+                && candidate.isAlive()
+                && !candidate.isRemoved()
+                && candidate != this.mob
+                && this.mob.isValidTarget(candidate);
+    }
+
+    private void resetAttackState() {
+        this.target = null;
+        this.phase = Phase.CIRCLE;
+        this.phaseTicks = 0;
+        this.forwardChargeCount = 0;
+        this.barrageChargeCount = 0;
+        this.barrageDistanceTravelled = 0.0D;
+        this.chargeDistanceTravelled = 0.0D;
+        this.barrageMissilesFired = 0;
+        this.barragePauseTicks = 0;
+        this.swarmActive = false;
+        this.swarmActiveTicks = 0;
+        this.swarmHoverOffset = Vec3.ZERO;
+        this.chargeSoundPlayed = false;
+        this.barrageChargeSoundPlayed = false;
+        this.chargeHitEntities.clear();
+    }
+
+    private boolean isMovementPathClear(Vec3 movement) {
+        double length = movement.length();
+
+        if (length < 0.001D) {
+            return true;
+        }
+
+        int steps = Math.max(1, Mth.ceil(length / COLLISION_CHECK_STEP));
+        AABB originalBox = this.mob.getBoundingBox();
+
+        for (int i = 1; i <= steps; i++) {
+            Vec3 offset = movement.scale((double) i / steps);
+            AABB testBox = originalBox.move(offset);
+
+            if (!this.mob.level().noCollision(this.mob, testBox)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean trySafeMove(Vec3 movement) {
+        if (!this.isMovementPathClear(movement)) {
+            this.mob.setDeltaMovement(Vec3.ZERO);
+            return false;
+        }
+
+        Vec3 before = this.mob.position();
+        this.mob.move(MoverType.SELF, movement);
+        Vec3 actualMovement = this.mob.position().subtract(before);
+
+        if (movement.lengthSqr() > MIN_MOVEMENT_SQR
+                && actualMovement.lengthSqr() < movement.lengthSqr() * 0.25D) {
+            this.mob.setDeltaMovement(Vec3.ZERO);
+            return false;
+        }
+
+        this.mob.setDeltaMovement(actualMovement);
+        return true;
+    }
+
+    private void abortBlockedMovement(LivingEntity target) {
+        this.mob.setDeltaMovement(Vec3.ZERO);
+        this.mob.setFlightControlLocked(false);
+        this.mob.setChargeWindupActive(false);
+        this.mob.setAttackRotationLocked(false);
+        this.mob.setRemoteCharging(false);
+        this.mob.finishChargeAnimation();
+        this.mob.finishRemoteChargeAnimation();
+
+        this.chargeHitEntities.clear();
+        this.chargeDistanceTravelled = 0.0D;
+        this.barrageDistanceTravelled = 0.0D;
+        this.chargeSoundPlayed = false;
+        this.barrageChargeSoundPlayed = false;
+        this.barrageMissilesFired = 0;
+        this.barragePauseTicks = 0;
+        this.swarmActive = false;
+        this.swarmActiveTicks = 0;
+        this.swarmHoverOffset = Vec3.ZERO;
+
+        this.phase = Phase.CIRCLE;
+        this.phaseTicks = 0;
+
+        if (this.isValidTarget(target)) {
+            this.initializeCircleState(target);
         }
     }
 
@@ -297,7 +391,7 @@ public class ViriliAttackGoal extends Goal {
         Vec3 difference = desiredPosition.subtract(this.mob.position());
         Vec3 movement = difference.scale(CIRCLE_RADIUS_CORRECTION);
 
-        if (movement.lengthSqr() > 0.0001D) {
+        if (movement.lengthSqr() > MIN_MOVEMENT_SQR) {
             this.mob.setDeltaMovement(this.mob.getDeltaMovement().scale(0.75D).add(movement));
         }
 
@@ -321,7 +415,7 @@ public class ViriliAttackGoal extends Goal {
     }
 
     private void setRotationImmediately(Vec3 direction) {
-        if (direction.lengthSqr() < 0.0001D) {
+        if (direction.lengthSqr() < MIN_MOVEMENT_SQR) {
             return;
         }
 
@@ -346,7 +440,7 @@ public class ViriliAttackGoal extends Goal {
 
         Vec3 direction = target.position().subtract(this.mob.position());
 
-        if (direction.lengthSqr() < 0.0001D) {
+        if (direction.lengthSqr() < MIN_MOVEMENT_SQR) {
             return;
         }
 
@@ -360,9 +454,6 @@ public class ViriliAttackGoal extends Goal {
         this.mob.yHeadRotO = targetYaw;
         this.mob.yBodyRotO = targetYaw;
         this.mob.forceAttackRotation();
-        this.mob.yRotO = targetYaw;
-        this.mob.yHeadRotO = targetYaw;
-        this.mob.yBodyRotO = targetYaw;
     }
 
     private void prepareCharge(LivingEntity target) {
@@ -432,9 +523,6 @@ public class ViriliAttackGoal extends Goal {
         this.faceTarget(target);
 
         if (Math.abs(verticalDifference) <= 0.15D) {
-            this.mob.setPos(current.x, desiredViriliY, current.z);
-            this.mob.setDeltaMovement(Vec3.ZERO);
-            this.updateChargeAim(target, desiredViriliY);
             this.beginChargeWindup();
             return;
         }
@@ -445,40 +533,43 @@ public class ViriliAttackGoal extends Goal {
                 CHARGE_HEIGHT_ADJUST_SPEED
         );
 
-        Vec3 movement = new Vec3(0.0D, verticalMovement, 0.0D);
-        this.mob.move(MoverType.SELF, movement);
-        this.mob.setDeltaMovement(movement);
+        if (!this.trySafeMove(new Vec3(0.0D, verticalMovement, 0.0D))) {
+            this.abortBlockedMovement(target);
+            return;
+        }
 
         if (this.phaseTicks >= CHARGE_HEIGHT_ADJUST_MAX_TICKS) {
-            Vec3 position = this.mob.position();
-            this.mob.setPos(position.x, desiredViriliY, position.z);
-            this.mob.setDeltaMovement(Vec3.ZERO);
-            this.updateChargeAim(target, desiredViriliY);
+            if (Math.abs(desiredViriliY - this.mob.getY()) > 0.5D) {
+                this.abortBlockedMovement(target);
+                return;
+            }
+
             this.beginChargeWindup();
         }
     }
 
     private void tickDiveApproach(LivingEntity target) {
         Vec3 current = this.mob.position();
-        Vec3 destination = this.diveStartPosition;
-        Vec3 difference = destination.subtract(current);
+        Vec3 difference = this.diveStartPosition.subtract(current);
         double distance = difference.length();
 
         this.faceTarget(target);
 
-        if (distance <= DIVE_APPROACH_DESTINATION_THRESHOLD || this.phaseTicks >= DIVE_APPROACH_MAX_TICKS) {
-            this.mob.setPos(destination.x, destination.y, destination.z);
-            this.mob.setDeltaMovement(Vec3.ZERO);
+        if (distance <= DIVE_APPROACH_DESTINATION_THRESHOLD) {
             this.beginChargeWindup();
             return;
         }
 
-        Vec3 direction = difference.normalize();
-        double approachSpeed = Math.min(DIVE_APPROACH_SPEED, distance);
-        Vec3 movement = direction.scale(approachSpeed);
+        if (this.phaseTicks >= DIVE_APPROACH_MAX_TICKS) {
+            this.abortBlockedMovement(target);
+            return;
+        }
 
-        this.mob.move(MoverType.SELF, movement);
-        this.mob.setDeltaMovement(movement);
+        Vec3 movement = difference.normalize().scale(Math.min(DIVE_APPROACH_SPEED, distance));
+
+        if (!this.trySafeMove(movement)) {
+            this.abortBlockedMovement(target);
+        }
     }
 
     private void updateChargeAim(LivingEntity target, double desiredY) {
@@ -536,19 +627,26 @@ public class ViriliAttackGoal extends Goal {
 
         if (this.chargeIsDive) {
             double targetCenterY = targetPosition.y + target.getBbHeight() * 0.5D;
-            double floorY = targetPosition.y;
 
-            Vec3 targetCenter = new Vec3(targetPosition.x, targetCenterY, targetPosition.z);
-            this.diveTargetCenter = targetCenter;
+            this.diveTargetCenter = new Vec3(
+                    targetPosition.x,
+                    targetCenterY,
+                    targetPosition.z
+            );
 
-            Vec3 throughDirection = targetCenter.subtract(current).normalize();
-            double distanceToCenter = targetCenter.subtract(current).length();
-            double totalDistance = distanceToCenter + CHARGE_PASS_DISTANCE;
+            Vec3 towardCenter = this.diveTargetCenter.subtract(current);
+
+            if (towardCenter.lengthSqr() < MIN_MOVEMENT_SQR) {
+                towardCenter = new Vec3(directionX, 0.0D, directionZ);
+            }
+
+            Vec3 throughDirection = towardCenter.normalize();
+            double totalDistance = towardCenter.length() + CHARGE_PASS_DISTANCE;
             Vec3 rawDestination = current.add(throughDirection.scale(totalDistance));
 
-            if (rawDestination.y < floorY && throughDirection.y < -0.0001D) {
-                double clampedDistance = (current.y - floorY) / -throughDirection.y;
-                rawDestination = current.add(throughDirection.scale(clampedDistance));
+            if (rawDestination.y < targetPosition.y && throughDirection.y < -0.0001D) {
+                double clampedDistance = (current.y - targetPosition.y) / -throughDirection.y;
+                rawDestination = current.add(throughDirection.scale(Math.max(0.0D, clampedDistance)));
             }
 
             this.chargeDestination = rawDestination;
@@ -587,6 +685,7 @@ public class ViriliAttackGoal extends Goal {
 
     private void tickChargeActive(LivingEntity target) {
         this.mob.forceAttackRotation();
+
         Vec3 current = this.mob.position();
 
         if (this.chargeIsDive && !this.chargeDivePastCenter) {
@@ -595,9 +694,13 @@ public class ViriliAttackGoal extends Goal {
             if (distanceToCenter <= DIVE_CENTER_REACHED_THRESHOLD) {
                 this.chargeDivePastCenter = true;
 
-                Vec3 horizontalOnly = new Vec3(this.chargeDirection.x, 0.0D, this.chargeDirection.z);
+                Vec3 horizontalOnly = new Vec3(
+                        this.chargeDirection.x,
+                        0.0D,
+                        this.chargeDirection.z
+                );
 
-                if (horizontalOnly.lengthSqr() < 0.0001D) {
+                if (horizontalOnly.lengthSqr() < MIN_MOVEMENT_SQR) {
                     horizontalOnly = new Vec3(
                             -Mth.sin(this.mob.getYRot() * Mth.DEG_TO_RAD),
                             0.0D,
@@ -608,32 +711,42 @@ public class ViriliAttackGoal extends Goal {
                 }
 
                 double floorY = this.diveTargetCenter.y - target.getBbHeight() * 0.5D;
+                double verticalDifference = floorY - current.y;
 
-                this.mob.setPos(current.x, floorY, current.z);
-                this.checkChargeHit(current, new Vec3(0.0D, floorY - current.y, 0.0D));
+                if (Math.abs(verticalDifference) > 0.05D) {
+                    Vec3 verticalMovement = new Vec3(0.0D, verticalDifference, 0.0D);
 
-                current = new Vec3(current.x, floorY, current.z);
+                    if (!this.trySafeMove(verticalMovement)) {
+                        this.abortBlockedMovement(target);
+                        return;
+                    }
+                }
+
+                Vec3 leveledPosition = this.mob.position();
 
                 this.chargeDestination = new Vec3(
                         this.diveTargetCenter.x + horizontalOnly.x * CHARGE_PASS_DISTANCE,
-                        floorY,
+                        leveledPosition.y,
                         this.diveTargetCenter.z + horizontalOnly.z * CHARGE_PASS_DISTANCE
                 );
 
-                this.chargeDirection = this.chargeDestination.subtract(current).normalize();
+                this.chargeDirection = this.chargeDestination
+                        .subtract(leveledPosition)
+                        .normalize();
 
                 float levelYaw = this.getYawFromDirection(this.chargeDirection);
                 float levelPitch = this.getPitchFromDirection(this.chargeDirection);
 
                 this.mob.setAttackRotationLocked(true, levelYaw, levelPitch);
+                current = leveledPosition;
             }
         }
 
         Vec3 toDestination = this.chargeDestination.subtract(current);
         double remainingDistance = toDestination.length();
 
-        if (remainingDistance <= CHARGE_DESTINATION_THRESHOLD || this.phaseTicks >= CHARGE_ACTIVE_MAX_TICKS) {
-            this.mob.setPos(this.chargeDestination.x, this.chargeDestination.y, this.chargeDestination.z);
+        if (remainingDistance <= CHARGE_DESTINATION_THRESHOLD
+                || this.phaseTicks >= CHARGE_ACTIVE_MAX_TICKS) {
             this.mob.setDeltaMovement(Vec3.ZERO);
             this.beginChargeEnd();
             return;
@@ -643,10 +756,13 @@ public class ViriliAttackGoal extends Goal {
         Vec3 movement = this.chargeDirection.scale(movementDistance);
         Vec3 previousPosition = this.mob.position();
 
-        this.mob.move(MoverType.SELF, movement);
+        if (!this.trySafeMove(movement)) {
+            this.abortBlockedMovement(target);
+            return;
+        }
 
-        Vec3 currentAfterMove = this.mob.position();
-        double actualMovementDistance = currentAfterMove.distanceTo(previousPosition);
+        Vec3 actualMovement = this.mob.position().subtract(previousPosition);
+        double actualMovementDistance = actualMovement.length();
 
         if (actualMovementDistance > 0.001D) {
             this.chargeDistanceTravelled += actualMovementDistance;
@@ -657,9 +773,8 @@ public class ViriliAttackGoal extends Goal {
             }
         }
 
-        this.mob.setDeltaMovement(movement);
         this.mob.forceAttackRotation();
-        this.checkChargeHit(previousPosition, movement);
+        this.checkChargeHit(previousPosition, actualMovement);
     }
 
     private void checkChargeHit(Vec3 previousPosition, Vec3 movementThisTick) {
@@ -678,18 +793,20 @@ public class ViriliAttackGoal extends Goal {
         AABB chargeBox = previousBox.expandTowards(movementThisTick);
 
         for (LivingEntity entity : this.mob.level().getEntitiesOfClass(LivingEntity.class, chargeBox)) {
-            if (entity == this.mob || !entity.isAlive() || this.chargeHitEntities.contains(entity.getUUID())) {
-                continue;
-            }
-
-            if (entity == this.mob.getOwner()) {
+            if (entity == this.mob
+                    || !entity.isAlive()
+                    || entity.isRemoved()
+                    || this.chargeHitEntities.contains(entity.getUUID())
+                    || !this.mob.isValidTarget(entity)) {
                 continue;
             }
 
             this.chargeHitEntities.add(entity.getUUID());
 
             float damage = this.mob.getAssaultChargeDamage();
-            var source = this.mob.getAssaultChargeDamageSource(ROACWSpellRegistry.SUMMON_VIRILI.get());
+            var source = this.mob.getAssaultChargeDamageSource(
+                    ROACWSpellRegistry.SUMMON_VIRILI.get()
+            );
 
             boolean hurt = DamageSources.applyDamage(entity, damage, source);
 
@@ -751,7 +868,7 @@ public class ViriliAttackGoal extends Goal {
         Vec3 horizontalOffset = this.barrageChargeStartPosition.subtract(targetPosition);
         horizontalOffset = new Vec3(horizontalOffset.x, 0.0D, horizontalOffset.z);
 
-        if (horizontalOffset.lengthSqr() < 0.0001D) {
+        if (horizontalOffset.lengthSqr() < MIN_MOVEMENT_SQR) {
             horizontalOffset = new Vec3(
                     -Mth.sin(this.mob.getYRot() * Mth.DEG_TO_RAD),
                     0.0D,
@@ -792,41 +909,37 @@ public class ViriliAttackGoal extends Goal {
         this.mob.setAttackRotationLocked(false);
 
         Vec3 targetPosition = target.position();
-        this.barrageApproachDestination = targetPosition.add(
-                this.barrageApproachDirection.scale(CIRCLE_MIN_RADIUS)
-        );
-
         this.barrageApproachDestination = new Vec3(
-                this.barrageApproachDestination.x,
+                targetPosition.x + this.barrageApproachDirection.x * CIRCLE_MIN_RADIUS,
                 targetPosition.y + BARRAGE_HEIGHT_ABOVE_TARGET,
-                this.barrageApproachDestination.z
+                targetPosition.z + this.barrageApproachDirection.z * CIRCLE_MIN_RADIUS
         );
 
         Vec3 current = this.mob.position();
         Vec3 difference = this.barrageApproachDestination.subtract(current);
         double distance = difference.length();
 
-        if (distance <= BARRAGE_APPROACH_THRESHOLD || this.phaseTicks >= BARRAGE_APPROACH_MAX_TICKS) {
-            if (distance > 0.001D) {
-                this.mob.setPos(
-                        this.barrageApproachDestination.x,
-                        this.barrageApproachDestination.y,
-                        this.barrageApproachDestination.z
-                );
-            }
-
+        if (distance <= BARRAGE_APPROACH_THRESHOLD) {
             this.mob.setDeltaMovement(Vec3.ZERO);
             this.barrageChargeStartPosition = this.mob.position();
             this.beginBarrageFromApproach(target);
             return;
         }
 
-        Vec3 direction = difference.normalize();
-        double movementDistance = Math.min(BARRAGE_APPROACH_SPEED, distance);
-        Vec3 movement = direction.scale(movementDistance);
+        if (this.phaseTicks >= BARRAGE_APPROACH_MAX_TICKS) {
+            this.abortBlockedMovement(target);
+            return;
+        }
 
-        this.mob.move(MoverType.SELF, movement);
-        this.mob.setDeltaMovement(movement);
+        Vec3 movement = difference.normalize().scale(
+                Math.min(BARRAGE_APPROACH_SPEED, distance)
+        );
+
+        if (!this.trySafeMove(movement)) {
+            this.abortBlockedMovement(target);
+            return;
+        }
+
         this.faceTarget(target);
     }
 
@@ -836,12 +949,11 @@ public class ViriliAttackGoal extends Goal {
         Vec3 horizontalOffset = this.barrageChargeStartPosition.subtract(targetPosition);
         horizontalOffset = new Vec3(horizontalOffset.x, 0.0D, horizontalOffset.z);
 
-        if (horizontalOffset.lengthSqr() < 0.0001D) {
+        if (horizontalOffset.lengthSqr() < MIN_MOVEMENT_SQR) {
             horizontalOffset = this.barrageApproachDirection;
         }
 
         Vec3 outwardDirection = horizontalOffset.normalize();
-
         Vec3 oppositeSide = targetPosition.add(
                 outwardDirection.scale(-BARRAGE_TARGET_SIDE_DISTANCE)
         );
@@ -866,9 +978,11 @@ public class ViriliAttackGoal extends Goal {
     }
 
     private void prepareCurrentBarrageDirection() {
-        Vec3 direction = this.barrageChargeDestination.subtract(this.barrageChargeStartPosition);
+        Vec3 direction = this.barrageChargeDestination.subtract(
+                this.barrageChargeStartPosition
+        );
 
-        if (direction.lengthSqr() < 0.0001D) {
+        if (direction.lengthSqr() < MIN_MOVEMENT_SQR) {
             return;
         }
 
@@ -902,16 +1016,10 @@ public class ViriliAttackGoal extends Goal {
         Vec3 toDestination = this.barrageChargeDestination.subtract(currentBeforeMove);
         double remainingDistance = toDestination.length();
 
-        if (remainingDistance <= BARRAGE_DESTINATION_THRESHOLD || this.phaseTicks >= BARRAGE_CHARGE_MAX_TICKS) {
+        if (remainingDistance <= BARRAGE_DESTINATION_THRESHOLD) {
             while (this.barrageMissilesFired < BARRAGE_MISSILES_PER_CHARGE) {
                 this.fireBarrageMissile(target);
             }
-
-            this.mob.setPos(
-                    this.barrageChargeDestination.x,
-                    this.barrageChargeDestination.y,
-                    this.barrageChargeDestination.z
-            );
 
             this.mob.setDeltaMovement(Vec3.ZERO);
             this.mob.forceAttackRotation();
@@ -919,13 +1027,21 @@ public class ViriliAttackGoal extends Goal {
             return;
         }
 
+        if (this.phaseTicks >= BARRAGE_CHARGE_MAX_TICKS) {
+            this.abortBlockedMovement(target);
+            return;
+        }
+
         double movementDistance = Math.min(BARRAGE_CHARGE_SPEED, remainingDistance);
         Vec3 movement = this.barrageChargeDirection.scale(movementDistance);
 
-        this.mob.move(MoverType.SELF, movement);
+        if (!this.trySafeMove(movement)) {
+            this.abortBlockedMovement(target);
+            return;
+        }
 
-        Vec3 currentAfterMove = this.mob.position();
-        double actualMovementDistance = currentAfterMove.distanceTo(currentBeforeMove);
+        Vec3 actualMovement = this.mob.position().subtract(currentBeforeMove);
+        double actualMovementDistance = actualMovement.length();
 
         if (actualMovementDistance > 0.001D) {
             this.barrageDistanceTravelled += actualMovementDistance;
@@ -937,10 +1053,9 @@ public class ViriliAttackGoal extends Goal {
             }
         }
 
-        this.mob.setDeltaMovement(movement);
-
         while (this.barrageMissilesFired < BARRAGE_MISSILES_PER_CHARGE) {
-            double nextMissileDistance = (this.barrageMissilesFired + 1) * BARRAGE_MISSILE_SPACING;
+            double nextMissileDistance =
+                    (this.barrageMissilesFired + 1) * BARRAGE_MISSILE_SPACING;
 
             if (this.barrageDistanceTravelled < nextMissileDistance) {
                 break;
@@ -958,7 +1073,10 @@ public class ViriliAttackGoal extends Goal {
             return;
         }
 
-        this.mob.fireHomingPlagueMissileAt(target);
+        if (this.isValidTarget(target)) {
+            this.mob.fireHomingPlagueMissileAt(target);
+        }
+
         this.barrageMissilesFired++;
     }
 
@@ -988,11 +1106,17 @@ public class ViriliAttackGoal extends Goal {
 
         if (this.phaseTicks == 1) {
             Vec3 currentOffset = this.mob.position().subtract(targetPosition);
-            double horizontalDistance = Math.sqrt(currentOffset.x * currentOffset.x + currentOffset.z * currentOffset.z);
+            double horizontalDistance = Math.sqrt(
+                    currentOffset.x * currentOffset.x + currentOffset.z * currentOffset.z
+            );
 
             if (horizontalDistance > 0.001D) {
                 this.circleAngle = Math.atan2(currentOffset.z, currentOffset.x);
-                this.circleRadius = Mth.clamp(horizontalDistance, CIRCLE_MIN_RADIUS, CIRCLE_MAX_RADIUS);
+                this.circleRadius = Mth.clamp(
+                        horizontalDistance,
+                        CIRCLE_MIN_RADIUS,
+                        CIRCLE_MAX_RADIUS
+                );
             }
         }
 
@@ -1006,12 +1130,11 @@ public class ViriliAttackGoal extends Goal {
         Vec3 difference = desiredPosition.subtract(this.mob.position());
         Vec3 movement = difference.scale(CIRCLE_RADIUS_CORRECTION);
 
-        if (movement.lengthSqr() > 0.0001D) {
+        if (movement.lengthSqr() > MIN_MOVEMENT_SQR) {
             this.mob.setDeltaMovement(this.mob.getDeltaMovement().scale(0.75D).add(movement));
         }
 
         this.faceTarget(target);
-
         this.barragePauseTicks++;
 
         if (this.barragePauseTicks >= BARRAGE_PAUSE_TICKS) {
@@ -1026,7 +1149,7 @@ public class ViriliAttackGoal extends Goal {
         Vec3 horizontalOffset = this.barrageChargeStartPosition.subtract(targetPosition);
         horizontalOffset = new Vec3(horizontalOffset.x, 0.0D, horizontalOffset.z);
 
-        if (horizontalOffset.lengthSqr() < 0.0001D) {
+        if (horizontalOffset.lengthSqr() < MIN_MOVEMENT_SQR) {
             horizontalOffset = new Vec3(
                     -Mth.sin(this.mob.getYRot() * Mth.DEG_TO_RAD),
                     0.0D,
@@ -1035,7 +1158,6 @@ public class ViriliAttackGoal extends Goal {
         }
 
         Vec3 outwardDirection = horizontalOffset.normalize();
-
         Vec3 oppositeSide = targetPosition.add(
                 outwardDirection.scale(-BARRAGE_TARGET_SIDE_DISTANCE)
         );
@@ -1059,7 +1181,7 @@ public class ViriliAttackGoal extends Goal {
         Vec3 currentOffset = currentPosition.subtract(targetPosition);
         Vec3 horizontalOffset = new Vec3(currentOffset.x, 0.0D, currentOffset.z);
 
-        if (horizontalOffset.lengthSqr() < 0.0001D) {
+        if (horizontalOffset.lengthSqr() < MIN_MOVEMENT_SQR) {
             horizontalOffset = new Vec3(
                     -Mth.sin(this.mob.getYRot() * Mth.DEG_TO_RAD),
                     0.0D,
@@ -1096,7 +1218,7 @@ public class ViriliAttackGoal extends Goal {
             Vec3 horizontalOffset = currentPosition.subtract(targetPosition);
             horizontalOffset = new Vec3(horizontalOffset.x, 0.0D, horizontalOffset.z);
 
-            if (horizontalOffset.lengthSqr() < 0.0001D) {
+            if (horizontalOffset.lengthSqr() < MIN_MOVEMENT_SQR) {
                 horizontalOffset = new Vec3(
                         -Mth.sin(this.mob.getYRot() * Mth.DEG_TO_RAD),
                         0.0D,
@@ -1116,13 +1238,8 @@ public class ViriliAttackGoal extends Goal {
     }
 
     private void tickSwarm(LivingEntity target) {
-        if (target == null || !target.isAlive()) {
-            this.phase = Phase.CIRCLE;
-            this.phaseTicks = 0;
-            this.swarmActive = false;
-            this.swarmHoverOffset = Vec3.ZERO;
-            this.mob.setFlightControlLocked(false);
-            this.mob.setDeltaMovement(Vec3.ZERO);
+        if (!this.isValidTarget(target)) {
+            this.abortBlockedMovement(target);
             return;
         }
 
@@ -1135,12 +1252,20 @@ public class ViriliAttackGoal extends Goal {
             double distance = difference.length();
 
             if (distance > SWARM_HOVER_THRESHOLD) {
-                Vec3 direction = difference.normalize();
-                double movementDistance = Math.min(SWARM_HOVER_SPEED, distance);
-                Vec3 movement = direction.scale(movementDistance);
+                if (this.phaseTicks >= DIVE_APPROACH_MAX_TICKS) {
+                    this.abortBlockedMovement(target);
+                    return;
+                }
 
-                this.mob.move(MoverType.SELF, movement);
-                this.mob.setDeltaMovement(movement);
+                Vec3 movement = difference.normalize().scale(
+                        Math.min(SWARM_HOVER_SPEED, distance)
+                );
+
+                if (!this.trySafeMove(movement)) {
+                    this.abortBlockedMovement(target);
+                    return;
+                }
+
                 this.faceTarget(target);
                 this.phaseTicks = 0;
                 return;
@@ -1153,11 +1278,15 @@ public class ViriliAttackGoal extends Goal {
             return;
         }
 
-        if (this.phaseTicks == 1 || (this.phaseTicks > 1 && (this.phaseTicks - 1) % SWARM_BEE_INTERVAL_TICKS == 0)) {
+        if (this.phaseTicks == 1
+                || (this.phaseTicks > 1
+                && (this.phaseTicks - 1) % SWARM_BEE_INTERVAL_TICKS == 0)) {
             this.mob.spawnSwarmSupport(target);
         }
 
-        if (this.phaseTicks == 1 || (this.phaseTicks > 1 && (this.phaseTicks - 1) % SWARM_BABY_PLAGUEBRINGER_INTERVAL_TICKS == 0)) {
+        if (this.phaseTicks == 1
+                || (this.phaseTicks > 1
+                && (this.phaseTicks - 1) % SWARM_BABY_PLAGUEBRINGER_INTERVAL_TICKS == 0)) {
             this.mob.spawnBabyPlaguebringer(target);
         }
 
@@ -1167,7 +1296,9 @@ public class ViriliAttackGoal extends Goal {
 
         currentAngle += SWARM_ORBIT_SPEED;
 
-        double horizontalDistance = Math.sqrt(currentOffsetX * currentOffsetX + currentOffsetZ * currentOffsetZ);
+        double horizontalDistance = Math.sqrt(
+                currentOffsetX * currentOffsetX + currentOffsetZ * currentOffsetZ
+        );
 
         if (horizontalDistance < 0.001D) {
             horizontalDistance = SWARM_HOVER_DISTANCE;
@@ -1190,20 +1321,26 @@ public class ViriliAttackGoal extends Goal {
         double activeDistance = activeDifference.length();
 
         if (activeDistance > SWARM_HOVER_THRESHOLD) {
-            Vec3 direction = activeDifference.normalize();
-            double movementDistance = Math.min(SWARM_HOVER_SPEED, activeDistance);
-            Vec3 movement = direction.scale(movementDistance);
-
-            this.mob.move(MoverType.SELF, movement);
-
-            Vec3 currentVelocity = this.mob.getDeltaMovement();
-            this.mob.setDeltaMovement(
-                    currentVelocity.scale(1.0D - SWARM_MOVEMENT_SMOOTHING)
-                            .add(movement.scale(SWARM_MOVEMENT_SMOOTHING))
+            Vec3 movement = activeDifference.normalize().scale(
+                    Math.min(SWARM_HOVER_SPEED, activeDistance)
             );
+
+            Vec3 before = this.mob.position();
+
+            if (this.isMovementPathClear(movement)) {
+                this.mob.move(MoverType.SELF, movement);
+                Vec3 actualMovement = this.mob.position().subtract(before);
+                Vec3 currentVelocity = this.mob.getDeltaMovement();
+
+                this.mob.setDeltaMovement(
+                        currentVelocity.scale(1.0D - SWARM_MOVEMENT_SMOOTHING)
+                                .add(actualMovement.scale(SWARM_MOVEMENT_SMOOTHING))
+                );
+            } else {
+                this.mob.setDeltaMovement(Vec3.ZERO);
+            }
         } else {
-            Vec3 currentVelocity = this.mob.getDeltaMovement();
-            this.mob.setDeltaMovement(currentVelocity.scale(0.90D));
+            this.mob.setDeltaMovement(this.mob.getDeltaMovement().scale(0.90D));
         }
 
         this.faceTarget(target);
@@ -1234,7 +1371,7 @@ public class ViriliAttackGoal extends Goal {
         this.mob.setAttackRotationLocked(false);
         this.mob.setDeltaMovement(this.mob.getDeltaMovement().scale(0.85D));
 
-        if (target != null && target.isAlive()) {
+        if (this.isValidTarget(target)) {
             this.faceTarget(target);
         }
 
@@ -1250,7 +1387,10 @@ public class ViriliAttackGoal extends Goal {
     }
 
     private float getPitchFromDirection(Vec3 direction) {
-        double horizontalLength = Math.sqrt(direction.x * direction.x + direction.z * direction.z);
+        double horizontalLength = Math.sqrt(
+                direction.x * direction.x + direction.z * direction.z
+        );
+
         return (float) (-Mth.atan2(direction.y, horizontalLength) * Mth.RAD_TO_DEG);
     }
 }

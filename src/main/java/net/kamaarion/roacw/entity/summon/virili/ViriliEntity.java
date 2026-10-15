@@ -233,7 +233,7 @@ public class ViriliEntity extends PathfinderMob implements GeoEntity {
         );
     }
 
-    private boolean isValidTarget(@Nullable LivingEntity candidate) {
+    public boolean isValidTarget(@Nullable LivingEntity candidate) {
         if (candidate == null
                 || candidate == this
                 || !candidate.isAlive()
