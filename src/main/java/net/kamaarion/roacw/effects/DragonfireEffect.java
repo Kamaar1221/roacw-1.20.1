@@ -21,8 +21,8 @@ public class DragonfireEffect extends MobEffect {
     public static final int MAX_STACKS = 10;
     public static final int EFFECT_DURATION = 300;
 
-    private static final float SELF_DAMAGE = 100.0F;
-    private static final float AREA_DAMAGE = 50.0F;
+    private static final float SELF_DAMAGE = 25.0F;
+    private static final float AREA_DAMAGE = 10.0F;
     private static final double EXPLOSION_RADIUS = 6.0D;
 
     public DragonfireEffect() {

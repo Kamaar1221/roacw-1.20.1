@@ -39,7 +39,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = ROACW.MODID)
 public class PacketPlaguebringerJetBoostC2S {
 
-    private static final int COOLDOWN_TICKS = 2400;
+    private static final int COOLDOWN_TICKS = 1800;
     private static final int DURATION_TICKS = 400;
     private static final int PLAGUE_BEE_INTERVAL = 100;
     private static final int MIN_BEES_PER_WAVE = 1;

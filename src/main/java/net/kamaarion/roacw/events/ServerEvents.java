@@ -94,7 +94,7 @@ public class ServerEvents {
             boolean blockingInHand = offhand.getItem() instanceof HighRulerShield && player.isUsingItem();
 
             if (!blockingInHand && Utils.hasCurio(player, ROACWItemRegistry.HIGH_RULER_SHIELD.get())) {
-                if (player.getRandom().nextFloat() < 0.5f) {
+                if (player.getRandom().nextFloat() < 0.1f) {
                     event.setCanceled(true);
                     player.level().playSound(
                             null,
@@ -107,7 +107,7 @@ public class ServerEvents {
                 }
             }
 
-            if (blockingInHand && player.getRandom().nextFloat() < 0.50f) {
+            if (blockingInHand && player.getRandom().nextFloat() < 0.1f) {
                 double radius = 3.0;
                 float damage = 4.0f;
                 float knockbackStrength = 1.5f;
@@ -224,7 +224,7 @@ public class ServerEvents {
                 LivingEntity target = event.getEntity();
                 MobEffectInstance fear = target.getEffect(ROACWEffectRegistry.HORRIFIED.get());
 
-                if (target != summoner && target.level().getRandom().nextFloat() < 0.9f) {
+                if (target != summoner && target.level().getRandom().nextFloat() < 0.15f) {
                     target.addEffect(new MobEffectInstance(
                             ROACWEffectRegistry.HORRIFIED.get(),
                             60,
