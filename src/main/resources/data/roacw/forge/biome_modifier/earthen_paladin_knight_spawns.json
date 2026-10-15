@@ -3,7 +3,7 @@
   "biomes": "#minecraft:is_overworld",
   "spawners": {
     "type": "roacw:earthen_paladin_knight",
-    "weight": 5,
+    "weight": 2,
     "minCount": 1,
     "maxCount": 1
   }

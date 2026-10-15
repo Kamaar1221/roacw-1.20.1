@@ -2,6 +2,7 @@ package net.kamaarion.roacw.entity.mob.earthen_paladin;
 
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import net.kamaarion.roacw.progression.BossGateData;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -249,6 +250,10 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
             RandomSource random
     ) {
         if (level.getDifficulty() == Difficulty.PEACEFUL) {
+            return false;
+        }
+
+        if (!BossGateData.hasKilled(level, EntityType.WITHER)) {
             return false;
         }
 

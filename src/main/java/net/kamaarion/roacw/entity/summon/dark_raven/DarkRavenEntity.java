@@ -22,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -169,7 +170,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
                         10,
                         true,
                         false,
-                        target -> target != this.getSummonOwner() && !this.isFriendlyRaven(target)
+                        target -> !this.isAlly(target)
                 )
         );
     }
@@ -333,7 +334,9 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
 
         Long nextAllowed = nextIdleSoundAllowedGameTime.get(ownerId);
 
-        if (nextAllowed != null && gameTime < nextAllowed) {
+        if (nextAllowed != null
+                && gameTime < nextAllowed
+                && nextAllowed - gameTime <= IDLE_SOUND_GROUP_MAX_COOLDOWN_TICKS) {
             resetIdleSoundRetryCooldown();
             return;
         }
@@ -473,6 +476,40 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
         return myOwner != null
                 && theirOwner != null
                 && myOwner.getUUID().equals(theirOwner.getUUID());
+    }
+
+    public boolean isAlly(@Nullable Entity other) {
+        if (other == null) {
+            return false;
+        }
+
+        if (other == this || this.isFriendlyRaven(other)) {
+            return true;
+        }
+
+        LivingEntity owner = this.getSummonOwner();
+
+        if (owner == null) {
+            return false;
+        }
+
+        if (other == owner || owner.isAlliedTo(other)) {
+            return true;
+        }
+
+        UUID ownerId = owner.getUUID();
+
+        if (other instanceof OwnableEntity ownable && ownerId.equals(ownable.getOwnerUUID())) {
+            return true;
+        }
+
+        if (other instanceof IMagicSummon) {
+            Entity theirOwner = SummonManager.getOwner((Entity & IMagicSummon) other);
+
+            return theirOwner != null && ownerId.equals(theirOwner.getUUID());
+        }
+
+        return false;
     }
 
     @Override
@@ -649,14 +686,12 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
         AABB sweepBox = new AABB(minX, minY, minZ, maxX, maxY, maxZ)
                 .inflate(CHARGE_TARGET_PADDING);
 
-        LivingEntity owner = this.getSummonOwner();
-
         for (LivingEntity entity : this.level().getEntitiesOfClass(
                 LivingEntity.class,
                 sweepBox,
                 e -> e != this
                         && !(e instanceof DarkRavenEntity)
-                        && e != owner
+                        && !this.isAlly(e)
                         && e.isAlive()
         )) {
             if (!intersectsDashPath(start, end, entity)) {
@@ -929,6 +964,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
 
         Long lastPlayed = lastAttackSoundGameTime.get(ownerId);
         boolean groupOnCooldown = lastPlayed != null
+                && gameTime >= lastPlayed
                 && gameTime - lastPlayed < ATTACK_SOUND_GROUP_COOLDOWN_TICKS;
 
         if (!groupOnCooldown && this.random.nextFloat() < ATTACK_SOUND_CHANCE) {
@@ -1049,6 +1085,10 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
 
     @Override
     public boolean doHurtTarget(Entity target) {
+        if (this.isAlly(target)) {
+            return false;
+        }
+
         float baseDamage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
         float damage = baseDamage + (this.spellPower * DASH_SPELLPOWER_MULTIPLIER);
         LivingEntity summonOwner = this.getSummonOwner();
@@ -1071,11 +1111,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
 
     @Override
     public void setLastHurtByMob(@Nullable LivingEntity entity) {
-        if (entity != null && entity == this.getSummonOwner()) {
-            return;
-        }
-
-        if (entity != null && this.isFriendlyRaven(entity)) {
+        if (entity != null && this.isAlly(entity)) {
             return;
         }
 

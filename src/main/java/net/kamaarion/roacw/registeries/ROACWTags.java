@@ -44,6 +44,15 @@ public class ROACWTags {
                     )
             );
 
+    public static final TagKey<EntityType<?>> GATE_BOSSES =
+            TagKey.create(
+                    Registries.ENTITY_TYPE,
+                    ResourceLocation.fromNamespaceAndPath(
+                            ROACW.MODID,
+                            "gate_bosses"
+                    )
+            );
+
     public static final TagKey<EntityType<?>> DREAD_IMMUNE_ENTITIES =
             TagKey.create(
                     Registries.ENTITY_TYPE,

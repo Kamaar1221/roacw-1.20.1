@@ -32,6 +32,7 @@ import net.kamaarion.roacw.entity.summon.hydra.HydraHead;
 import net.kamaarion.roacw.entity.summon.mini_plaguebringer.MiniPlaguebringerEntity;
 import net.kamaarion.roacw.entity.mob.plague_charger.PlagueChargerEntity;
 import net.kamaarion.roacw.entity.summon.virili.ViriliEntity;
+import net.kamaarion.roacw.progression.BossGateData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
@@ -319,6 +320,9 @@ public class ROACWEntityRegistry {
         eventBus.addListener(ROACWEntityRegistry::registerSpawnPlacements);
     }
 
+    private static final ResourceLocation HARBINGER_ID =
+            ResourceLocation.fromNamespaceAndPath("cataclysm", "the_harbinger");
+
     private static void registerSpawnPlacements(SpawnPlacementRegisterEvent event) {
         event.register(
                 PLAGUE_CHARGER.get(),
@@ -326,6 +330,7 @@ public class ROACWEntityRegistry {
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (type, level, spawnType, pos, random) ->
                         level.getDifficulty() != Difficulty.PEACEFUL
+                                && BossGateData.hasKilled(level, HARBINGER_ID)
                                 && Mob.checkMobSpawnRules(type, level, spawnType, pos, random),
                 SpawnPlacementRegisterEvent.Operation.AND
         );
