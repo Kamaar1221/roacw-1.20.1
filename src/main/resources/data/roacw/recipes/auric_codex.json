@@ -8,10 +8,10 @@
   ],
   "key": {
     "A": {
-      "item": "roacw:charged_auric_bar"
+      "item": "roacw:charged_auric_ingot"
     },
     "B": {
-      "item": "irons_spellbooks:ancient_codex"
+      "item": "irons_spellbooks:netherite_spell_book"
     },
     "C": {
       "item": "roacw:yharon_soul_fragment"

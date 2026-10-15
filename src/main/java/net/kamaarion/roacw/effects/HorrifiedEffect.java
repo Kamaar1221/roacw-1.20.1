@@ -1,10 +1,12 @@
 package net.kamaarion.roacw.effects;
 
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import net.kamaarion.roacw.registeries.ROACWTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
@@ -16,7 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HorrifiedEffect extends MobEffect {
 
-  private static final Map<UUID, UUID> FEAR_SOURCES = new ConcurrentHashMap<>();
+  private static final Map<UUID, UUID> FEAR_SOURCES =
+          new ConcurrentHashMap<>();
 
   private static final double FLEE_DISTANCE = 12.0D;
   private static final double FLEE_SPEED = 0.8D;
@@ -25,7 +28,10 @@ public class HorrifiedEffect extends MobEffect {
     super(MobEffectCategory.HARMFUL, 0x24002E);
   }
 
-  public static void setFearSource(LivingEntity victim, ServerPlayer player) {
+  public static void setFearSource(
+          LivingEntity victim,
+          ServerPlayer player
+  ) {
     FEAR_SOURCES.put(victim.getUUID(), player.getUUID());
   }
 
@@ -44,18 +50,26 @@ public class HorrifiedEffect extends MobEffect {
 
   @Override
   public void applyEffectTick(LivingEntity entity, int amplifier) {
-    if (!(entity instanceof Mob mob)) return;
-    if (entity.level().isClientSide) return;
-
-    UUID sourceId = getFearSource(entity);
-    if (sourceId == null) return;
-
-    if (!(entity.level().getPlayerByUUID(sourceId) instanceof ServerPlayer player)) {
-      clearFearSource(entity);
+    if (entity.level().isClientSide) {
       return;
     }
 
-    if (!player.isAlive()) {
+    if (!(entity instanceof Mob mob)) {
+      return;
+    }
+
+    if (entity.getType().is(ROACWTags.HORRIFIED_IMMUNE_ENTITIES)) {
+      return;
+    }
+
+    UUID sourceId = getFearSource(entity);
+
+    if (sourceId == null) {
+      return;
+    }
+
+    if (!(entity.level().getPlayerByUUID(sourceId) instanceof ServerPlayer player)
+            || !player.isAlive()) {
       clearFearSource(entity);
       return;
     }
@@ -73,10 +87,15 @@ public class HorrifiedEffect extends MobEffect {
     );
 
     for (LivingEntity nearbyEntity : nearbyEntities) {
-      Vec3 awayFromSummon = entity.position().subtract(nearbyEntity.position());
+      Vec3 awayFromSummon =
+              entity.position().subtract(nearbyEntity.position());
 
       if (awayFromSummon.lengthSqr() > 0.0001D) {
-        double distance = Math.max(awayFromSummon.length(), 1.0D);
+        double distance = Math.max(
+                awayFromSummon.length(),
+                1.0D
+        );
+
         fleeDirection = fleeDirection.add(
                 awayFromSummon.normalize().scale(1.0D / distance)
         );
@@ -89,7 +108,10 @@ public class HorrifiedEffect extends MobEffect {
 
     fleeDirection = fleeDirection.normalize();
 
-    Vec3 targetPosition = entity.position().add(fleeDirection.scale(FLEE_DISTANCE));
+    Vec3 targetPosition = entity.position().add(
+            fleeDirection.scale(FLEE_DISTANCE)
+    );
+
     BlockPos targetBlock = BlockPos.containing(targetPosition);
 
     if (mob.getNavigation().createPath(targetBlock, 0) != null) {
@@ -109,16 +131,26 @@ public class HorrifiedEffect extends MobEffect {
     }
   }
 
-  public static boolean isSummonFromFearSource(LivingEntity entity, IMagicSummon summon) {
+  public static boolean isSummonFromFearSource(
+          LivingEntity entity,
+          IMagicSummon summon
+  ) {
     UUID sourceId = getFearSource(entity);
-    if (sourceId == null) return false;
+
+    if (sourceId == null) {
+      return false;
+    }
 
     return summon.getSummoner() instanceof ServerPlayer player
             && player.getUUID().equals(sourceId);
   }
 
   @Override
-  public void removeAttributeModifiers(LivingEntity entity, net.minecraft.world.entity.ai.attributes.AttributeMap attributes, int amplifier) {
+  public void removeAttributeModifiers(
+          LivingEntity entity,
+          net.minecraft.world.entity.ai.attributes.AttributeMap attributes,
+          int amplifier
+  ) {
     super.removeAttributeModifiers(entity, attributes, amplifier);
     clearFearSource(entity);
   }

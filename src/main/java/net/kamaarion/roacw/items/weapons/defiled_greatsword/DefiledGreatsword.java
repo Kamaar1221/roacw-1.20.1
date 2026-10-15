@@ -111,6 +111,8 @@ public class DefiledGreatsword extends StaffItem implements GeoItem, IPresetSpel
                         );
                     });
 
+            pTooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(
                     pStack,

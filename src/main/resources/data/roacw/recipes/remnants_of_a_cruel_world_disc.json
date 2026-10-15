@@ -1,0 +1,12 @@
+{
+  "type": "crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:netherrack"
+    }
+  ],
+  "result": {
+    "item": "roacw:remnants_of_a_cruel_world_disc"
+  }
+}

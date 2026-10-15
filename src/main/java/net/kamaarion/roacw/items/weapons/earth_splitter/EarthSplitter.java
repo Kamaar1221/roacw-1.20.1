@@ -79,6 +79,8 @@ public class EarthSplitter extends StaffItem implements GeoItem, IPresetSpellCon
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });
 
+            pTooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         }

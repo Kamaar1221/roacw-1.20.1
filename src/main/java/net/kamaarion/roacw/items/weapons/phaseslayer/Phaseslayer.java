@@ -87,6 +87,8 @@ public class Phaseslayer extends StaffItem implements GeoItem, IPresetSpellConta
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });
 
+            pTooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         }

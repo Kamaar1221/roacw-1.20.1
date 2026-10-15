@@ -299,6 +299,9 @@ public class TheHive extends Item implements GeoItem {
                                             .withStyle(tooltipText.getStyle())
                             )
                     );
+
+            tooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         }

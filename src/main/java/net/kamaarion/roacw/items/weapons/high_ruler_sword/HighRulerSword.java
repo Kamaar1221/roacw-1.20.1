@@ -79,6 +79,9 @@ public class HighRulerSword extends SwordItem implements GeoItem {
                                             .withStyle(loreText.getStyle())
                             )
                     );
+
+            tooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         }

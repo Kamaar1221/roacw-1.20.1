@@ -43,9 +43,10 @@ public class BelladonnaSpiritEntity extends PathfinderMob implements RangedAttac
     private static final DustParticleOptions BELLADONNA_DUST =
             new DustParticleOptions(new Vector3f(0.58F, 0.29F, 0.72F), 1.0F);
 
-    private static final int ATTACK_RELEASE_TICK = 12;
+    private static final int ATTACK_RELEASE_TICK = 16;
     private static final int OWNER_TARGET_FRESHNESS_TICKS = 100;
-    private static final float PETAL_SPEED = 0.6F;
+    private static final int ATTACK_INTERVAL_TICKS = 18;
+    private static final float PETAL_SPEED = 1.0F;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -72,7 +73,7 @@ public class BelladonnaSpiritEntity extends PathfinderMob implements RangedAttac
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new BelladonnaSpiritAttackGoal(this, 0.3D, 20, 14.0F));
+        this.goalSelector.addGoal(1, new BelladonnaSpiritAttackGoal(this, 0.3D, ATTACK_INTERVAL_TICKS, 14.0F));
         this.goalSelector.addGoal(2, new BelladonnaSpiritWanderGoal(this));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
 

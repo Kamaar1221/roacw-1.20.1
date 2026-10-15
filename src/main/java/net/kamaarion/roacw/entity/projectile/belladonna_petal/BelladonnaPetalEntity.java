@@ -32,7 +32,7 @@ public class BelladonnaPetalEntity extends AbstractHurtingProjectile implements 
     private static final DustParticleOptions BELLADONNA_DUST =
             new DustParticleOptions(new Vector3f(0.58F, 0.29F, 0.72F), 1.0F);
 
-    private static final float BASE_DAMAGE = 2.0F;
+    private static final float BASE_DAMAGE = 5.0F;
 
     private float damage = BASE_DAMAGE;
     private boolean hasHit;
@@ -73,6 +73,7 @@ public class BelladonnaPetalEntity extends AbstractHurtingProjectile implements 
         this.setOwner(spawner);
         this.summonOwner = owner;
         this.damageSpell = damageSpell;
+        this.setDeltaMovement(direction);
     }
 
     public void setDamage(float damage) {
@@ -243,7 +244,7 @@ public class BelladonnaPetalEntity extends AbstractHurtingProjectile implements 
 
     @Override
     protected float getInertia() {
-        return 0.85F;
+        return 0.92F;
     }
 
     @Override

@@ -72,5 +72,7 @@ public class MurasamaBlade extends StaffItem implements GeoItem, IPresetSpellCon
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add(Component.translatable("item.roacw.murasama_blade.desc").withStyle(ChatFormatting.DARK_RED));
+
+        pTooltipComponents.add(Component.empty());
     }
 }

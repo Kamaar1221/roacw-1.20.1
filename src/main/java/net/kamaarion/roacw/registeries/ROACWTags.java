@@ -53,6 +53,15 @@ public class ROACWTags {
                     )
             );
 
+    public static final TagKey<EntityType<?>> HORRIFIED_IMMUNE_ENTITIES =
+            TagKey.create(
+                    Registries.ENTITY_TYPE,
+                    ResourceLocation.fromNamespaceAndPath(
+                            ROACW.MODID,
+                            "horrified_immune_entities"
+                    )
+            );
+
     public static final TagKey<AbstractSpell> PLAGUE_SPELLS =
             TagKey.create(
                     SpellRegistry.SPELL_REGISTRY_KEY,

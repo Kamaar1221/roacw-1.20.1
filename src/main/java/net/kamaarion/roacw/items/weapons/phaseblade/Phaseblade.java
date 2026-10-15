@@ -86,6 +86,8 @@ public class Phaseblade extends StaffItem implements GeoItem, IPresetSpellContai
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });
 
+            pTooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         }

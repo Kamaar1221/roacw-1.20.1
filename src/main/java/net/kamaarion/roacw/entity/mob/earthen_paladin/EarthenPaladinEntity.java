@@ -9,6 +9,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.common.ForgeMod;
@@ -40,6 +42,8 @@ import software.bernie.geckolib.core.object.PlayState;
 import java.util.UUID;
 
 public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Enemy {
+
+    private static final int MAX_SPAWN_Y = 50;
 
     private static final EntityDataAccessor<Boolean> HAS_OATH =
             SynchedEntityData.defineId(EarthenPaladinEntity.class, EntityDataSerializers.BOOLEAN);
@@ -93,6 +97,10 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
         );
 
         this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        this.setDropChance(EquipmentSlot.LEGS, 0.0F);
+        this.setDropChance(EquipmentSlot.FEET, 0.0F);
     }
 
     private void updateArmorCancellation() {
@@ -240,7 +248,19 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
             BlockPos pos,
             RandomSource random
     ) {
+        if (level.getDifficulty() == Difficulty.PEACEFUL) {
+            return false;
+        }
+
+        if (pos.getY() >= MAX_SPAWN_Y) {
+            return false;
+        }
+
         if (level.canSeeSky(pos)) {
+            return false;
+        }
+
+        if (level.getBrightness(LightLayer.SKY, pos) > 0) {
             return false;
         }
 

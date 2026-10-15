@@ -78,6 +78,8 @@ public class CorvidHarbinger extends StaffItem implements GeoItem, IPresetSpellC
                 pTooltipComponents.add(Component.literal(formattedText.getString()).withStyle(loreText.getStyle()));
             });
 
+            pTooltipComponents.add(Component.empty());
+
         } else {
             super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         }

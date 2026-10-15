@@ -35,7 +35,7 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(180)
+            .setCooldownSeconds(60)
             .build();
 
     public SummonBelladonnaSpiritSpell() {
@@ -43,7 +43,7 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
-        this.baseManaCost = 50;
+        this.baseManaCost = 40;
     }
 
     @Override

@@ -45,11 +45,11 @@ public class EarthlyVirtueSpell extends AbstractSpell {
             .build();
 
     public EarthlyVirtueSpell() {
-        this.manaCostPerLevel = 3;
+        this.manaCostPerLevel = 15;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 15;
-        this.baseManaCost = 15;
+        this.baseManaCost = 75;
     }
 
     @Override
