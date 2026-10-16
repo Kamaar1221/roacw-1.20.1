@@ -40,6 +40,7 @@ public class SummonMiniPlaguebringerSpell extends AbstractSpell {
             .setSchoolResource(CSSchoolRegistry.TECHNOMANCY_RESOURCE)
             .setMaxLevel(8)
             .setCooldownSeconds(180)
+            .setAllowCrafting(false)
             .build();
 
     private static final float NORMAL_MISSILE_DAMAGE_MULTIPLIER = 1.0F;

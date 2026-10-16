@@ -235,6 +235,20 @@
       "roacw:plague_entity_spawn"
     ]
   },
+  "burning_meteor_impact": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.burning_meteor_impact",
+    "sounds": [
+      "roacw:burning_meteor_impact"
+    ]
+  },
+  "burning_sky_cast": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.burning_sky_cast",
+    "sounds": [
+      "roacw:burning_sky_cast"
+    ]
+  },
   "roacw_title_intro": {
     "sounds": [
       {

@@ -20,7 +20,7 @@ public class ROACWMusicSound extends AbstractTickableSoundInstance {
 
         this.looping = looping;
         this.delay = 0;
-        this.volume = Math.max(0.0F, Math.min(1.0F, initialVolume));
+        this.volume = Math.max(0.0F, Math.min(0.5F, initialVolume));
         this.pitch = 1.0F;
         this.relative = true;
     }
@@ -40,6 +40,6 @@ public class ROACWMusicSound extends AbstractTickableSoundInstance {
     }
 
     public void setMusicVolume(float volume) {
-        this.volume = Math.max(0.0F, Math.min(1.0F, volume));
+        this.volume = Math.max(0.0F, Math.min(0.5F, volume));
     }
 }

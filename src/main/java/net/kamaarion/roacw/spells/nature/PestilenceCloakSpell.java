@@ -30,6 +30,7 @@ public class PestilenceCloakSpell extends AbstractSpell {
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
             .setMaxLevel(3)
             .setCooldownSeconds(45.0)
+            .setAllowCrafting(false)
             .build();
 
     private static final float BASE_RADIUS = 5.0F;

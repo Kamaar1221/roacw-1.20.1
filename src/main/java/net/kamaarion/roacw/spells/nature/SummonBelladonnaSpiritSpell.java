@@ -34,7 +34,7 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
-            .setMaxLevel(5)
+            .setMaxLevel(3)
             .setCooldownSeconds(60)
             .build();
 

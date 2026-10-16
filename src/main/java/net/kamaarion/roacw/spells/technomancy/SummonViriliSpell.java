@@ -44,6 +44,7 @@ public class SummonViriliSpell extends AbstractSpell {
             .setSchoolResource(CSSchoolRegistry.TECHNOMANCY_RESOURCE)
             .setMaxLevel(1)
             .setCooldownSeconds(240)
+            .setAllowCrafting(false)
             .build();
 
     private static final float VIRILI_BASE_ATTACK_DAMAGE = 30.0F;

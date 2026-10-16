@@ -41,6 +41,7 @@ public class ImpalingColumnSpell extends AbstractSpell {
             .setSchoolResource(GGSchools.GEO_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(30.0)
+            .setAllowCrafting(false)
             .build();
 
     public ImpalingColumnSpell() {

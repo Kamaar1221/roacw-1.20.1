@@ -42,6 +42,7 @@ public class EarthlyVirtueSpell extends AbstractSpell {
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(3)
             .setCooldownSeconds(60.0)
+            .setAllowCrafting(false)
             .build();
 
     public EarthlyVirtueSpell() {

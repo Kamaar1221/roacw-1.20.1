@@ -83,6 +83,10 @@ public class ROACWSoundRegistry {
 
     public static RegistryObject<SoundEvent> PLAGUE_ENTITY_SPAWN = registerSoundEvent("plague_entity_spawn");
 
+    public static RegistryObject<SoundEvent> BURNING_METEOR_IMPACT = registerSoundEvent("burning_meteor_impact");
+
+    public static RegistryObject<SoundEvent> BURNING_SKY_CAST = registerSoundEvent("burning_sky_cast");
+
     public static final RegistryObject<SoundEvent> REMNANTS_OF_A_CRUEL_WORLD_TITLE = registerSoundEvent("remnants_of_a_cruel_world_title");
 
     public static void register(IEventBus eventBus) {

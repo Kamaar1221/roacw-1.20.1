@@ -4,11 +4,14 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.kamaarion.roacw.effects.DragonfireEffect;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,6 +49,10 @@ public class BurningMeteorEntity extends AbstractMagicProjectile implements GeoE
     private static final String DRAGONFIRE_COOLDOWN_TAG = "ROACW_DragonfireMeteorCooldown";
 
     private static final double TRAIL_OFFSET = 0.35D;
+
+    private static final float IMPACT_SOUND_VOLUME = 1.5F;
+    private static final float IMPACT_SOUND_PITCH_MIN = 0.9F;
+    private static final float IMPACT_SOUND_PITCH_MAX = 1.1F;
 
     private float aoeDamage = DEFAULT_AOE_DAMAGE;
     private float aoeRadius = DEFAULT_AOE_RADIUS;
@@ -269,13 +276,15 @@ public class BurningMeteorEntity extends AbstractMagicProjectile implements GeoE
 
         this.hasHit = true;
 
+        playImpactSound(result.getLocation());
+
         Entity directHit = result instanceof EntityHitResult entityHit
                 ? entityHit.getEntity()
                 : null;
 
         if (directHit instanceof LivingEntity living && shouldAffect(living)) {
             living.hurt(
-                    this.damageSources().indirectMagic(this, this.getOwner()),
+                    meteorDamageSource(),
                     this.getDamage()
             );
 
@@ -285,6 +294,24 @@ public class BurningMeteorEntity extends AbstractMagicProjectile implements GeoE
 
         applyAreaDamage(directHit);
         this.discard();
+    }
+
+    private void playImpactSound(Vec3 location) {
+        float pitch = IMPACT_SOUND_PITCH_MIN
+                + this.random.nextFloat() * (IMPACT_SOUND_PITCH_MAX - IMPACT_SOUND_PITCH_MIN);
+
+        this.level().playSound(
+                null,
+                location.x, location.y, location.z,
+                ROACWSoundRegistry.BURNING_METEOR_IMPACT.get(),
+                SoundSource.PLAYERS,
+                IMPACT_SOUND_VOLUME,
+                pitch
+        );
+    }
+
+    private DamageSource meteorDamageSource() {
+        return this.damageSources().explosion(this, this.getOwner());
     }
 
     @Override
@@ -318,6 +345,7 @@ public class BurningMeteorEntity extends AbstractMagicProjectile implements GeoE
 
     @Override
     public Optional<Supplier<SoundEvent>> getImpactSound() {
+        // Handled manually in playImpactSound().
         return Optional.empty();
     }
 
@@ -377,7 +405,7 @@ public class BurningMeteorEntity extends AbstractMagicProjectile implements GeoE
             }
 
             entity.hurt(
-                    this.damageSources().indirectMagic(this, this.getOwner()),
+                    meteorDamageSource(),
                     finalDamage
             );
 
