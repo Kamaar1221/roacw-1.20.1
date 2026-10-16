@@ -18,7 +18,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Map;
+
 public class ROACWAffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
+
+    private static final ResourceLocation DEFAULT_MODEL =
+            ResourceLocation.fromNamespaceAndPath(
+                    "irons_spellbooks",
+                    "item/affinity_ring_evocation"
+            );
 
     private final ItemRenderer renderer;
 
@@ -45,86 +53,80 @@ public class ROACWAffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
     ) {
         poseStack.pushPose();
 
-        poseStack.translate(
-                0.5F,
-                0.5F,
-                0.5F
-        );
+        try {
+            poseStack.translate(0.5F, 0.5F, 0.5F);
 
-        BakedModel model = getModel(stack);
+            BakedModel model = getModel(stack);
 
-        if (displayContext == ItemDisplayContext.GUI) {
-            Lighting.setupForFlatItems();
+            if (displayContext == ItemDisplayContext.GUI) {
+                Lighting.setupForFlatItems();
 
-            renderer.render(
-                    stack,
-                    displayContext,
-                    false,
-                    poseStack,
-                    bufferSource,
-                    15728880,
-                    OverlayTexture.NO_OVERLAY,
-                    model
-            );
+                renderer.render(
+                        stack,
+                        displayContext,
+                        false,
+                        poseStack,
+                        bufferSource,
+                        15728880,
+                        OverlayTexture.NO_OVERLAY,
+                        model
+                );
 
-            Minecraft.getInstance()
-                    .renderBuffers()
-                    .bufferSource()
-                    .endBatch();
+                Minecraft.getInstance()
+                        .renderBuffers()
+                        .bufferSource()
+                        .endBatch();
 
-            Lighting.setupFor3DItems();
-        } else {
-            boolean leftHand =
-                    displayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND
-                            || displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+                Lighting.setupFor3DItems();
+            } else {
+                boolean leftHand =
+                        displayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND
+                                || displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
 
-            renderer.render(
-                    stack,
-                    displayContext,
-                    leftHand,
-                    poseStack,
-                    bufferSource,
-                    packedLight,
-                    packedOverlay,
-                    model
-            );
+                renderer.render(
+                        stack,
+                        displayContext,
+                        leftHand,
+                        poseStack,
+                        bufferSource,
+                        packedLight,
+                        packedOverlay,
+                        model
+                );
+            }
+        } finally {
+            poseStack.popPose();
         }
-
-        poseStack.popPose();
     }
 
     private BakedModel getModel(ItemStack stack) {
-        BakedModel defaultModel =
-                renderer
-                        .getItemModelShaper()
-                        .getModelManager()
-                        .getModel(
-                                ResourceLocation.fromNamespaceAndPath(
-                                        "irons_spellbooks",
-                                        "item/affinity_ring_evocation"
-                                )
-                        );
+        BakedModel defaultModel = renderer
+                .getItemModelShaper()
+                .getModelManager()
+                .getModel(DEFAULT_MODEL);
 
         if (!AffinityData.hasAffinityData(stack)) {
             return defaultModel;
         }
 
-        AffinityData affinityData =
-                AffinityData.getAffinityData(stack);
+        AffinityData affinityData = AffinityData.getAffinityData(stack);
 
-        ResourceLocation spellId =
-                affinityData.affinityData()
-                        .keySet()
-                        .stream()
-                        .findFirst()
-                        .orElse(null);
+        if (affinityData == null || affinityData.affinityData() == null
+                || affinityData.affinityData().isEmpty()) {
+            return defaultModel;
+        }
+
+        ResourceLocation spellId = affinityData.affinityData()
+                .keySet()
+                .stream()
+                .findFirst()
+                .orElse(null);
 
         if (spellId == null) {
             return defaultModel;
         }
 
-        AbstractSpell spell =
-                SpellRegistry.getSpell(spellId);
+        AbstractSpell spell = SpellRegistry.getSpell(spellId);
 
         if (spell == null) {
             return defaultModel;
@@ -134,34 +136,33 @@ public class ROACWAffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
                 ROACWAffinityRingTextureRegistry.getModel(spell);
 
         if (customModel != null) {
-            BakedModel bakedCustomModel =
-                    renderer
-                            .getItemModelShaper()
-                            .getModelManager()
-                            .getModel(customModel);
+            BakedModel bakedCustomModel = renderer
+                    .getItemModelShaper()
+                    .getModelManager()
+                    .getModel(customModel);
 
-            BakedModel missingModel =
-                    renderer
-                            .getItemModelShaper()
-                            .getModelManager()
-                            .getMissingModel();
+            BakedModel missingModel = renderer
+                    .getItemModelShaper()
+                    .getModelManager()
+                    .getMissingModel();
 
             if (bakedCustomModel != missingModel) {
                 return bakedCustomModel;
             }
         }
 
-        SchoolType school =
-                spell.getSchoolType();
+        SchoolType school = spell.getSchoolType();
 
         if (school != null) {
             ResourceLocation schoolModel =
                     AffinityRingRenderer.getAffinityRingModelLocation(school);
 
-            return renderer
-                    .getItemModelShaper()
-                    .getModelManager()
-                    .getModel(schoolModel);
+            if (schoolModel != null) {
+                return renderer
+                        .getItemModelShaper()
+                        .getModelManager()
+                        .getModel(schoolModel);
+            }
         }
 
         return defaultModel;
