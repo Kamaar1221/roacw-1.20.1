@@ -237,6 +237,8 @@
   "subtitles.roacw.virili_phase_switch_1": "Virili Phase Transition",
   "subtitles.roacw.virili_phase_switch_2": "Virili Phase Transition",
   "subtitles.roacw.plague_entity_spawn": "Plague Entity Spawns",
+  "subtitles.roacw.burning_meteor_impact": "Meteor Impacts",
+  "subtitles.roacw.burning_sky_cast": "Meteor Casting",
 
   "ui.roacw.recast_bonus_damage": "%d Added damage (+1 damage per recast)",
   "ui.roacw.plague_cloud_radius": "Radius: %s blocks",
