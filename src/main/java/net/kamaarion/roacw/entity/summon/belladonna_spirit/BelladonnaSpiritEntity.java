@@ -5,7 +5,9 @@ import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.kamaarion.roacw.entity.projectile.belladonna_petal.BelladonnaPetalEntity;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -39,9 +42,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 
 public class BelladonnaSpiritEntity extends PathfinderMob implements RangedAttackMob, GeoEntity, IMagicSummon {
-
-    private static final DustParticleOptions BELLADONNA_DUST =
-            new DustParticleOptions(new Vector3f(0.58F, 0.29F, 0.72F), 1.0F);
 
     private static final int ATTACK_RELEASE_TICK = 16;
     private static final int OWNER_TARGET_FRESHNESS_TICKS = 100;
@@ -203,24 +203,30 @@ public class BelladonnaSpiritEntity extends PathfinderMob implements RangedAttac
     public void onUnSummon() {
         if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(
-                    BELLADONNA_DUST,
+                    new BlockParticleOption(
+                            ParticleTypes.BLOCK,
+                            Blocks.FLOWERING_AZALEA_LEAVES.defaultBlockState()
+                    ),
                     this.getX(),
                     this.getY(1.0D),
                     this.getZ(),
-                    24,
+                    30,
+                    0.35D,
+                    0.45D,
+                    0.35D,
+                    0.05D
+            );
+
+            serverLevel.sendParticles(
+                    ParticleTypes.COMPOSTER,
+                    this.getX(),
+                    this.getY(1.0D),
+                    this.getZ(),
+                    12,
                     0.3D,
                     0.4D,
                     0.3D,
                     0.02D
-            );
-
-            serverLevel.playSound(
-                    null,
-                    this.blockPosition(),
-                    SoundEvents.SWEET_BERRY_BUSH_BREAK,
-                    SoundSource.NEUTRAL,
-                    0.7F,
-                    0.6F
             );
         }
 

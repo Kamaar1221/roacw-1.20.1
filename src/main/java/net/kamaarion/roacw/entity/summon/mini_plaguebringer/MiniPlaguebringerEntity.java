@@ -31,9 +31,12 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -74,6 +77,10 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     private static final double FORMATION_STOP_DISTANCE = 0.40D;
     private static final double FORMATION_VELOCITY_LERP = 0.18D;
     private static final double FORMATION_TELEPORT_DISTANCE = 40.0D;
+    private static final int FORMATION_RESOLVE_STEPS = 10;
+    private static final int FORMATION_STUCK_TICKS = 15;
+    private static final double FORMATION_STUCK_MIN_DISTANCE = 1.0D;
+    private static final double FORMATION_STUCK_MIN_MOVE_SQR = 0.03D * 0.03D;
 
     public static final double TARGET_RANGE = 20.0D;
     public static final double ATTACK_RANGE = 20.0D;
@@ -94,6 +101,9 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
     private LivingEntity pendingAttackTarget;
 
     private boolean missileFired;
+
+    private Vec3 lastFormationPosition = Vec3.ZERO;
+    private int formationStuckTicks;
 
     private static final RawAnimation IDLE_ANIMATION =
             RawAnimation.begin().thenLoop("Idle");
@@ -270,6 +280,45 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
                 && owner.distanceToSqr(target) <= TARGET_RANGE * TARGET_RANGE;
     }
 
+    private boolean isBoxFreeAt(Vec3 position) {
+        AABB box = this.getBoundingBox().move(position.subtract(this.position()));
+
+        return !this.level().getBlockCollisions(this, box).iterator().hasNext();
+    }
+
+    private boolean isWallBetween(Vec3 from, Vec3 to) {
+        BlockHitResult hit = this.level().clip(new ClipContext(
+                from,
+                to,
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                this
+        ));
+
+        return hit.getType() != HitResult.Type.MISS;
+    }
+
+    private Vec3 resolveFormationPosition(LivingEntity owner, Vec3 desiredPosition) {
+        Vec3 anchor = owner.position().add(0.0D, owner.getBbHeight() * 0.5D, 0.0D);
+
+        for (int step = 0; step <= FORMATION_RESOLVE_STEPS; step++) {
+            double t = 1.0D - (double) step / FORMATION_RESOLVE_STEPS;
+            Vec3 candidate = anchor.lerp(desiredPosition, t);
+
+            if (!this.isBoxFreeAt(candidate)) {
+                continue;
+            }
+
+            if (this.isWallBetween(anchor, candidate)) {
+                continue;
+            }
+
+            return candidate;
+        }
+
+        return anchor;
+    }
+
     private void updateFormationMovement(LivingEntity owner) {
         Vec3 formationOffset = this.getFormationOffset();
 
@@ -277,11 +326,20 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
                 -owner.getYRot() * ((float) Math.PI / 180.0F)
         );
 
-        Vec3 desiredPosition = owner.position().add(rotatedOffset);
+        Vec3 desiredPosition = this.resolveFormationPosition(
+                owner,
+                owner.position().add(rotatedOffset)
+        );
+
         Vec3 difference = desiredPosition.subtract(this.position());
         double distanceSqr = difference.lengthSqr();
 
+        double movedSqr = this.position().distanceToSqr(this.lastFormationPosition);
+        this.lastFormationPosition = this.position();
+
         if (distanceSqr > FORMATION_TELEPORT_DISTANCE * FORMATION_TELEPORT_DISTANCE) {
+            this.formationStuckTicks = 0;
+
             if (this.level().noCollision(
                     this,
                     this.getBoundingBox().move(difference)
@@ -300,6 +358,28 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
         }
 
         double distance = Math.sqrt(distanceSqr);
+
+        boolean embedded = !this.isBoxFreeAt(this.position());
+        boolean notProgressing = distance > FORMATION_STUCK_MIN_DISTANCE
+                && movedSqr < FORMATION_STUCK_MIN_MOVE_SQR;
+
+        if (embedded || notProgressing) {
+            this.formationStuckTicks++;
+        } else {
+            this.formationStuckTicks = 0;
+        }
+
+        if (this.formationStuckTicks >= FORMATION_STUCK_TICKS) {
+            this.formationStuckTicks = 0;
+            this.teleportTo(
+                    desiredPosition.x,
+                    desiredPosition.y,
+                    desiredPosition.z
+            );
+            this.setDeltaMovement(Vec3.ZERO);
+            this.lastFormationPosition = this.position();
+            return;
+        }
 
         if (distance <= FORMATION_STOP_DISTANCE) {
             this.setDeltaMovement(this.getDeltaMovement().scale(0.80D));

@@ -71,7 +71,7 @@ public class ROACWTitleMusic {
         introSound = new ROACWMusicSound(
                 ROACWSoundRegistry.ROACW_TITLE_INTRO.get(),
                 false,
-                1.0F
+                0.1F
         );
 
         minecraft.getSoundManager().play(introSound);
@@ -92,7 +92,7 @@ public class ROACWTitleMusic {
         loopSound = new ROACWMusicSound(
                 ROACWSoundRegistry.ROACW_TITLE_LOOP.get(),
                 true,
-                1.0F
+                0.1F
         );
 
         minecraft.getSoundManager().play(loopSound);
@@ -123,7 +123,7 @@ public class ROACWTitleMusic {
                     .stop(introSound);
 
             introSound = null;
-            loopSound.setMusicVolume(1.0F);
+            loopSound.setMusicVolume(0.1F);
             crossfading = false;
         }
     }

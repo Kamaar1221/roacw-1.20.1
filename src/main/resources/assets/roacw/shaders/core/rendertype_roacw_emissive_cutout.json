@@ -1,8 +1,10 @@
 {
   "blend": {
     "func": "add",
-    "srcrgb": "srcalpha",
-    "dstrgb": "1-srcalpha"
+    "srcrgb": "1",
+    "dstrgb": "0",
+    "srcalpha": "1",
+    "dstalpha": "0"
   },
   "vertex": "roacw:rendertype_roacw_emissive_cutout",
   "fragment": "roacw:rendertype_roacw_emissive_cutout",

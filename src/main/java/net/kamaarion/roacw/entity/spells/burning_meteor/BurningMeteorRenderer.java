@@ -3,6 +3,7 @@ package net.kamaarion.roacw.entity.spells.burning_meteor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.kamaarion.roacw.client.shader_and_glowmask.ROACWGlowLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -20,7 +21,7 @@ public class BurningMeteorRenderer extends GeoEntityRenderer<BurningMeteorEntity
 
     public BurningMeteorRenderer(EntityRendererProvider.Context context) {
         super(context, new BurningMeteorModel());
-        addRenderLayer(new BurningMeteorGlowLayer(this));
+        addRenderLayer(new ROACWGlowLayer<>(this));
     }
 
     @Override

@@ -617,7 +617,7 @@ public class BabyPlaguebringerEntity extends PathfinderMob implements GeoEntity 
                     false,
                     false,
                     true
-            ));
+            ), summonOwner);
         }
 
         if (finalCharge && successful) {

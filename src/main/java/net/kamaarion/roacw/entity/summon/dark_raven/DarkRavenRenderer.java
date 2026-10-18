@@ -1,10 +1,10 @@
 package net.kamaarion.roacw.entity.summon.dark_raven;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.kamaarion.roacw.client.shader_and_glowmask.ROACWGlowLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 
 public class DarkRavenRenderer extends GeoEntityRenderer<DarkRavenEntity> {
 
@@ -13,7 +13,7 @@ public class DarkRavenRenderer extends GeoEntityRenderer<DarkRavenEntity> {
 
         this.shadowRadius = 0.4F;
 
-        addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        addRenderLayer(new ROACWGlowLayer<>(this));
     }
 
     @Override

@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.*;
 import net.kamaarion.roacw.entity.summon.belladonna_spirit.BelladonnaSpiritEntity;
 import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanterEvents;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
+import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -80,7 +81,7 @@ public class SummonBelladonnaSpiritSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundEvents.EVOKER_PREPARE_SUMMON);
+        return Optional.of(ROACWSoundRegistry.BASIC_SUMMON.get());
     }
 
     @Override

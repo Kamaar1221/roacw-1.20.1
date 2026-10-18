@@ -116,6 +116,10 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
     @Nullable
     private UUID ownerUUID;
 
+    @Nullable
+    private UUID temporarilyUnreachableTargetUUID;
+
+    private int unreachableTargetCooldown;
     private boolean aiNeedsResume;
     private float spellPower = 2.0F;
 
@@ -171,6 +175,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
                         true,
                         false,
                         target -> !this.isAlly(target)
+                                && !this.isTargetTemporarilyUnreachable(target)
                 )
         );
     }
@@ -357,9 +362,46 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
         nextIdleSoundAllowedGameTime.put(ownerId, gameTime + groupCooldown);
     }
 
+    public void markTargetUnreachable(@Nullable LivingEntity target, int cooldownTicks) {
+        if (target == null) {
+            return;
+        }
+
+        this.temporarilyUnreachableTargetUUID = target.getUUID();
+        this.unreachableTargetCooldown = Math.max(
+                this.unreachableTargetCooldown,
+                cooldownTicks
+        );
+
+        if (target == this.getTarget()) {
+            super.setTarget(null);
+        }
+    }
+
+    public boolean isTargetTemporarilyUnreachable(@Nullable LivingEntity target) {
+        return target != null
+                && this.unreachableTargetCooldown > 0
+                && target.getUUID().equals(this.temporarilyUnreachableTargetUUID);
+    }
+
+    private void tickUnreachableTargetCooldown() {
+        if (this.unreachableTargetCooldown > 0) {
+            this.unreachableTargetCooldown--;
+
+            if (this.unreachableTargetCooldown <= 0) {
+                this.unreachableTargetCooldown = 0;
+                this.temporarilyUnreachableTargetUUID = null;
+            }
+        }
+    }
+
     @Override
     public void setTarget(@Nullable LivingEntity target) {
         if (this.isCharging() && target != this.getTarget()) {
+            return;
+        }
+
+        if (target != null && this.isTargetTemporarilyUnreachable(target)) {
             return;
         }
 
@@ -628,6 +670,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
             if (canOccupyChargePosition(raisedEnd)) {
                 end = raisedEnd;
             } else {
+                markTargetUnreachable(this.getTarget(), 100);
                 stopCharge(false);
                 return;
             }
@@ -646,6 +689,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
             if (canOccupyChargePosition(raisedEnd)) {
                 end = raisedEnd;
             } else {
+                markTargetUnreachable(this.getTarget(), 100);
                 stopCharge(false);
                 return;
             }
@@ -764,6 +808,7 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
             return;
         }
 
+        tickUnreachableTargetCooldown();
         tryPlayIdleSound();
 
         if (this.isCharging()) {
@@ -798,7 +843,8 @@ public class DarkRavenEntity extends PathfinderMob implements GeoEntity, IMagicS
             if (ownerTarget != null
                     && recentlyHurt
                     && ownerTarget.isAlive()
-                    && this.distanceToSqr(ownerTarget) < 900.0D) {
+                    && this.distanceToSqr(ownerTarget) < 900.0D
+                    && !this.isTargetTemporarilyUnreachable(ownerTarget)) {
                 this.setTarget(ownerTarget);
             }
         }

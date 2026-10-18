@@ -68,7 +68,7 @@
   "item.roacw.wings_of_rebirth.charged": "The wings of the pheonix will prevent your death!",
   "item.roacw.earthen_paladin_oath": "Earthen Paladin's Oath",
   "item.roacw.earthen_paladin_oath.desc": "\"The rites of the Earthen Paladin, all you need to know about them lies in this Oath.\"",
-  "item.roacw.earthen_paladin_oath.tooltip.desc": "When struck, a stalagmite shoots up from the ground under the attacker, knocking them into the air and dealing damage.",
+  "item.roacw.earthen_paladin_oath.tooltip.desc": "When struck, a stalagmite shoots up from the ground under the attacker, and any other enemies in a radius around you, knocking them into the air and dealing damage.",
   "item.roacw.auric_codex": "Auric Codex",
   "item.roacw.auric_codex.desc": "\"The knowledge to kill gods.\"",
   "item.roacw.auric_codex.tooltip.desc": "All of your attacks will inflict Auric Rebuke.",
@@ -239,6 +239,7 @@
   "subtitles.roacw.plague_entity_spawn": "Plague Entity Spawns",
   "subtitles.roacw.burning_meteor_impact": "Meteor Impacts",
   "subtitles.roacw.burning_sky_cast": "Meteor Casting",
+  "subtitles.roacw.basic_summon": "Basic Summon Manifestation",
 
   "ui.roacw.recast_bonus_damage": "%d Added damage (+1 damage per recast)",
   "ui.roacw.plague_cloud_radius": "Radius: %s blocks",

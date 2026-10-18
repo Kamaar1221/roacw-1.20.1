@@ -67,7 +67,7 @@
       "roacw:plague_missile_launch"
     ]
   },
-  "homing_plague_missile_exposion": {
+  "homing_plague_missile_explosion": {
     "category": "player",
     "subtitle": "subtitles.roacw.homing_plague_missile_explosion",
     "sounds": [
@@ -120,7 +120,10 @@
     "category": "player",
     "subtitle": "subtitles.roacw.dark_raven_summon",
     "sounds": [
-      "roacw:dark_raven_summon"
+      {
+        "name": "roacw:dark_raven_summon",
+        "volume": 0.3
+      }
     ]
   },
   "endo_hydra_summon": {
@@ -232,7 +235,10 @@
     "category": "player",
     "subtitle": "subtitles.roacw.plague_entity_spawn",
     "sounds": [
-      "roacw:plague_entity_spawn"
+      {
+        "name": "roacw:plague_entity_spawn",
+        "volume": 0.1
+      }
     ]
   },
   "burning_meteor_impact": {
@@ -247,6 +253,16 @@
     "subtitle": "subtitles.roacw.burning_sky_cast",
     "sounds": [
       "roacw:burning_sky_cast"
+    ]
+  },
+  "basic_summon": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.basic_summon",
+    "sounds": [
+      {
+        "name": "roacw:basic_summon",
+        "volume": 0.7
+      }
     ]
   },
   "roacw_title_intro": {

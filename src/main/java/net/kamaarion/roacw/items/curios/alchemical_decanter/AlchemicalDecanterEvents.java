@@ -7,6 +7,8 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.acetheeldritchking.cataclysm_spellbooks.registries.CSSchoolRegistry;
 import net.kamaarion.roacw.Utils;
+import net.kamaarion.roacw.entity.summon.baby_plaguebringer.BabyPlaguebringerEntity;
+import net.kamaarion.roacw.entity.summon.virili.ViriliEntity;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,6 +23,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -55,11 +58,11 @@ public class AlchemicalDecanterEvents {
             return;
         }
 
-        if (!(event.getEntity() instanceof IMagicSummon summon)) {
+        if (!isPlagueSummonType(event.getEntity())) {
             return;
         }
 
-        if (!(summon.getSummoner() instanceof ServerPlayer player)) {
+        if (!(getSummoner(event.getEntity()) instanceof ServerPlayer player)) {
             return;
         }
 
@@ -105,25 +108,24 @@ public class AlchemicalDecanterEvents {
             }
         }
 
-        IMagicSummon summon = null;
+        Entity summonEntity = null;
 
-        if (directEntity instanceof IMagicSummon directSummon) {
-            summon = directSummon;
-        } else if (trueEntity instanceof IMagicSummon trueSummon) {
-            summon = trueSummon;
+        if (isPlagueSummonType(directEntity)) {
+            summonEntity = directEntity;
+        } else if (isPlagueSummonType(trueEntity)) {
+            summonEntity = trueEntity;
         } else if (directEntity instanceof Projectile projectile
-                && projectile.getOwner() instanceof IMagicSummon projectileSummon) {
-            summon = projectileSummon;
+                && isPlagueSummonType(projectile.getOwner())) {
+            summonEntity = projectile.getOwner();
         } else if (directEntity instanceof OwnableEntity ownable
-                && ownable.getOwner() instanceof IMagicSummon ownedSummon) {
-            summon = ownedSummon;
+                && isPlagueSummonType(ownable.getOwner())) {
+            summonEntity = ownable.getOwner();
         }
 
-        if (summon == null || !(summon.getSummoner() instanceof ServerPlayer summoner)) {
+        if (summonEntity == null
+                || !(getSummoner(summonEntity) instanceof ServerPlayer summoner)) {
             return;
         }
-
-        Entity summonEntity = (Entity) summon;
 
         if (!summonEntity.getPersistentData().getBoolean(PLAGUE_SUMMON_TAG)) {
             return;
@@ -132,6 +134,29 @@ public class AlchemicalDecanterEvents {
         if (isWearingDecanter(summoner)) {
             applyPlague(summoner, event.getEntity());
         }
+    }
+
+    private static boolean isPlagueSummonType(@Nullable Entity entity) {
+        return entity instanceof IMagicSummon
+                || entity instanceof ViriliEntity
+                || entity instanceof BabyPlaguebringerEntity;
+    }
+
+    @Nullable
+    private static Entity getSummoner(Entity entity) {
+        if (entity instanceof IMagicSummon summon) {
+            return summon.getSummoner();
+        }
+
+        if (entity instanceof ViriliEntity virili) {
+            return virili.getOwner();
+        }
+
+        if (entity instanceof BabyPlaguebringerEntity baby) {
+            return baby.getOwner();
+        }
+
+        return null;
     }
 
     private static void applyPlague(ServerPlayer caster, LivingEntity target) {
@@ -144,7 +169,7 @@ public class AlchemicalDecanterEvents {
                 amplifier,
                 false,
                 false
-        ));
+        ), caster);
     }
 
     private static boolean isTechnomancyOrNature(SchoolType schoolType) {

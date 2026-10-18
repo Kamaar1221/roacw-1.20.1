@@ -6,9 +6,6 @@ public class PhasebladeRenderer extends GeoItemRenderer<Phaseblade> {
 
     public PhasebladeRenderer() {
         super(new PhasebladeModel());
-
-        this.addRenderLayer(
-                new PhasebladeLayer(this)
-        );
+        this.addRenderLayer(new PhasebladeLayer(this));
     }
 }

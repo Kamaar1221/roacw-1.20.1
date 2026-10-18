@@ -207,6 +207,10 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:fzzy-config-1005914:7568893")
     runtimeOnly fg.deobf("curse.maven:symbols-n-stuff-1091274:5730405")
     runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
+    runtimeOnly fg.deobf("curse.maven:embeddium-908741:5681725")
+    runtimeOnly "curse.maven:euphoria-patches-915902:8884681"
+    runtimeOnly fg.deobf("curse.maven:oculus-581495:6020952")
+    compileOnly fg.deobf("curse.maven:oculus-581495:6020952")
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used to run the game

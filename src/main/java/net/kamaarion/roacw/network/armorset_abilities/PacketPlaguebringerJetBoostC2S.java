@@ -141,7 +141,7 @@ public class PacketPlaguebringerJetBoostC2S {
                         player.getZ(),
                         ROACWSoundRegistry.PLAGUEBRINGER_JETS_ACTIVATED.get(),
                         SoundSource.PLAYERS,
-                        1.0F,
+                        0.5F,
                         0.8F
                 );
             });
