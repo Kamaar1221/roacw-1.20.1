@@ -248,11 +248,11 @@ public class BurningMeteorSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
-        return getSpellPower(spellLevel, caster) * 0.45F;
+        return getSpellPower(spellLevel, caster) * 0.5F;
     }
 
     public float getAoeDamage(int spellLevel, LivingEntity caster) {
-        return 1.0F + getSpellPower(spellLevel, caster) * 0.12F;
+        return 2.0F + getSpellPower(spellLevel, caster) * 0.35F;
     }
 
     private float getExplosionRadius(LivingEntity caster) {

@@ -1,0 +1,60 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "roacw:ascendant_spirit_essence",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:arcane_essence",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.05
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "roacw:charged_auric_ingot",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 5
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

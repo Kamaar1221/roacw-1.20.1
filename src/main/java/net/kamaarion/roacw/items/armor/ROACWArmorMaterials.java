@@ -68,13 +68,12 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 200,AttributeModifier.Operation.ADDITION),
             GGAttributes.GEO_SPELL_POWER.get(), new AttributeModifier("Geo Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier("Holy Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
 
-    PLAGUEBRINGER_ARMOR("plaguebringer_armor", 60, plagueBringerArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 6f, 0,
+    PLAGUEBRINGER_ARMOR("plaguebringer_armor", 60, plagueBringerArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 5f, 0,
             () -> Ingredient.of(ROACWItemRegistry.INFECTED_PLATING .get()), Map.of(
-            Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+            Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.125, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 200,AttributeModifier.Operation.ADDITION),
             AttributeRegistry.NATURE_SPELL_POWER.get(), new AttributeModifier("Nature Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Techno Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
@@ -87,6 +86,17 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             ROACWAttributeRegistry.EXO_MAGIC_POWER.get(), new AttributeModifier("Exo Enhancement", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 125,AttributeModifier.Operation.ADDITION),
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Spell Power", 0.05, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
+
+    DISTORTED_ENVOY_ARMOR("fearmonger_armor", 45, distortedEnvoyArmorMap(), 18, SoundEvents.ARMOR_EQUIP_NETHERITE, 5f, 0,
+            () -> Ingredient.of(ModItems.IGNITIUM_INGOT .get()), Map.of(
+    Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 250,AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Spell Power", 0.2, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier("Ice Spell Power", 0.2, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.ELDRITCH_SPELL_POWER.get(), new AttributeModifier("Eldritch Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.075, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SUMMON_DAMAGE.get(), new AttributeModifier("Summon Damage", 0.15, AttributeModifier.Operation.MULTIPLY_BASE)
     ));
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
@@ -141,9 +151,10 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
     static public EnumMap<ArmorItem.Type, Integer> fearmongerArmorMap() {
         return makeArmorMap(7, 13, 10, 7);
     }
-    static public EnumMap<ArmorItem.Type, Integer> earthenPaladinArmorMap() {return makeArmorMap(6, 11, 9, 6);}
-    static public EnumMap<ArmorItem.Type, Integer> plagueBringerArmorMap() {return makeArmorMap(7, 11, 9, 7);}
+    static public EnumMap<ArmorItem.Type, Integer> earthenPaladinArmorMap() {return makeArmorMap(7, 11, 9, 8);}
+    static public EnumMap<ArmorItem.Type, Integer> plagueBringerArmorMap() {return makeArmorMap(6, 10, 8, 6);}
     static public EnumMap<ArmorItem.Type, Integer> arsenalT1ArmorMap() {return makeArmorMap(3, 8, 6, 3);}
+    static public EnumMap<ArmorItem.Type, Integer> distortedEnvoyArmorMap() {return makeArmorMap(6, 11, 8, 6);}
 
 
 

@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.capability.PlaguebringerJetBoostCapability;
 import net.kamaarion.roacw.entity.projectile.plague_bee.PlagueBeeEntity;
 import net.kamaarion.roacw.network.ModMessages;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
@@ -23,6 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkEvent;
@@ -44,14 +44,17 @@ public class PacketPlaguebringerJetBoostC2S {
     private static final int PLAGUE_BEE_INTERVAL = 100;
     private static final int MIN_BEES_PER_WAVE = 1;
     private static final int MAX_BEES_PER_WAVE = 3;
+    private static final int RESYNC_DELAY_TICKS = 2;
     private static final double BEE_SPAWN_RADIUS = 2.0D;
     private static final double BEE_TARGET_SEARCH_RADIUS = 24.0D;
 
     private static final Map<UUID, Long> JETBOOST_EXPIRY = new HashMap<>();
     private static final Map<UUID, Long> PLAGUE_BEE_NEXT_SPAWN = new HashMap<>();
+    private static final Map<UUID, Long> PENDING_RESYNC = new HashMap<>();
     private static final Set<UUID> PROTECTED_PLAYERS = new HashSet<>();
     private static final Set<UUID> ACTIVE_JETBOOST_PLAYERS = new HashSet<>();
     private static final Map<UUID, Long> LAST_ACTIVATION_TICK = new HashMap<>();
+    private static final Map<UUID, Long> COOLDOWN_TRACKER = new HashMap<>();
 
     public PacketPlaguebringerJetBoostC2S() {
     }
@@ -72,6 +75,17 @@ public class PacketPlaguebringerJetBoostC2S {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
 
+            ROACW.LOGGER.info("[AbilityDebug] Plaguebringer packet received, sender={}", player);
+
+            if (player != null) {
+                ROACW.LOGGER.info(
+                        "[AbilityDebug] Plaguebringer checks: fullSet={} nextAvailableTick={} configEnabled={}",
+                        isWearingFullPlaguebringerSet(player),
+                        COOLDOWN_TRACKER.getOrDefault(player.getUUID(), 0L),
+                        Config.ENABLE_PLAGUEBRINGER_JET_BOOST.get()
+                );
+            }
+
             if (player == null || !Config.ENABLE_PLAGUEBRINGER_JET_BOOST.get()) {
                 return;
             }
@@ -90,61 +104,61 @@ public class PacketPlaguebringerJetBoostC2S {
                 return;
             }
 
-            player.getCapability(PlaguebringerJetBoostCapability.INSTANCE).ifPresent(data -> {
-                if (currentServerTick < data.getNextAvailableTick()) {
-                    long remainingTicks = data.getNextAvailableTick() - currentServerTick;
-                    long remainingSeconds = (remainingTicks + 19) / 20;
+            long nextAvailableTick = COOLDOWN_TRACKER.getOrDefault(playerUUID, 0L);
 
-                    player.displayClientMessage(
-                            Component.literal("§cAbility on cooldown! Wait " + remainingSeconds + "s"),
-                            true
-                    );
-                    return;
-                }
-
-                data.setNextAvailableTick(currentServerTick + COOLDOWN_TICKS);
-
-                player.getAbilities().mayfly = true;
-                player.onUpdateAbilities();
-
-                player.hurtMarked = true;
-                player.fallDistance = 0.0F;
-
-                JETBOOST_EXPIRY.put(playerUUID, currentServerTick + DURATION_TICKS);
-                PLAGUE_BEE_NEXT_SPAWN.put(playerUUID, currentServerTick + PLAGUE_BEE_INTERVAL);
-                ACTIVE_JETBOOST_PLAYERS.add(playerUUID);
-                PROTECTED_PLAYERS.remove(playerUUID);
-
-                ModMessages.sendToTrackingAndSelf(
-                        new PacketPlaguebringerJetBoostStateS2C(playerUUID, true),
-                        player
-                );
-
-                CameraShakeManager.addCameraShake(
-                        new CameraShakeData(
-                                player.level(),
-                                60,
-                                player.position(),
-                                5.0F
-                        )
-                );
+            if (currentServerTick < nextAvailableTick) {
+                long remainingTicks = nextAvailableTick - currentServerTick;
+                long remainingSeconds = (remainingTicks + 19) / 20;
 
                 player.displayClientMessage(
-                        Component.literal("§2Jet Boost Active! (30s Flight)"),
+                        Component.literal("§cAbility on cooldown! Wait " + remainingSeconds + "s"),
                         true
                 );
+                return;
+            }
 
-                player.level().playSound(
-                        null,
-                        player.getX(),
-                        player.getY(),
-                        player.getZ(),
-                        ROACWSoundRegistry.PLAGUEBRINGER_JETS_ACTIVATED.get(),
-                        SoundSource.PLAYERS,
-                        0.5F,
-                        0.8F
-                );
-            });
+            COOLDOWN_TRACKER.put(playerUUID, currentServerTick + COOLDOWN_TICKS);
+
+            player.getAbilities().mayfly = true;
+            player.onUpdateAbilities();
+
+            player.hurtMarked = true;
+            player.fallDistance = 0.0F;
+
+            JETBOOST_EXPIRY.put(playerUUID, currentServerTick + DURATION_TICKS);
+            PLAGUE_BEE_NEXT_SPAWN.put(playerUUID, currentServerTick + PLAGUE_BEE_INTERVAL);
+            ACTIVE_JETBOOST_PLAYERS.add(playerUUID);
+            PROTECTED_PLAYERS.remove(playerUUID);
+
+            ModMessages.sendToTrackingAndSelf(
+                    new PacketPlaguebringerJetBoostStateS2C(playerUUID, true),
+                    player
+            );
+
+            CameraShakeManager.addCameraShake(
+                    new CameraShakeData(
+                            player.level(),
+                            60,
+                            player.position(),
+                            5.0F
+                    )
+            );
+
+            player.displayClientMessage(
+                    Component.literal("§2Jet Boost Active! (30s Flight)"),
+                    true
+            );
+
+            player.level().playSound(
+                    null,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    ROACWSoundRegistry.PLAGUEBRINGER_JETS_ACTIVATED.get(),
+                    SoundSource.PLAYERS,
+                    0.5F,
+                    0.8F
+            );
         });
 
         return true;
@@ -164,8 +178,6 @@ public class PacketPlaguebringerJetBoostC2S {
 
         long now = server.overworld().getGameTime();
 
-        // Config toggled off while a jet boost was active: end it right away so flight,
-        // bee waves and client visuals don't linger until the timer runs out.
         if (!Config.ENABLE_PLAGUEBRINGER_JET_BOOST.get() && !ACTIVE_JETBOOST_PLAYERS.isEmpty()) {
             for (UUID uuid : new HashSet<>(ACTIVE_JETBOOST_PLAYERS)) {
                 ServerPlayer player = server.getPlayerList().getPlayer(uuid);
@@ -179,6 +191,20 @@ public class PacketPlaguebringerJetBoostC2S {
                 PLAGUE_BEE_NEXT_SPAWN.remove(uuid);
             }
         }
+
+        PENDING_RESYNC.entrySet().removeIf(entry -> {
+            if (now < entry.getValue()) {
+                return false;
+            }
+
+            ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
+
+            if (player != null) {
+                resyncJetBoost(player);
+            }
+
+            return true;
+        });
 
         for (UUID uuid : new HashSet<>(ACTIVE_JETBOOST_PLAYERS)) {
             ServerPlayer player = server.getPlayerList().getPlayer(uuid);
@@ -303,12 +329,104 @@ public class PacketPlaguebringerJetBoostC2S {
         );
     }
 
+    private static void resyncJetBoost(ServerPlayer player) {
+        UUID playerUUID = player.getUUID();
+
+        if (!ACTIVE_JETBOOST_PLAYERS.contains(playerUUID)) {
+            return;
+        }
+
+        if (!Config.ENABLE_PLAGUEBRINGER_JET_BOOST.get() || !isWearingFullPlaguebringerSet(player)) {
+            JETBOOST_EXPIRY.remove(playerUUID);
+            revokeFlight(player);
+            return;
+        }
+
+        player.getAbilities().mayfly = true;
+        player.onUpdateAbilities();
+
+        ModMessages.sendToTrackingAndSelf(
+                new PacketPlaguebringerJetBoostStateS2C(playerUUID, true),
+                player
+        );
+    }
+
+    private static void endJetBoostSilently(ServerPlayer player) {
+        UUID playerUUID = player.getUUID();
+        boolean wasActive = ACTIVE_JETBOOST_PLAYERS.remove(playerUUID);
+
+        JETBOOST_EXPIRY.remove(playerUUID);
+        PLAGUE_BEE_NEXT_SPAWN.remove(playerUUID);
+        PROTECTED_PLAYERS.remove(playerUUID);
+        PENDING_RESYNC.remove(playerUUID);
+
+        if (wasActive) {
+            ModMessages.sendToTrackingAndSelf(
+                    new PacketPlaguebringerJetBoostStateS2C(playerUUID, false),
+                    player
+            );
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        if (!ACTIVE_JETBOOST_PLAYERS.contains(player.getUUID())) {
+            return;
+        }
+
+        resyncJetBoost(player);
+        PENDING_RESYNC.put(player.getUUID(), player.level().getGameTime() + RESYNC_DELAY_TICKS);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        if (!event.isEndConquered()) {
+            endJetBoostSilently(player);
+            return;
+        }
+
+        if (!ACTIVE_JETBOOST_PLAYERS.contains(player.getUUID())) {
+            return;
+        }
+
+        resyncJetBoost(player);
+        PENDING_RESYNC.put(player.getUUID(), player.level().getGameTime() + RESYNC_DELAY_TICKS);
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        COOLDOWN_TRACKER.clear();
+    }
+
+    @SubscribeEvent
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
+        if (event.getTarget() instanceof ServerPlayer target
+                && event.getEntity() instanceof ServerPlayer watcher) {
+            ModMessages.sendToPlayer(
+                    new PacketPlaguebringerJetBoostStateS2C(
+                            target.getUUID(),
+                            ACTIVE_JETBOOST_PLAYERS.contains(target.getUUID())
+                    ),
+                    watcher
+            );
+        }
+    }
+
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         UUID playerUUID = event.getEntity().getUUID();
 
         JETBOOST_EXPIRY.remove(playerUUID);
         PLAGUE_BEE_NEXT_SPAWN.remove(playerUUID);
+        PENDING_RESYNC.remove(playerUUID);
         PROTECTED_PLAYERS.remove(playerUUID);
         ACTIVE_JETBOOST_PLAYERS.remove(playerUUID);
         LAST_ACTIVATION_TICK.remove(playerUUID);

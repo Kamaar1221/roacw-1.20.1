@@ -61,6 +61,10 @@ public final class FlightWingsHandler {
                 || player.onClimbable() || player.isPassenger();
         boolean gliding = player.isFallFlying();
 
+        if (!grounded) {
+            player.setDeltaMovement(player.getX() - player.xo, player.getY() - player.yo, player.getZ() - player.zo);
+        }
+
         if (!grounded && player.connection != null) {
             player.connection.aboveGroundTickCount = 0;
         }

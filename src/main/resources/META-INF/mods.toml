@@ -20,7 +20,7 @@ license="${mod_license}"
 # The modid of the mod
 modId="roacw" #mandatory
 # The version number of the mod
-version="1.2.2" #mandatory
+version="1.2.3" #mandatory
 # A display name for the mod
 displayName="Remnants Of A Cruel World" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
@@ -45,18 +45,18 @@ authors="Kamaarion" #optional
 description='''An Iron's Spells & Spellbooks addon that brings content from the popular Terraria mod; Calamity!'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.roacw]] #optional
-    # the modid of the dependency
-    modId="forge" #mandatory
-    # Does this dependency have to exist - if not, ordering below must be specified
-    mandatory=true #mandatory
-    # The version range of the dependency
-    versionRange="${forge_version_range}" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
-    # BEFORE - This mod is loaded BEFORE the dependency
-    # AFTER - This mod is loaded AFTER the dependency
-    ordering="NONE"
-    # Side this dependency is applied on - BOTH, CLIENT, or SERVER
-    side="BOTH"
+# the modid of the dependency
+modId="forge" #mandatory
+# Does this dependency have to exist - if not, ordering below must be specified
+mandatory=true #mandatory
+# The version range of the dependency
+versionRange="${forge_version_range}" #mandatory
+# An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
+# BEFORE - This mod is loaded BEFORE the dependency
+# AFTER - This mod is loaded AFTER the dependency
+ordering="NONE"
+# Side this dependency is applied on - BOTH, CLIENT, or SERVER
+side="BOTH"
 # Here's another dependency
 [[dependencies.roacw]]
 modId="irons_spellbooks"
@@ -92,6 +92,12 @@ mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
 versionRange="[3.2.0+1.20.1,)"
 ordering="NONE"
+side="BOTH"
+[[dependencies.roacw]]
+modId="dog"
+mandatory=false
+versionRange="[1.2.0,)"
+ordering="AFTER"
 side="BOTH"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares

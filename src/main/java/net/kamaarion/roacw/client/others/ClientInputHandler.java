@@ -1,6 +1,5 @@
 package net.kamaarion.roacw.client.others;
 
-import com.mojang.logging.LogUtils;
 import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.items.armor.marsarmorset.MarsArmorFlightHandler;
@@ -14,7 +13,6 @@ import net.kamaarion.roacw.network.armorset_abilities.PacketPlaguebringerJetBoos
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
@@ -22,7 +20,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.slf4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
 
 @Mod.EventBusSubscriber(
@@ -31,9 +28,6 @@ import top.theillusivec4.curios.api.CuriosApi;
         value = Dist.CLIENT
 )
 public class ClientInputHandler {
-
-    private static final Logger LOGGER = LogUtils.getLogger();
-    private static final boolean CORE_CALIBRATION_LOG = true;
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
@@ -51,7 +45,9 @@ public class ClientInputHandler {
             }
 
             CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
-                if (!inv.findCurios(dashItem).isEmpty()) {
+                boolean scarfEquipped = !inv.findCurios(dashItem).isEmpty();
+
+                if (scarfEquipped) {
                     ModMessages.sendToServer(new PacketEvasionScarfDashC2S());
                 }
             });
@@ -92,39 +88,12 @@ public class ClientInputHandler {
 
             Vec3 corePosition = MarsArmorParticleHandler.getCorePosition(player);
 
-            if (CORE_CALIBRATION_LOG) {
-                logCoreCalibration(player, corePosition);
-            }
-
             if (corePosition == null) {
                 corePosition = fallbackCorePosition(player);
             }
 
             ModMessages.sendToServer(new MarsCannonsSummonC2S(corePosition));
         }
-    }
-
-    private static void logCoreCalibration(
-            LocalPlayer player,
-            Vec3 corePosition
-    ) {
-        if (corePosition == null) {
-            LOGGER.info("[MarsCore] no fresh core sample - switch to third person (F5) and try again");
-            return;
-        }
-
-        float yawRad = player.yBodyRot * Mth.DEG_TO_RAD;
-
-        Vec3 local = corePosition
-                .subtract(player.position())
-                .yRot(yawRad);
-
-        LOGGER.info(
-                "[MarsCore] body-local core offset: side(+left)={} up={} forward={}",
-                String.format("%.3f", local.x),
-                String.format("%.3f", local.y),
-                String.format("%.3f", local.z)
-        );
     }
 
     private static Vec3 fallbackCorePosition(LocalPlayer player) {

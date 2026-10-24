@@ -1,5 +1,6 @@
 package net.kamaarion.roacw.network.armorset_abilities;
 
+import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.core.particles.ParticleTypes;
@@ -43,11 +44,22 @@ public class PacketEvasionScarfDashC2S {
 
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
+
+            ROACW.LOGGER.info("[AbilityDebug] Evasion Scarf dash packet received, sender={}", player);
+
             if (player == null) {
                 return;
             }
 
             Item dashItem = ROACWItemRegistry.EVASION_SCARF.get();
+
+            ROACW.LOGGER.info(
+                    "[AbilityDebug] Evasion Scarf dash checks: onCooldown={} scarfEquipped={}",
+                    player.getCooldowns().isOnCooldown(dashItem),
+                    CuriosApi.getCuriosInventory(player)
+                            .map(inv -> !inv.findCurios(dashItem).isEmpty())
+                            .orElse(false)
+            );
 
             if (player.getCooldowns().isOnCooldown(dashItem)) {
                 float cooldownPercent = player.getCooldowns().getCooldownPercent(dashItem, 0.0F);

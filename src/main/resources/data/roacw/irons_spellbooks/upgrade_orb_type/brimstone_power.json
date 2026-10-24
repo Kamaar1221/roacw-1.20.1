@@ -1,0 +1,6 @@
+{
+  "attribute": "roacw:brimstone_spell_power",
+  "amount": 0.05,
+  "operation": "MULTIPLY_BASE",
+  "containerItem": "roacw:brimstone_upgrade_orb"
+}

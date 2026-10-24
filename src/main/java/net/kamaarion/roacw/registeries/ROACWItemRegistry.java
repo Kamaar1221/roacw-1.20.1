@@ -2,8 +2,10 @@ package net.kamaarion.roacw.registeries;
 
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.client.others.UntintedSpawnEggItem;
+import net.kamaarion.roacw.items.LootBagItem;
 import net.kamaarion.roacw.items.armor.arsenalt1armorset.ArsenalT1ArmorItem;
 import net.kamaarion.roacw.items.armor.auricteslaarmorset.AuricTeslaArmorItem;
+import net.kamaarion.roacw.items.armor.distortedenvoyarmorset.DistortedEnvoyArmorItem;
 import net.kamaarion.roacw.items.armor.earthenpaladinset.EarthenPaladinArmorItem;
 import net.kamaarion.roacw.items.armor.fearmongerarmorset.FearmongerArmorItem;
 import net.kamaarion.roacw.items.armor.marsarmorset.MarsArmorItem;
@@ -30,13 +32,16 @@ import net.kamaarion.roacw.items.weapons.high_ruler_sword.HighRulerSword;
 import net.kamaarion.roacw.items.weapons.murasama_blade.MurasamaBlade;
 import net.kamaarion.roacw.items.weapons.phaseblade.Phaseblade;
 import net.kamaarion.roacw.items.weapons.phaseslayer.Phaseslayer;
+import net.kamaarion.roacw.items.weapons.singularity.Singularity;
 import net.kamaarion.roacw.items.weapons.the_burning_sky.BurningSky;
 import net.kamaarion.roacw.items.weapons.the_hive.TheHive;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.RecordItem;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -83,7 +88,10 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> ARSENAL_PANTS = ITEMS.register("arsenal_pants", () -> new ArsenalT1ArmorItem(ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
     public static final RegistryObject<Item> ARSENAL_BOOTS = ITEMS.register("arsenal_boots", () -> new ArsenalT1ArmorItem(ArmorItem.Type.BOOTS, new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
 
-
+    public static final RegistryObject<Item> DISTORTED_ENVOY_COWL = ITEMS.register("distorted_envoy_cowl", () -> new DistortedEnvoyArmorItem(ArmorItem.Type.HELMET, new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> DISTORTED_ENVOY_ROBES = ITEMS.register("distorted_envoy_robes", () -> new DistortedEnvoyArmorItem(ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> DISTORTED_ENVOY_LEGGINGS = ITEMS.register("distorted_envoy_leggings", () -> new DistortedEnvoyArmorItem(ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY).fireResistant()));
+    public static final RegistryObject<Item> DISTORTED_ENVOY_SANDALS = ITEMS.register("distorted_envoy_sandals", () -> new DistortedEnvoyArmorItem(ArmorItem.Type.BOOTS, new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY).fireResistant()));
 
     // Basic Materials
     public static final RegistryObject<Item> RAW_AURIC_CHUNK = ITEMS.register("raw_auric_chunk", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
@@ -101,8 +109,14 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> YHARON_BONE = ITEMS.register("yharon_bone", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
     public static final RegistryObject<Item> YHARON_FEATHER = ITEMS.register("yharon_feather", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
     public static final RegistryObject<Item> MIRACLE_MATTER = ITEMS.register("miracle_matter", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED)));
+    public static final RegistryObject<Item> EXO_RUNE = ITEMS.register("exo_rune", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED)));
+    public static final RegistryObject<Item> EXO_UPGRADE_ORB = ITEMS.register("exo_upgrade_orb", () -> new io.redspace.ironsspellbooks.item.UpgradeOrbItem(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED), ROACWUpgradeOrbTypeRegistry.EXO_SPELL_POWER));
+    public static final RegistryObject<Item> BRIMSTONE_RUNE = ITEMS.register("brimstone_rune", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.CALAMITOUS)));
+    public static final RegistryObject<Item> BRIMSTONE_UPGRADE_ORB = ITEMS.register("brimstone_upgrade_orb", () -> new io.redspace.ironsspellbooks.item.UpgradeOrbItem(new Item.Properties().rarity(ROACWItemRegistry.CALAMITOUS), ROACWUpgradeOrbTypeRegistry.BRIMSTONE_SPELL_POWER));
 
-
+    public static final RegistryObject<Item> DEVOURER_LOOT_BAG = ModList.get().isLoaded("dog")
+            ? ITEMS.register("devourer_loot_bag", () -> new LootBagItem(new Item.Properties().stacksTo(16).rarity(ROACWItemRegistry.OTHERWORLDLY), ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "loot_bags/devourer")))
+            : null;
 
     // Food
     public static final RegistryObject<Item> FRIED_CHICKEN = ITEMS.register("fried_chicken", () -> new Item(new Item.Properties().food(ROACWFoodRegistry.FRIED_CHICKEN).rarity(GOD_FORGED)));
@@ -131,6 +145,7 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> ENDO_HYDRA_STAFF = ITEMS.register("endo_hydra_staff", () -> new EndoHydraStaff(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> BELLADONNA_SPIRIT_STAFF = ITEMS.register("belladonna_spirit_staff", () -> new BelladonnaStaff(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> DEFILED_GREATSWORD = ITEMS.register("defiled_greatsword", () -> new DefiledGreatsword(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> SINGULARITY = ITEMS.register("singularity", () -> new Singularity(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
 
     // Spellbooks
     public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("nightmare_tome", () -> new NightmareTome(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
@@ -139,7 +154,7 @@ public class ROACWItemRegistry {
 
     // Music Disc
     public static final RegistryObject<Item> REMNANTS_OF_A_CRUEL_WORLD_DISC = ITEMS.register("remnants_of_a_cruel_world_disc", () -> new RecordItem(15, ROACWSoundRegistry.REMNANTS_OF_A_CRUEL_WORLD_TITLE,
-                    new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.CALAMITOUS), 4860));
+            new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.CALAMITOUS), 4860));
 
     // Spawn Eggs / Summon Items
     public static final RegistryObject<Item> PLAGUE_CHARGER_SPAWN_EGG = ITEMS.register("plague_charger_spawn_egg",

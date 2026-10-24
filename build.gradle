@@ -189,6 +189,8 @@ dependencies {
     implementation fg.deobf("curse.maven:mowzies-mobs-250498:7815705")
     implementation fg.deobf("curse.maven:irons-lib-1492763:8207055")
     implementation fg.deobf("curse.maven:caelus-308989:5281700")
+    implementation fg.deobf("curse.maven:aces-spell-utils-1299492:9294517")
+    runtimeOnly fg.deobf("curse.maven:dog-1630975:8926915")
     runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
     runtimeOnly fg.deobf("curse.maven:ydms-mobhealthbar-mod-559894:4818965")
     runtimeOnly fg.deobf("curse.maven:selene-499980:7664875")

@@ -18,10 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShieldItem;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,7 +42,11 @@ public class HighRulerShield extends ShieldItem implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public HighRulerShield(Properties properties) {
-        super(properties);
+        super(properties
+                .stacksTo(1)
+                .fireResistant()
+                .rarity(Rarity.EPIC)
+        );
     }
 
     @Override

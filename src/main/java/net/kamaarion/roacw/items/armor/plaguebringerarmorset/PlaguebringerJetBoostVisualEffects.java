@@ -36,11 +36,6 @@ public class PlaguebringerJetBoostVisualEffects {
 
     private static final int TINT_COLOR = 0x3319FA19;
 
-    private static final double FOV_BOOST_MULTIPLIER = 1.50D;
-    private static final double FOV_EASE_SPEED = 0.1D;
-
-    private static double currentFovMultiplier = 1.0D;
-
     private static final float FOG_NEAR = 40.0F;
     private static final float FOG_FAR = 80.0F;
 
@@ -80,23 +75,6 @@ public class PlaguebringerJetBoostVisualEffects {
         int height = mc.getWindow().getGuiScaledHeight();
 
         guiGraphics.fill(0, 0, width, height, TINT_COLOR);
-    }
-
-    @SubscribeEvent
-    public static void onComputeFov(ViewportEvent.ComputeFov event) {
-        Minecraft mc = Minecraft.getInstance();
-
-        boolean active = mc.player != null
-                && PacketPlaguebringerJetBoostStateS2C.isJetBoostActive(
-                mc.player.getUUID()
-        );
-
-        double target = active ? FOV_BOOST_MULTIPLIER : 1.0D;
-
-        currentFovMultiplier +=
-                (target - currentFovMultiplier) * FOV_EASE_SPEED;
-
-        event.setFOV(event.getFOV() * currentFovMultiplier);
     }
 
     @SubscribeEvent
@@ -471,7 +449,6 @@ public class PlaguebringerJetBoostVisualEffects {
     @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         waitingForFirstFlight = false;
-        currentFovMultiplier = 1.0D;
         CANISTER_SAMPLES.clear();
     }
 }

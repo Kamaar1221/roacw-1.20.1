@@ -538,7 +538,7 @@ public class MiniPlaguebringerEntity extends PathfinderMob implements GeoEntity,
                 this.getZ(),
                 ROACWSoundRegistry.PLAGUE_MISSILE_LAUNCH.get(),
                 SoundSource.HOSTILE,
-                1.0F,
+                0.5F,
                 1.0F
         );
 

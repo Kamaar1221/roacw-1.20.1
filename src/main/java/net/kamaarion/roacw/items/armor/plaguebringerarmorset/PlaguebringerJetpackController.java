@@ -13,8 +13,6 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = ROACW.MODID, value = Dist.CLIENT)
 public class PlaguebringerJetpackController {
 
-    // ===== Movement tuning =====
-
     private static final double ASCEND_SPEED = 0.035D;
     private static final double DESCEND_SPEED = 0.030D;
 
@@ -22,7 +20,6 @@ public class PlaguebringerJetpackController {
     private static final double STRAFE_ACCEL = 0.025D;
 
     private static final double MAX_HORIZONTAL_SPEED = 1.0D;
-
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -42,8 +39,11 @@ public class PlaguebringerJetpackController {
         if (!active)
             return;
 
-        Vec3 velocity = player.getDeltaMovement();
+        if (!player.getAbilities().mayfly) {
+            player.getAbilities().mayfly = true;
+        }
 
+        Vec3 velocity = player.getDeltaMovement();
 
         if (mc.options.keyJump.isDown()) {
 
@@ -71,10 +71,6 @@ public class PlaguebringerJetpackController {
                 );
             }
         }
-
-        //
-        // Horizontal movement
-        //
 
         Vec3 look = player.getLookAngle();
 
@@ -105,10 +101,6 @@ public class PlaguebringerJetpackController {
         if (mc.options.keyRight.isDown()) {
             velocity = velocity.add(right.scale(STRAFE_ACCEL));
         }
-
-        //
-        // Speed cap
-        //
 
         Vec3 horizontal = new Vec3(
                 velocity.x,

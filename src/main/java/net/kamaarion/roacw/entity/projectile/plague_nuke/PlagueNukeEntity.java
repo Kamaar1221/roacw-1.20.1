@@ -2,20 +2,18 @@ package net.kamaarion.roacw.entity.projectile.plague_nuke;
 
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
-import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.kamaarion.roacw.Utils;
 import net.kamaarion.roacw.entity.projectile.plague_cloud.PlagueCloudEntity;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -30,13 +28,11 @@ import java.util.List;
 
 public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEntity {
 
-    private final AnimatableInstanceCache cache =
-            GeckoLibUtil.createInstanceCache(this);
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private static final float EXPLOSION_POWER = 10.0F;
     private static final float DIRECT_HIT_DAMAGE = 30.0F;
     private static final float SPLASH_DAMAGE = 30.0F;
-
     private static final int MAX_LIFETIME_TICKS = 200;
 
     private static final double KNOCKBACK_STRENGTH = 1.25D;
@@ -45,8 +41,13 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
 
     private static final int PLAGUE_DURATION_TICKS = 200;
     private static final int PLAGUE_AMPLIFIER = 0;
+    private static final double MIN_ROTATION_SPEED_SQR = 1.0E-6D;
 
-    private boolean detonated = false;
+    private boolean detonated;
+    private boolean hasValidRotation;
+
+    private float lastValidYaw;
+    private float lastValidPitch;
 
     public PlagueNukeEntity(
             EntityType<? extends AbstractHurtingProjectile> type,
@@ -71,44 +72,59 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
                 level
         );
         this.setOwner(shooter);
+        this.lastValidYaw = shooter.getYRot();
+        this.lastValidPitch = shooter.getXRot();
+        this.hasValidRotation = true;
+        this.setYRot(this.lastValidYaw);
+        this.setXRot(this.lastValidPitch);
+        this.yRotO = this.lastValidYaw;
+        this.xRotO = this.lastValidPitch;
     }
 
     @Override
     public void tick() {
-        if (!this.level().isClientSide) {
-            if (this.tickCount >= MAX_LIFETIME_TICKS) {
-                this.detonate(null);
-                return;
-            }
+        if (!this.level().isClientSide && this.tickCount >= MAX_LIFETIME_TICKS) {
+            this.detonate(null);
+            return;
+        }
 
-            if (this.level() instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(
-                        ParticleRegistry.ACID_PARTICLE.get(),
-                        this.getX(),
-                        this.getY(),
-                        this.getZ(),
-                        4,
-                        0.08D,
-                        0.08D,
-                        0.08D,
-                        0.0D
-                );
+        Vec3 movementBeforeTick = this.getDeltaMovement();
+        boolean stationaryBeforeTick = movementBeforeTick.lengthSqr() < MIN_ROTATION_SPEED_SQR;
 
-                serverLevel.sendParticles(
-                        ParticleRegistry.ACID_BUBBLE_PARTICLE.get(),
-                        this.getX(),
-                        this.getY(),
-                        this.getZ(),
-                        2,
-                        0.05D,
-                        0.05D,
-                        0.05D,
-                        0.0D
-                );
-            }
+        if (!stationaryBeforeTick) {
+            this.saveValidRotation();
         }
 
         super.tick();
+
+        if (this.isRemoved()) {
+            return;
+        }
+
+        Vec3 movementAfterTick = this.getDeltaMovement();
+
+        if (stationaryBeforeTick || movementAfterTick.lengthSqr() < MIN_ROTATION_SPEED_SQR) {
+            this.restoreValidRotation();
+        } else {
+            this.saveValidRotation();
+        }
+    }
+
+    private void saveValidRotation() {
+        this.lastValidYaw = this.getYRot();
+        this.lastValidPitch = this.getXRot();
+        this.hasValidRotation = true;
+    }
+
+    private void restoreValidRotation() {
+        if (!this.hasValidRotation) {
+            this.saveValidRotation();
+        }
+
+        this.setYRot(this.lastValidYaw);
+        this.setXRot(this.lastValidPitch);
+        this.yRotO = this.lastValidYaw;
+        this.xRotO = this.lastValidPitch;
     }
 
     @Override
@@ -117,7 +133,19 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
     }
 
     @Override
+    protected boolean canHitEntity(Entity entity) {
+        return !(entity instanceof Player) && super.canHitEntity(entity);
+    }
+
+    @Override
     protected void onHit(HitResult result) {
+        if (result instanceof EntityHitResult entityHit
+                && entityHit.getEntity() instanceof Player) {
+            return;
+        }
+
+        super.onHit(result);
+
         if (!this.level().isClientSide) {
             LivingEntity directHit = null;
 
@@ -138,16 +166,13 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
         this.detonated = true;
 
         this.playExplosionEffects();
+        this.doScreenShake();
 
         float damageMultiplier = this.getOwner() instanceof LivingEntity owner
                 ? Utils.getMagicProjectileDamageMultiplier(owner)
                 : 1.0F;
 
-        if (directHit != null
-                && directHit != this.getOwner()
-                && (this.getOwner() == null
-                || !this.getOwner().isAlliedTo(directHit))) {
-
+        if (directHit != null && this.shouldAffect(directHit)) {
             directHit.invulnerableTime = 0;
 
             directHit.hurt(
@@ -156,8 +181,6 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
             );
         }
 
-        this.playExplosionEffects();
-        this.doScreenShake();
         this.spawnBurstCloud();
         this.applySplashDamage(directHit, damageMultiplier);
         this.applyPlagueEffect();
@@ -169,32 +192,24 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
     private List<LivingEntity> getAffectedEntities() {
         return this.level().getEntitiesOfClass(
                 LivingEntity.class,
-                new AABB(this.position(), this.position())
-                        .inflate(EXPLOSION_POWER)
+                new AABB(this.position(), this.position()).inflate(EXPLOSION_POWER)
         );
     }
 
     private boolean shouldAffect(LivingEntity entity) {
-        if (entity == this.getOwner()) {
+        if (entity instanceof Player || entity == this.getOwner()) {
             return false;
         }
 
-        return this.getOwner() == null
-                || !this.getOwner().isAlliedTo(entity);
+        return this.getOwner() == null || !this.getOwner().isAlliedTo(entity);
     }
 
     private void applySplashDamage(
             LivingEntity excluded,
             float damageMultiplier
     ) {
-        List<LivingEntity> affected = this.getAffectedEntities();
-
-        for (LivingEntity entity : affected) {
-            if (entity == excluded) {
-                continue;
-            }
-
-            if (!this.shouldAffect(entity)) {
+        for (LivingEntity entity : this.getAffectedEntities()) {
+            if (entity == excluded || !this.shouldAffect(entity)) {
                 continue;
             }
 
@@ -208,32 +223,6 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
     }
 
     private void playExplosionEffects() {
-        if (this.level() instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(
-                    ParticleTypes.EXPLOSION,
-                    this.getX(),
-                    this.getY(),
-                    this.getZ(),
-                    1,
-                    0,
-                    0,
-                    0,
-                    0
-            );
-
-            serverLevel.sendParticles(
-                    ParticleTypes.SMOKE,
-                    this.getX(),
-                    this.getY(),
-                    this.getZ(),
-                    15,
-                    0.3D,
-                    0.3D,
-                    0.3D,
-                    0.02D
-            );
-        }
-
         this.level().playSound(
                 null,
                 this.getX(),
@@ -278,9 +267,7 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
     }
 
     private void applyExplosionKnockback() {
-        List<LivingEntity> affected = this.getAffectedEntities();
-
-        for (LivingEntity entity : affected) {
+        for (LivingEntity entity : this.getAffectedEntities()) {
             if (!this.shouldAffect(entity)) {
                 continue;
             }
@@ -313,13 +300,11 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
     }
 
     private void applyPlagueEffect() {
-        List<LivingEntity> affected = this.getAffectedEntities();
-
         int amplifier = this.getOwner() instanceof LivingEntity owner
                 ? Utils.getNatureScaledPlagueAmplifier(owner)
                 : PLAGUE_AMPLIFIER;
 
-        for (LivingEntity entity : affected) {
+        for (LivingEntity entity : this.getAffectedEntities()) {
             if (!this.shouldAffect(entity)) {
                 continue;
             }
@@ -338,6 +323,10 @@ public class PlagueNukeEntity extends AbstractHurtingProjectile implements GeoEn
     }
 
     private void spawnPlagueCloud() {
+        if (this.level().isClientSide) {
+            return;
+        }
+
         PlagueCloudEntity cloud = new PlagueCloudEntity(
                 ROACWEntityRegistry.PLAGUE_CLOUD.get(),
                 this.level()

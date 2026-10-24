@@ -1,7 +1,6 @@
 package net.kamaarion.roacw.entity.projectile.plague_cloud;
 
 import net.kamaarion.roacw.Utils;
-import net.kamaarion.roacw.particle.PlagueParticleHelper;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -12,6 +11,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -33,7 +33,7 @@ public class PlagueCloudEntity extends Entity {
 
     private LivingEntity owner;
 
-    private boolean burstOnly = false;
+    private boolean burstOnly;
 
     private float burstRadius = 6.0F * 2.0F;
     private double burstHeight = 4.5D;
@@ -72,36 +72,12 @@ public class PlagueCloudEntity extends Entity {
 
         this.age++;
 
+        if (this.burstOnly) {
+            this.discard();
+            return;
+        }
+
         if (this.level().isClientSide) {
-            if (this.burstOnly) {
-                PlagueParticleHelper.spawnCloud(
-                        this.level(),
-                        this.getX(),
-                        this.getY(),
-                        this.getZ(),
-                        this.burstRadius,
-                        this.burstHeight,
-                        this.burstCloudParticles,
-                        this.burstGreenParticles,
-                        this.burstRedParticles
-                );
-
-                this.discard();
-                return;
-            }
-
-            PlagueParticleHelper.spawnCloud(
-                    this.level(),
-                    this.getX(),
-                    this.getY(),
-                    this.getZ(),
-                    this.getRadius(),
-                    3.5D,
-                    40,
-                    20,
-                    5
-            );
-
             return;
         }
 
@@ -116,8 +92,11 @@ public class PlagueCloudEntity extends Entity {
 
     protected void damageEntities() {
         AABB area = this.getBoundingBox().inflate(this.getRadius());
-        List<LivingEntity> entities =
-                this.level().getEntitiesOfClass(LivingEntity.class, area);
+
+        List<LivingEntity> entities = this.level().getEntitiesOfClass(
+                LivingEntity.class,
+                area
+        );
 
         LivingEntity owner = this.getOwner();
 
@@ -126,7 +105,11 @@ public class PlagueCloudEntity extends Entity {
                 : 0;
 
         for (LivingEntity entity : entities) {
-            if (entity == owner) {
+            if (entity instanceof Player || entity == owner) {
+                continue;
+            }
+
+            if (!entity.isAlive()) {
                 continue;
             }
 

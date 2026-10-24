@@ -63,6 +63,13 @@ public class ROACWWeaponTiers extends StaffTier implements IronsWeaponTier {
 
     );
 
+    public static ROACWWeaponTiers SINGULARITY = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.OTHERWORLDLY), 20F, -3.0F,
+            new AttributeContainer(CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL)
+
+    );
+
     float damage;
     float speed;
     AttributeContainer[] attributes;

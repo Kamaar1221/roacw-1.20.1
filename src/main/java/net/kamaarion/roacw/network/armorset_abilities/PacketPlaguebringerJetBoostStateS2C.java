@@ -3,6 +3,7 @@ package net.kamaarion.roacw.network.armorset_abilities;
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.items.armor.plaguebringerarmorset.PlaguebringerJetBoostVisualEffects;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -65,6 +66,11 @@ public class PacketPlaguebringerJetBoostStateS2C {
 
                         if (mc.player != null && mc.player.getUUID().equals(playerUUID)) {
                             mc.player.getAbilities().flying = false;
+
+                            if (!mc.player.isCreative() && !mc.player.isSpectator()) {
+                                mc.player.getAbilities().mayfly = false;
+                            }
+
                             mc.player.onUpdateAbilities();
 
                             PlaguebringerJetBoostVisualEffects.resetPreFlight();
@@ -75,6 +81,17 @@ public class PacketPlaguebringerJetBoostStateS2C {
 
         context.setPacketHandled(true);
         return true;
+    }
+
+    @SubscribeEvent
+    public static void onClientPlayerClone(ClientPlayerNetworkEvent.Clone event) {
+        LocalPlayer newPlayer = event.getNewPlayer();
+
+        if (CLIENT_ACTIVE_JETBOOST_PLAYERS.contains(newPlayer.getUUID())) {
+            newPlayer.getAbilities().mayfly = true;
+
+            PlaguebringerJetBoostVisualEffects.beginPreFlight();
+        }
     }
 
     @SubscribeEvent

@@ -16,7 +16,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -25,9 +24,19 @@ import java.util.concurrent.ConcurrentHashMap;
 @Mod.EventBusSubscriber(modid = "roacw", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class MarsArmorFlightHandler {
 
-    private static final Set<UUID> MARS_FLIGHT_GRANTED = new HashSet<>();
-    private static final Set<UUID> PROTECTED_PLAYERS = new HashSet<>();
+    private static final Set<UUID> SERVER_FLIGHT_GRANTED = ConcurrentHashMap.newKeySet();
+    private static final Set<UUID> CLIENT_FLIGHT_GRANTED = ConcurrentHashMap.newKeySet();
+    private static final Set<UUID> SERVER_PROTECTED_PLAYERS = ConcurrentHashMap.newKeySet();
+    private static final Set<UUID> CLIENT_PROTECTED_PLAYERS = ConcurrentHashMap.newKeySet();
     private static final Map<UUID, Boolean> LAST_SENT_BOOSTER_STATE = new ConcurrentHashMap<>();
+
+    private static Set<UUID> flightGranted(Player player) {
+        return player.level().isClientSide ? CLIENT_FLIGHT_GRANTED : SERVER_FLIGHT_GRANTED;
+    }
+
+    private static Set<UUID> protectedPlayers(Player player) {
+        return player.level().isClientSide ? CLIENT_PROTECTED_PLAYERS : SERVER_PROTECTED_PLAYERS;
+    }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -37,6 +46,8 @@ public class MarsArmorFlightHandler {
 
         Player player = event.player;
         UUID playerUUID = player.getUUID();
+        Set<UUID> granted = flightGranted(player);
+        Set<UUID> protectedSet = protectedPlayers(player);
 
         if (Config.ENABLE_MARS_FLIGHT.get() && isWearingFullSet(player)) {
             if (!player.getAbilities().mayfly) {
@@ -44,10 +55,10 @@ public class MarsArmorFlightHandler {
                 player.onUpdateAbilities();
             }
 
-            MARS_FLIGHT_GRANTED.add(playerUUID);
-            PROTECTED_PLAYERS.remove(playerUUID);
+            granted.add(playerUUID);
+            protectedSet.remove(playerUUID);
         } else {
-            if (MARS_FLIGHT_GRANTED.remove(playerUUID)
+            if (granted.remove(playerUUID)
                     && !player.isCreative()
                     && !player.isSpectator()) {
                 player.getAbilities().mayfly = false;
@@ -55,12 +66,12 @@ public class MarsArmorFlightHandler {
                 player.onUpdateAbilities();
 
                 if (!player.onGround()) {
-                    PROTECTED_PLAYERS.add(playerUUID);
+                    protectedSet.add(playerUUID);
                 }
             }
         }
 
-        if (PROTECTED_PLAYERS.contains(playerUUID)) {
+        if (protectedSet.contains(playerUUID)) {
             if (!player.onGround()) {
                 Vec3 motion = player.getDeltaMovement();
 
@@ -71,7 +82,7 @@ public class MarsArmorFlightHandler {
 
                 player.fallDistance = 0.0F;
             } else {
-                PROTECTED_PLAYERS.remove(playerUUID);
+                protectedSet.remove(playerUUID);
             }
         }
 
@@ -105,13 +116,45 @@ public class MarsArmorFlightHandler {
         );
     }
 
+    private static void resyncPlayer(ServerPlayer player) {
+        UUID playerUUID = player.getUUID();
+
+        if (SERVER_FLIGHT_GRANTED.contains(playerUUID)) {
+            player.onUpdateAbilities();
+        }
+
+        boolean active = player.getAbilities().flying && isWearingFullSet(player);
+        LAST_SENT_BOOSTER_STATE.put(playerUUID, active);
+
+        ModMessages.sendToTrackingAndSelf(
+                new MarsArmorBoosterStateS2C(playerUUID, active),
+                player
+        );
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            resyncPlayer(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            resyncPlayer(player);
+        }
+    }
+
     @SubscribeEvent
     public static void onStartTracking(PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof ServerPlayer target
-                && event.getEntity() instanceof ServerPlayer watcher
-                && LAST_SENT_BOOSTER_STATE.getOrDefault(target.getUUID(), false)) {
+                && event.getEntity() instanceof ServerPlayer watcher) {
             ModMessages.sendToPlayer(
-                    new MarsArmorBoosterStateS2C(target.getUUID(), true),
+                    new MarsArmorBoosterStateS2C(
+                            target.getUUID(),
+                            LAST_SENT_BOOSTER_STATE.getOrDefault(target.getUUID(), false)
+                    ),
                     watcher
             );
         }
@@ -121,8 +164,10 @@ public class MarsArmorFlightHandler {
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         UUID playerUUID = event.getEntity().getUUID();
 
-        MARS_FLIGHT_GRANTED.remove(playerUUID);
-        PROTECTED_PLAYERS.remove(playerUUID);
+        SERVER_FLIGHT_GRANTED.remove(playerUUID);
+        CLIENT_FLIGHT_GRANTED.remove(playerUUID);
+        SERVER_PROTECTED_PLAYERS.remove(playerUUID);
+        CLIENT_PROTECTED_PLAYERS.remove(playerUUID);
         LAST_SENT_BOOSTER_STATE.remove(playerUUID);
     }
 
@@ -130,11 +175,12 @@ public class MarsArmorFlightHandler {
     public static void onPlayerFall(LivingFallEvent event) {
         if (event.getEntity() instanceof Player player) {
             UUID playerUUID = player.getUUID();
+            Set<UUID> protectedSet = protectedPlayers(player);
 
-            if (PROTECTED_PLAYERS.contains(playerUUID)) {
+            if (protectedSet.contains(playerUUID)) {
                 event.setDistance(0.0F);
                 event.setCanceled(true);
-                PROTECTED_PLAYERS.remove(playerUUID);
+                protectedSet.remove(playerUUID);
             }
         }
     }

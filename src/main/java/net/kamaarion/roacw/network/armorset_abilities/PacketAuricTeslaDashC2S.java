@@ -1,6 +1,7 @@
 package net.kamaarion.roacw.network.armorset_abilities;
 
 import net.kamaarion.roacw.Config;
+import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.entity.projectile.god_killer_dart.GodKillerDartEntity;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
@@ -22,6 +23,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -30,6 +34,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+@Mod.EventBusSubscriber(modid = ROACW.MODID)
 public class PacketAuricTeslaDashC2S {
     private static final Map<UUID, Long> AURIC_COOLDOWN_TRACKER = new HashMap<>();
 
@@ -48,15 +53,30 @@ public class PacketAuricTeslaDashC2S {
     public void toBytes(FriendlyByteBuf buf) {
     }
 
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        AURIC_COOLDOWN_TRACKER.clear();
+    }
+
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
 
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
 
+            ROACW.LOGGER.info("[AbilityDebug] Auric Tesla dash packet received, sender={}", player);
+
             if (player == null) {
                 return;
             }
+
+            ROACW.LOGGER.info(
+                    "[AbilityDebug] Auric Tesla dash checks: fullSet={} configEnabled={} serverTick={} nextAvailableTick={}",
+                    isWearingFullAuricTesla(player),
+                    Config.ENABLE_AURIC_TESLA_DASH.get(),
+                    player.server.getTickCount(),
+                    AURIC_COOLDOWN_TRACKER.getOrDefault(player.getUUID(), 0L)
+            );
 
             if (!Config.ENABLE_AURIC_TESLA_DASH.get()) {
                 return;

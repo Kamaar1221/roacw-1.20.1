@@ -136,9 +136,8 @@
   "entity.roacw.plague_bee": "Plague Bee",
   "entity.roacw.mini_plaguebringer": "Mini-Plaguebringer",
 
-
-
   "school.roacw.exo": "Exo",
+  "school.roacw.brimstone": "Brimstone",
 
   "effect.roacw.shadowflame":"Shadowflame",
   "effect.roacw.shadowflame.desc":"Reduces regeneration by 20% and deals damage over time.",
@@ -171,6 +170,8 @@
 
   "attribute.roacw.exo_magic_resist": "Exo Diminishment",
   "attribute.roacw.exo_spell_power": "Exo Enhancement",
+  "attribute.roacw.brimstone_magic_resist": "Brimstone Magic Resist",
+  "attribute.roacw.brimstone_spell_power": "Brimstone Spell Power",
 
   "spell.roacw.quick_strike": "Burst Strike",
   "spell.roacw.quick_strike.guide": "Slash at your target multiple times, inflicting Disabled and Severed on hit, and heals you for 35% of the damage dealt",
@@ -215,6 +216,7 @@
   "subtitles.roacw.plague_nuke_explosion": "Plague Nuke Explosion",
   "subtitles.roacw.plague_rocket_explosion": "Plague Rocket Explosion",
   "subtitles.roacw.hive_nuke_ready": "Hive Nuke Ready",
+  "subtitles.roacw.hive_nuke_charge": "Hive Nuke Charging",
   "subtitles.roacw.plague_missile_launch": "Plague Missile Launches",
   "subtitles.roacw.plague_missile_explosion": "Plague Missile Explosion",
   "subtitles.roacw.homing_plague_missile_explosion": "Homing Plague Missile Explosion",

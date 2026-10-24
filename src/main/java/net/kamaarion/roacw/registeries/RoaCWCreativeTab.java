@@ -96,6 +96,10 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.YHARON_SOUL_FRAGMENT.get());
                         output.accept(ROACWItemRegistry.YHARON_BONE.get());
                         output.accept(ROACWItemRegistry.YHARON_FEATHER.get());
+                        output.accept(ROACWItemRegistry.EXO_RUNE.get());
+                        output.accept(ROACWItemRegistry.EXO_UPGRADE_ORB.get());
+                        output.accept(ROACWItemRegistry.BRIMSTONE_RUNE.get());
+                        output.accept(ROACWItemRegistry.BRIMSTONE_UPGRADE_ORB.get());
                         output.accept(ROACWItemRegistry.PLAGUE_CHARGER_SPAWN_EGG.get());
                         output.accept(ROACWItemRegistry.REMNANTS_OF_A_CRUEL_WORLD_DISC.get());
                     })

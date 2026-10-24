@@ -1,6 +1,5 @@
 package net.kamaarion.roacw.entity.projectile.plague_rocket;
 
-import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.kamaarion.roacw.Utils;
 import net.kamaarion.roacw.particle.PlagueParticleHelper;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
@@ -31,6 +30,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PlagueRocketEntity extends AbstractHurtingProjectile implements GeoEntity {
+
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private static final float EXPLOSION_POWER = 3.0F;
@@ -41,6 +41,7 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     private static final double SEARCH_RADIUS = 24.0D;
     private static final double TURN_RATE = 0.50D;
     private static final int RETARGET_INTERVAL = 3;
+    private static final int TARGETING_DELAY_TICKS = 15;
     private static final double PROXIMITY_DETONATE_RADIUS = 1.25D;
 
     private static final float BANK_SCALE = 4.0F;
@@ -63,10 +64,15 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     private static final int MINI_CLOUD_RED_PARTICLES = 2;
 
     private static final String DUMMY_MOD_NAMESPACE = "dummmmmmy";
+    private static final double MIN_ROTATION_SPEED_SQR = 1.0E-6D;
 
     private float bankAngle;
     private float previousBankAngle;
     private boolean detonated;
+    private boolean hasValidRotation;
+
+    private float lastValidYaw;
+    private float lastValidPitch;
 
     @Nullable
     private LivingEntity target;
@@ -77,9 +83,30 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
         super(type, level);
     }
 
-    public PlagueRocketEntity(EntityType<? extends AbstractHurtingProjectile> type, Level level, Player shooter) {
-        super(type, shooter.getX(), shooter.getEyeY() - 0.1D, shooter.getZ(), 0, 0, 0, level);
+    public PlagueRocketEntity(
+            EntityType<? extends AbstractHurtingProjectile> type,
+            Level level,
+            Player shooter
+    ) {
+        super(
+                type,
+                shooter.getX(),
+                shooter.getEyeY() - 0.1D,
+                shooter.getZ(),
+                0,
+                0,
+                0,
+                level
+        );
+
         this.setOwner(shooter);
+        this.lastValidYaw = shooter.getYRot();
+        this.lastValidPitch = shooter.getXRot();
+        this.hasValidRotation = true;
+        this.setYRot(this.lastValidYaw);
+        this.setXRot(this.lastValidPitch);
+        this.yRotO = this.lastValidYaw;
+        this.xRotO = this.lastValidPitch;
     }
 
     public float getBankAngle() {
@@ -102,23 +129,47 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
             }
 
             this.updateHoming();
+        }
 
-            if (this.level() instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(
-                        ParticleRegistry.ACID_PARTICLE.get(),
-                        this.getX(), this.getY(), this.getZ(),
-                        2, 0.03D, 0.03D, 0.03D, 0.0D
-                );
+        Vec3 movementBeforeTick = this.getDeltaMovement();
+        boolean stationaryBeforeTick =
+                movementBeforeTick.lengthSqr() < MIN_ROTATION_SPEED_SQR;
 
-                serverLevel.sendParticles(
-                        ParticleRegistry.ACID_BUBBLE_PARTICLE.get(),
-                        this.getX(), this.getY(), this.getZ(),
-                        1, 0.02D, 0.02D, 0.02D, 0.0D
-                );
-            }
+        if (!stationaryBeforeTick) {
+            this.saveValidRotation();
         }
 
         super.tick();
+
+        if (this.isRemoved()) {
+            return;
+        }
+
+        Vec3 movementAfterTick = this.getDeltaMovement();
+
+        if (stationaryBeforeTick
+                || movementAfterTick.lengthSqr() < MIN_ROTATION_SPEED_SQR) {
+            this.restoreValidRotation();
+        } else {
+            this.saveValidRotation();
+        }
+    }
+
+    private void saveValidRotation() {
+        this.lastValidYaw = this.getYRot();
+        this.lastValidPitch = this.getXRot();
+        this.hasValidRotation = true;
+    }
+
+    private void restoreValidRotation() {
+        if (!this.hasValidRotation) {
+            this.saveValidRotation();
+        }
+
+        this.setYRot(this.lastValidYaw);
+        this.setXRot(this.lastValidPitch);
+        this.yRotO = this.lastValidYaw;
+        this.xRotO = this.lastValidPitch;
     }
 
     @Override
@@ -126,9 +177,19 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
         return false;
     }
 
+    @Override
+    protected boolean canHitEntity(Entity entity) {
+        return !(entity instanceof Player) && super.canHitEntity(entity);
+    }
+
     private void updateHoming() {
         this.previousBankAngle = this.bankAngle;
         this.bankAngle *= BANK_DECAY;
+
+        if (this.tickCount < TARGETING_DELAY_TICKS) {
+            this.target = null;
+            return;
+        }
 
         if (this.target == null || !this.isValidTarget(this.target)) {
             this.target = this.findTarget();
@@ -136,7 +197,8 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
         } else if (--this.retargetCooldown <= 0) {
             LivingEntity newTarget = this.findTarget();
 
-            if (newTarget != null && newTarget.distanceToSqr(this) < this.target.distanceToSqr(this)) {
+            if (newTarget != null
+                    && newTarget.distanceToSqr(this) < this.target.distanceToSqr(this)) {
                 this.target = newTarget;
             }
 
@@ -147,7 +209,8 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
             return;
         }
 
-        if (this.target.distanceToSqr(this) <= PROXIMITY_DETONATE_RADIUS * PROXIMITY_DETONATE_RADIUS) {
+        if (this.target.distanceToSqr(this)
+                <= PROXIMITY_DETONATE_RADIUS * PROXIMITY_DETONATE_RADIUS) {
             this.detonate(this.target);
             return;
         }
@@ -170,12 +233,17 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
         this.setDeltaMovement(blendedDir.scale(speed));
 
         float oldYaw = this.getYRot();
-        float newYaw = (float) (Mth.atan2(blendedDir.x, blendedDir.z) * Mth.RAD_TO_DEG);
+        float newYaw = (float) (
+                Mth.atan2(blendedDir.x, blendedDir.z) * Mth.RAD_TO_DEG
+        );
 
         float newPitch = (float) (
                 Mth.atan2(
                         blendedDir.y,
-                        Math.sqrt(blendedDir.x * blendedDir.x + blendedDir.z * blendedDir.z)
+                        Math.sqrt(
+                                blendedDir.x * blendedDir.x
+                                        + blendedDir.z * blendedDir.z
+                        )
                 ) * Mth.RAD_TO_DEG
         );
 
@@ -217,7 +285,10 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     private boolean isValidTarget(LivingEntity candidate) {
-        if (candidate == this.getOwner() || !candidate.isAlive() || candidate.isSpectator()) {
+        if (candidate instanceof Player
+                || candidate == this.getOwner()
+                || !candidate.isAlive()
+                || candidate.isSpectator()) {
             return false;
         }
 
@@ -231,11 +302,16 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
             return true;
         }
 
-        return candidate instanceof Enemy || candidate instanceof Player;
+        return candidate instanceof Enemy;
     }
 
     @Override
     protected void onHit(HitResult result) {
+        if (result instanceof EntityHitResult entityHit
+                && entityHit.getEntity() instanceof Player) {
+            return;
+        }
+
         super.onHit(result);
 
         if (!this.level().isClientSide) {
@@ -259,8 +335,10 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
                 ? Utils.getMagicProjectileDamageMultiplier(owner)
                 : 1.0F;
 
-        if (directHitEntity instanceof LivingEntity living && this.shouldAffect(living)) {
+        if (directHitEntity instanceof LivingEntity living
+                && this.shouldAffect(living)) {
             living.invulnerableTime = 0;
+
             living.hurt(
                     this.damageSources().thrown(this, this.getOwner()),
                     DIRECT_HIT_DAMAGE * damageMultiplier
@@ -278,20 +356,34 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
         if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(
                     ParticleTypes.EXPLOSION,
-                    this.getX(), this.getY(), this.getZ(),
-                    1, 0, 0, 0, 0
+                    this.getX(),
+                    this.getY(),
+                    this.getZ(),
+                    1,
+                    0,
+                    0,
+                    0,
+                    0
             );
 
             serverLevel.sendParticles(
                     ParticleTypes.SMOKE,
-                    this.getX(), this.getY(), this.getZ(),
-                    8, 0.15D, 0.15D, 0.15D, 0.01D
+                    this.getX(),
+                    this.getY(),
+                    this.getZ(),
+                    8,
+                    0.15D,
+                    0.15D,
+                    0.15D,
+                    0.01D
             );
         }
 
         this.level().playSound(
                 null,
-                this.getX(), this.getY(), this.getZ(),
+                this.getX(),
+                this.getY(),
+                this.getZ(),
                 ROACWSoundRegistry.PLAGUE_ROCKET_EXPLOSION.get(),
                 SoundSource.HOSTILE,
                 4.0F,
@@ -313,7 +405,9 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
 
             PlagueParticleHelper.spawnCloudBurstServer(
                     serverLevel,
-                    x, this.getY(), z,
+                    x,
+                    this.getY(),
+                    z,
                     MINI_CLOUD_RADIUS,
                     MINI_CLOUD_HEIGHT,
                     MINI_CLOUD_PARTICLES,
@@ -342,7 +436,9 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
                 continue;
             }
 
-            Vec3 motion = offset.normalize().scale(strength * KNOCKBACK_STRENGTH);
+            Vec3 motion = offset.normalize().scale(
+                    strength * KNOCKBACK_STRENGTH
+            );
 
             entity.push(
                     motion.x,
@@ -362,14 +458,17 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     private boolean shouldAffect(LivingEntity entity) {
-        if (entity == this.getOwner()) {
+        if (entity instanceof Player || entity == this.getOwner()) {
             return false;
         }
 
         return this.getOwner() == null || !this.getOwner().isAlliedTo(entity);
     }
 
-    private void applySplashDamage(@Nullable Entity excluded, float damageMultiplier) {
+    private void applySplashDamage(
+            @Nullable Entity excluded,
+            float damageMultiplier
+    ) {
         for (LivingEntity entity : this.getAffectedEntities()) {
             if (entity == excluded || !this.shouldAffect(entity)) {
                 continue;
@@ -394,14 +493,16 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
                 continue;
             }
 
-            entity.addEffect(new MobEffectInstance(
-                    ROACWEffectRegistry.PLAGUE.get(),
-                    PLAGUE_DURATION_TICKS,
-                    amplifier,
-                    false,
-                    false,
-                    true
-            ));
+            entity.addEffect(
+                    new MobEffectInstance(
+                            ROACWEffectRegistry.PLAGUE.get(),
+                            PLAGUE_DURATION_TICKS,
+                            amplifier,
+                            false,
+                            false,
+                            true
+                    )
+            );
         }
     }
 
@@ -421,7 +522,9 @@ public class PlagueRocketEntity extends AbstractHurtingProjectile implements Geo
     }
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    public void registerControllers(
+            AnimatableManager.ControllerRegistrar controllers
+    ) {
     }
 
     @Override

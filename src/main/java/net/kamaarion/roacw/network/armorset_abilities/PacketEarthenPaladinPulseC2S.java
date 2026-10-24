@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.ROACW;
-import net.kamaarion.roacw.capability.ArmorPulseCapability;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -19,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkEvent;
@@ -44,6 +44,7 @@ public class PacketEarthenPaladinPulseC2S {
 
     private static final Map<UUID, Long> SELF_BUFF_EXPIRY = new HashMap<>();
     private static final Map<UUID, Long> ALLY_BUFF_EXPIRY = new HashMap<>();
+    private static final Map<UUID, Long> COOLDOWN_TRACKER = new HashMap<>();
 
     public PacketEarthenPaladinPulseC2S() {
     }
@@ -60,87 +61,98 @@ public class PacketEarthenPaladinPulseC2S {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
 
+            ROACW.LOGGER.info("[AbilityDebug] Earthen Paladin pulse packet received, sender={}", player);
+
+            if (player != null) {
+                ROACW.LOGGER.info(
+                        "[AbilityDebug] Earthen Paladin pulse checks: fullSet={} nextAvailableTick={} configEnabled={}",
+                        isWearingFullEarthenPaladinSet(player),
+                        COOLDOWN_TRACKER.getOrDefault(player.getUUID(), 0L),
+                        Config.ENABLE_EARTHEN_PALADIN_PULSE.get()
+                );
+            }
+
             if (player == null || !Config.ENABLE_EARTHEN_PALADIN_PULSE.get() || !isWearingFullEarthenPaladinSet(player)) {
                 return;
             }
 
             long currentServerTick = player.level().getGameTime();
 
-            player.getCapability(ArmorPulseCapability.INSTANCE).ifPresent(data -> {
-                if (currentServerTick < data.getNextAvailableTick()) {
-                    long remainingTicks = data.getNextAvailableTick() - currentServerTick;
-                    long remainingSeconds = (remainingTicks + 19) / 20;
+            long nextAvailableTick = COOLDOWN_TRACKER.getOrDefault(player.getUUID(), 0L);
 
-                    player.displayClientMessage(
-                            Component.literal("§cAbility on cooldown! Wait " + remainingSeconds + "s"),
-                            true
-                    );
-                    return;
-                }
-
-                data.setNextAvailableTick(currentServerTick + COOLDOWN_TICKS);
-
-                applySelfBuff(player);
-                SELF_BUFF_EXPIRY.put(player.getUUID(), currentServerTick + DURATION_TICKS);
+            if (currentServerTick < nextAvailableTick) {
+                long remainingTicks = nextAvailableTick - currentServerTick;
+                long remainingSeconds = (remainingTicks + 19) / 20;
 
                 player.displayClientMessage(
-                        Component.literal("§6Earthen Paladin Protection Active! (+50% Armor)"),
+                        Component.literal("§cAbility on cooldown! Wait " + remainingSeconds + "s"),
                         true
                 );
+                return;
+            }
 
-                AABB area = player.getBoundingBox().inflate(ALLY_RADIUS);
-                List<Player> nearby = player.level().getEntitiesOfClass(
-                        Player.class,
-                        area,
-                        ally -> ally != player && !ally.isSpectator()
-                );
+            COOLDOWN_TRACKER.put(player.getUUID(), currentServerTick + COOLDOWN_TICKS);
 
-                for (Player ally : nearby) {
-                    if (player.getTeam() == null
-                            || ally.getTeam() == null
-                            || !player.getTeam().isAlliedTo(ally.getTeam())) {
-                        continue;
-                    }
+            applySelfBuff(player);
+            SELF_BUFF_EXPIRY.put(player.getUUID(), currentServerTick + DURATION_TICKS);
 
-                    applyAllyBuff(ally);
-                    ALLY_BUFF_EXPIRY.put(ally.getUUID(), currentServerTick + DURATION_TICKS);
+            player.displayClientMessage(
+                    Component.literal("§6Earthen Paladin Protection Active! (+50% Armor)"),
+                    true
+            );
 
-                    ally.displayClientMessage(
-                            Component.literal("§eReceived Earthen Paladin Protection! (+25% Armor)"),
-                            true
-                    );
+            AABB area = player.getBoundingBox().inflate(ALLY_RADIUS);
+            List<Player> nearby = player.level().getEntitiesOfClass(
+                    Player.class,
+                    area,
+                    ally -> ally != player && !ally.isSpectator()
+            );
+
+            for (Player ally : nearby) {
+                if (player.getTeam() == null
+                        || ally.getTeam() == null
+                        || !player.getTeam().isAlliedTo(ally.getTeam())) {
+                    continue;
                 }
 
-                player.level().playSound(
-                        null,
+                applyAllyBuff(ally);
+                ALLY_BUFF_EXPIRY.put(ally.getUUID(), currentServerTick + DURATION_TICKS);
+
+                ally.displayClientMessage(
+                        Component.literal("§eReceived Earthen Paladin Protection! (+25% Armor)"),
+                        true
+                );
+            }
+
+            player.level().playSound(
+                    null,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(),
+                    SoundSource.PLAYERS,
+                    1.0F,
+                    1.2F
+            );
+
+            if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                BlastwaveParticleOptions options = new BlastwaveParticleOptions(
+                        new Vector3f(0.83F, 0.68F, 0.21F),
+                        (float) ALLY_RADIUS
+                );
+
+                serverLevel.sendParticles(
+                        options,
                         player.getX(),
-                        player.getY(),
+                        player.getY() + 0.1D,
                         player.getZ(),
-                        MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(),
-                        SoundSource.PLAYERS,
-                        1.0F,
-                        1.2F
+                        1,
+                        0.0D,
+                        0.0D,
+                        0.0D,
+                        0.0D
                 );
-
-                if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
-                    BlastwaveParticleOptions options = new BlastwaveParticleOptions(
-                            new Vector3f(0.83F, 0.68F, 0.21F),
-                            (float) ALLY_RADIUS
-                    );
-
-                    serverLevel.sendParticles(
-                            options,
-                            player.getX(),
-                            player.getY() + 0.1D,
-                            player.getZ(),
-                            1,
-                            0.0D,
-                            0.0D,
-                            0.0D,
-                            0.0D
-                    );
-                }
-            });
+            }
         });
 
         return true;
@@ -187,6 +199,11 @@ public class PacketEarthenPaladinPulseC2S {
 
             return true;
         });
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        COOLDOWN_TRACKER.clear();
     }
 
     private static void applySelfBuff(Player player) {
