@@ -6,8 +6,6 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSSchoolRegistry;
-import net.acetheeldritchking.cataclysm_spellbooks.spells.CSSpellAnimations;
 import net.kamaarion.roacw.entity.summon.hydra.HydraBodyEntity;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.minecraft.network.chat.Component;

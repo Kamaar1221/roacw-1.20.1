@@ -1,13 +1,12 @@
 package net.kamaarion.roacw.items.armor;
 
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.gametechbc.gtbcs_geomancy_plus.api.init.GGAttributes;
 import com.gametechbc.spelllib.init.GSLAttributeRegistry;
 import com.github.L_Ender.cataclysm.init.ModItems;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.armor.IronsExtendedArmorMaterial;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
+import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.registeries.ROACWAttributeRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.Util;
@@ -17,9 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.kamaarion.roacw.ROACW;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -34,8 +31,7 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 350,AttributeModifier.Operation.ADDITION),
             AttributeRegistry.ELDRITCH_SPELL_POWER.get(), new AttributeModifier("Eldritch Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
-            CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Technomancy Power", 0.4, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", 0.6, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
@@ -44,9 +40,8 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             () -> Ingredient.of(ROACWItemRegistry.AURIC_INGOT .get()), Map.of(
             Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 350,AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
-            CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Technomancy Power", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
-            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Spell Power", 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", 0.35, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Spell Power", 0.35, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
@@ -76,7 +71,7 @@ public enum ROACWArmorMaterials implements IronsExtendedArmorMaterial {
             Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Knockback Resistance", 0.125, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 200,AttributeModifier.Operation.ADDITION),
             AttributeRegistry.NATURE_SPELL_POWER.get(), new AttributeModifier("Nature Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-            CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(), new AttributeModifier("Techno Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Spell Power", 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
             GSLAttributeRegistry.MAGIC_PROJECTILE_DAMAGE.get(), new AttributeModifier("Spell Power", 0.1, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("Spell Resist", 0.075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),

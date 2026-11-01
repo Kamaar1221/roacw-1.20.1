@@ -1,8 +1,7 @@
 package net.kamaarion.roacw.entity.spells.final_rend;
 
-import io.redspace.ironsspellbooks.entity.spells.AoeEntity;;
+import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSPotionEffectRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -10,7 +9,6 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -21,70 +19,41 @@ import net.minecraftforge.network.NetworkHooks;
 import java.util.Optional;
 
 public class FinalRendAoE extends AoeEntity {
-    private static final EntityDataAccessor<Boolean> DATA_IS_MIRRORED = SynchedEntityData.defineId(FinalRendAoE.class, EntityDataSerializers.BOOLEAN);
-    protected int effectAmplifier;
-    protected float effectDuration;
-
-    LivingEntity target;
+    private static final EntityDataAccessor<Boolean> DATA_IS_MIRRORED =
+            SynchedEntityData.defineId(FinalRendAoE.class, EntityDataSerializers.BOOLEAN);
 
     public final int ticksPerFrame = 2;
     public final int deathTime = ticksPerFrame * 4;
 
-    public FinalRendAoE(EntityType<? extends Projectile> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public FinalRendAoE(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public FinalRendAoE(Level level, boolean mirrored)
-    {
+    public FinalRendAoE(Level level, boolean mirrored) {
         this(ROACWEntityRegistry.FINAL_REND.get(), level);
-        if (mirrored)
-        {
-            this.getEntityData().set(DATA_IS_MIRRORED, true);
-        }
-    }
-
-    public int getEffectAmplifier()
-    {
-        return effectAmplifier;
-    }
-
-    public void setEffectAmplifier(int amount)
-    {
-        this.effectAmplifier = amount;
-    }
-
-    public int getEffectDuration()
-    {
-        return effectAmplifier;
-    }
-
-    public void setEffectDuration(float amount)
-    {
-        this.effectDuration = amount;
+        this.getEntityData().set(DATA_IS_MIRRORED, mirrored);
     }
 
     @Override
     public void applyEffect(LivingEntity target) {
-        target.addEffect(new MobEffectInstance(CSPotionEffectRegistry.DISABLED_EFFECT.get(), getEffectDuration(), getEffectAmplifier(), true, true, true));
     }
 
     @Override
     public void tick() {
-        if (!firstTick)
-        {
+        if (!firstTick) {
             checkHits();
             firstTick = true;
         }
-        if (tickCount >= deathTime)
-        {
+
+        if (tickCount >= deathTime) {
             discard();
         }
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
-        super.onHitEntity(pResult);
-        pResult.getEntity().invulnerableTime = 0;
+    protected void onHitEntity(EntityHitResult result) {
+        super.onHitEntity(result);
+        result.getEntity().invulnerableTime = 0;
     }
 
     @Override
@@ -93,8 +62,7 @@ public class FinalRendAoE extends AoeEntity {
         this.getEntityData().define(DATA_IS_MIRRORED, false);
     }
 
-    public boolean isMirrored()
-    {
+    public boolean isMirrored() {
         return this.getEntityData().get(DATA_IS_MIRRORED);
     }
 
@@ -119,8 +87,8 @@ public class FinalRendAoE extends AoeEntity {
     }
 
     @Override
-    public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {
-        super.recreateFromPacket(pPacket);
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
         this.xRotO = this.getXRot();
         this.yRotO = this.getYRot();
     }

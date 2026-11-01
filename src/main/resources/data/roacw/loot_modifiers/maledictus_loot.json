@@ -10,7 +10,7 @@
   "entries": [
     {
       "item": "roacw:ascendant_spirit_essence",
-      "chance": 0.95,
+      "chance": 0.05,
       "min_count": 1,
       "max_count": 2
     }

@@ -4,7 +4,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -101,10 +100,10 @@ public class AlchemicalDecanter extends CurioBaseItem implements ICurioItem, Geo
         Multimap<Attribute, AttributeModifier> attributes = LinkedHashMultimap.create();
 
         attributes.put(
-                CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER.get(),
+                AttributeRegistry.LIGHTNING_SPELL_POWER.get(),
                 new AttributeModifier(
                         uuid,
-                        "Technomancy Spell Power",
+                        "Lightning Spell Power",
                         0.1,
                         AttributeModifier.Operation.MULTIPLY_BASE
                 )

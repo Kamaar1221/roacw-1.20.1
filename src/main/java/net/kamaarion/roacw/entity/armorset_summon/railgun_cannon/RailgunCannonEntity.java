@@ -1,9 +1,8 @@
 package net.kamaarion.roacw.entity.armorset_summon.railgun_cannon;
 
 import com.mojang.logging.LogUtils;
-import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,26 +24,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector4f;
-import org.joml.Matrix4f;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.slf4j.Logger;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class RailgunCannonEntity extends Entity implements GeoEntity {
 
@@ -1901,43 +1896,19 @@ public class RailgunCannonEntity extends Entity implements GeoEntity {
     }
 
     protected float getMeleeDamage() {
-
-        Player owner =
-                this.getOwner();
+        Player owner = this.getOwner();
 
         if (owner == null) {
             return MELEE_DAMAGE;
         }
 
-        double technomancyPower =
-                owner.getAttributeValue(
-                        CSAttributeRegistry
-                                .TECHNOMANCY_MAGIC_POWER
-                                .get()
-                );
-
-        double lightningPower =
-                owner.getAttributeValue(
-                        AttributeRegistry
-                                .LIGHTNING_SPELL_POWER
-                                .get()
-                );
-
-        double powerScaling =
-                1.0D
-                        + (
-                        technomancyPower
-                                * 0.25D
-                )
-                        + (
-                        lightningPower
-                                * 0.25D
-                );
-
-        return (float) (
-                MELEE_DAMAGE
-                        * powerScaling
+        double lightningPower = owner.getAttributeValue(
+                AttributeRegistry.LIGHTNING_SPELL_POWER.get()
         );
+
+        double powerScaling = 1.0D + (lightningPower * 0.25D);
+
+        return (float) (MELEE_DAMAGE * powerScaling);
     }
 
     @Override

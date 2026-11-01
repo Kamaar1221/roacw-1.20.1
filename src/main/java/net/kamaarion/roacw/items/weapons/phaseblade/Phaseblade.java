@@ -3,10 +3,10 @@ package net.kamaarion.roacw.items.weapons.phaseblade;
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.SpellRegistries;
-import net.kamaarion.roacw.items.weapons.ROACWWeaponTiers;
 import net.kamaarion.roacw.client.others.MarsRarityColorHelp;
+import net.kamaarion.roacw.items.weapons.ROACWWeaponTiers;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
+import net.kamaarion.roacw.registeries.ROACWSpellRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -71,7 +71,7 @@ public class Phaseblade extends StaffItem implements GeoItem, IPresetSpellContai
             return;
         }
         var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
-        spellContainer.addSpell(SpellRegistries.QUICK_STRIKE.get(), 8, true);
+        spellContainer.addSpell(ROACWSpellRegistry.QUICK_STRIKE.get(), 8, true);
         ISpellContainer.set(itemStack, spellContainer.toImmutable());
     }
 

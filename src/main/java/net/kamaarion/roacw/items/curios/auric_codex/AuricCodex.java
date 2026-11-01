@@ -3,7 +3,6 @@ package net.kamaarion.roacw.items.curios.auric_codex;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSAttributeRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -23,9 +22,8 @@ public class AuricCodex extends SpellBook {
         super(15, properties.stacksTo(1));
 
         withSpellbookAttributes(
-                new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-                new AttributeContainer(AttributeRegistry.LIGHTNING_SPELL_POWER, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
-                new AttributeContainer(CSAttributeRegistry.TECHNOMANCY_MAGIC_POWER, 0.15, AttributeModifier.Operation.MULTIPLY_BASE),
+                new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
+                new AttributeContainer(AttributeRegistry.LIGHTNING_SPELL_POWER, 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 500, AttributeModifier.Operation.ADDITION)
         );
     }

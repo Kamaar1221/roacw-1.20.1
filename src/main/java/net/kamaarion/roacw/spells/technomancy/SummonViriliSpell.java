@@ -7,8 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSSchoolRegistry;
-import net.acetheeldritchking.cataclysm_spellbooks.spells.CSSpellAnimations;
+import net.acetheeldritchking.aces_spell_utils.spells.ASSpellAnimations;
 import net.kamaarion.roacw.entity.summon.virili.ViriliEntity;
 import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanterEvents;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
@@ -41,7 +40,7 @@ public class SummonViriliSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
-            .setSchoolResource(CSSchoolRegistry.TECHNOMANCY_RESOURCE)
+            .setSchoolResource(SchoolRegistry.LIGHTNING_RESOURCE)
             .setMaxLevel(1)
             .setCooldownSeconds(240)
             .setAllowCrafting(false)
@@ -160,7 +159,7 @@ public class SummonViriliSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return CSSpellAnimations.ANIMATION_CONSTRUCT_SUMMON;
+        return ASSpellAnimations.ANIMATION_CONSTRUCT_SUMMON;
     }
 
     @Override
@@ -389,12 +388,12 @@ public class SummonViriliSpell extends AbstractSpell {
 
         float baseDamage = getSpellPower(spellLevel, caster);
 
-        float naturePower = (float) SchoolRegistry.NATURE.get()
+        float lightningPower = (float) SchoolRegistry.LIGHTNING.get()
                 .getPowerFor(caster);
 
-        float natureBonus = 1.0F + ((naturePower - 1.0F) * 0.5F);
+        float lightningBonus = 1.0F + ((lightningPower - 1.0F) * 0.5F);
 
-        return baseDamage * natureBonus;
+        return baseDamage * lightningBonus;
     }
 
     private float getViriliAttackDamage(

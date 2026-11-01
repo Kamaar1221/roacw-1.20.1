@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.acetheeldritchking.cataclysm_spellbooks.spells.CSSpellAnimations;
+import net.acetheeldritchking.aces_spell_utils.spells.ASSpellAnimations;
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.entity.spells.quick_strike.QuickStrikeAoE;
 import net.kamaarion.roacw.registeries.ROACWSchoolRegistry;
@@ -38,16 +38,7 @@ import java.util.Optional;
 
 public class QuickStrikeSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "quick_strike");
-    private Boolean mirrored;
-
-    @Override
-    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", getDamageText(spellLevel, caster)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.stringTruncation(getEffectDuration(spellLevel, caster), 1)),
-                Component.translatable("ui.ROACW.recast_bonus_damage", Utils.stringTruncation(getBonusDamage(spellLevel, caster), 1))
-        );
-    }
+    private boolean mirrored = false;
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
@@ -56,8 +47,7 @@ public class QuickStrikeSpell extends AbstractSpell {
             .setCooldownSeconds(16)
             .build();
 
-    public QuickStrikeSpell()
-    {
+    public QuickStrikeSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
@@ -107,13 +97,9 @@ public class QuickStrikeSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        if (mirrored)
-        {
-            return CSSpellAnimations.ANIMATION_LEFT_HORIZONTAL_SLASH;
-        } else
-        {
-            return CSSpellAnimations.ANIMATION_RIGHT_HORIZONTAL_SLASH;
-        }
+        return mirrored
+                ? ASSpellAnimations.ANIMATION_LEFT_HORIZONTAL_SWORD_SLASH
+                : ASSpellAnimations.ANIMATION_RIGHT_HORIZONTAL_SWORD_SLASH;
     }
 
     @Override
@@ -138,39 +124,74 @@ public class QuickStrikeSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        // Recasts
-        if (!playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId()))
-        {
-            playerMagicData.getPlayerRecasts().addRecast
-                    (new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity),
-                            15*20, castSource, null), playerMagicData);
+        if (!playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId())) {
+            playerMagicData.getPlayerRecasts().addRecast(
+                    new RecastInstance(
+                            getSpellId(),
+                            spellLevel,
+                            getRecastCount(spellLevel, entity),
+                            15 * 20,
+                            castSource,
+                            null
+                    ),
+                    playerMagicData
+            );
         }
 
         float radius = 3.25F;
         float distance = 2.2F;
-        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * 0.3F, 0).add(entity.getForward().multiply(distance, 0.35F, distance));
-        var entities = entity.level().getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
 
-        for (Entity target : entities)
-        {
-            if (entity.isPickable() && entity.distanceToSqr(target) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), target.getBoundingBox().getCenter(), true))
-            {
-                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity) + getBonusDamage(spellLevel, entity), this.getDamageSource(entity)))
-                {
-                    MagicManager.spawnParticles(level, ParticleHelper.BLOOD, target.getX(), target.getY() + target.getBbHeight() * .5f, target.getZ(), 50, target.getBbWidth() * .5f, target.getBbHeight() * .5f, target.getBbWidth() * .5f, .03, false);
-                    EnchantmentHelper.doPostDamageEffects(entity, target);
+        Vec3 hitLocation = entity.position()
+                .add(0, entity.getBbHeight() * 0.3F, 0)
+                .add(entity.getForward().multiply(distance, 0.35F, distance));
+
+        var entities = level.getEntities(
+                entity,
+                AABB.ofSize(hitLocation, radius * 2, radius, radius * 2)
+        );
+
+        for (Entity target : entities) {
+            if (target instanceof LivingEntity livingTarget
+                    && livingTarget.isPickable()
+                    && entity.distanceToSqr(livingTarget) < radius * radius
+                    && Utils.hasLineOfSight(
+                    level,
+                    entity.getEyePosition(),
+                    livingTarget.getBoundingBox().getCenter(),
+                    true
+            )) {
+
+                if (DamageSources.applyDamage(
+                        livingTarget,
+                        getDamage(spellLevel, entity) + getBonusDamage(spellLevel, entity),
+                        getDamageSource(entity)
+                )) {
+                    MagicManager.spawnParticles(
+                            level,
+                            ParticleHelper.BLOOD,
+                            livingTarget.getX(),
+                            livingTarget.getY() + livingTarget.getBbHeight() * 0.5F,
+                            livingTarget.getZ(),
+                            50,
+                            livingTarget.getBbWidth() * 0.5F,
+                            livingTarget.getBbHeight() * 0.5F,
+                            livingTarget.getBbWidth() * 0.5F,
+                            0.03,
+                            false
+                    );
+
+                    EnchantmentHelper.doPostDamageEffects(entity, livingTarget);
                 }
             }
         }
 
-        System.out.println("Recasts remaining: " + playerMagicData.getPlayerRecasts().getRemainingRecastsForSpell(spellId.toString()));
-        mirrored = playerMagicData.getPlayerRecasts().getRemainingRecastsForSpell(spellId.toString()) % 2 == 0;
+        mirrored = playerMagicData.getPlayerRecasts()
+                .getRemainingRecastsForSpell(spellId.toString()) % 2 == 0;
 
         QuickStrikeAoE swipe = new QuickStrikeAoE(level, mirrored);
         swipe.moveTo(hitLocation);
         swipe.setYRot(entity.getYRot());
-        swipe.setEffectDuration(getEffectDuration(spellLevel, entity));
-        swipe.setEffectAmplifier(spellLevel);
+
         level.addFreshEntity(swipe);
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
@@ -178,37 +199,52 @@ public class QuickStrikeSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setIFrames(0).setLifestealPercent(0.35F);
+        return super.getDamageSource(projectile, attacker)
+                .setIFrames(0)
+                .setLifestealPercent(0.35F);
     }
 
-    private float getDamage(int spellLevel, LivingEntity entity)
-    {
-        return (getSpellPower(spellLevel, entity) / 1.5F) + Utils.getWeaponDamage(entity, MobType.UNDEFINED);
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return (getSpellPower(spellLevel, entity) / 1.5F)
+                + Utils.getWeaponDamage(entity, MobType.UNDEFINED);
     }
 
-    private float getBonusDamage(int spellLevel, LivingEntity caster)
-    {
+    private float getBonusDamage(int spellLevel, LivingEntity caster) {
         return getRecastCount(spellLevel, caster);
     }
 
-    private float getEffectDuration(int spellLevel, LivingEntity caster)
-    {
-        return getSpellPower(spellLevel, caster);
-    }
-
-    private String getDamageText(int spellLevel, LivingEntity caster)
-    {
-        if (caster != null)
-        {
+    private String getDamageText(int spellLevel, LivingEntity caster) {
+        if (caster != null) {
             float weaponDamage = Utils.getWeaponDamage(caster, MobType.UNDEFINED);
+
             String plus = "";
-            if (weaponDamage > 0)
-            {
-                plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));
+
+            if (weaponDamage > 0) {
+                plus = String.format(
+                        " (+%s)",
+                        Utils.stringTruncation(weaponDamage, 1)
+                );
             }
+
             String damage = Utils.stringTruncation(getDamage(spellLevel, caster), 1);
+
             return damage + plus;
         }
+
         return "" + getSpellPower(spellLevel, caster);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(
+                Component.translatable(
+                        "ui.irons_spellbooks.damage",
+                        getDamageText(spellLevel, caster)
+                ),
+                Component.translatable(
+                        "ui.ROACW.recast_bonus_damage",
+                        Utils.stringTruncation(getBonusDamage(spellLevel, caster), 1)
+                )
+        );
     }
 }

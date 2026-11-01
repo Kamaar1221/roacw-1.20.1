@@ -15,6 +15,18 @@
       "max_count": 5
     },
     {
+      "item": "roacw:yharon_feather",
+      "chance": 1.0,
+      "min_count": 4,
+      "max_count": 8
+    },
+    {
+      "item": "roacw:yharon_bone",
+      "chance": 1.0,
+      "min_count": 4,
+      "max_count": 8
+    },
+    {
       "item": "roacw:ascendant_spirit_essence",
       "chance": 0.05,
       "min_count": 1,

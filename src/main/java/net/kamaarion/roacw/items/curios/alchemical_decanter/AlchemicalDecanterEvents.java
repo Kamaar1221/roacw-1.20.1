@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSSchoolRegistry;
 import net.kamaarion.roacw.Utils;
 import net.kamaarion.roacw.entity.summon.baby_plaguebringer.BabyPlaguebringerEntity;
 import net.kamaarion.roacw.entity.summon.virili.ViriliEntity;
@@ -174,7 +173,7 @@ public class AlchemicalDecanterEvents {
 
     private static boolean isTechnomancyOrNature(SchoolType schoolType) {
         return schoolType == SchoolRegistry.NATURE.get()
-                || schoolType == CSSchoolRegistry.TECHNOMANCY.get();
+                || schoolType == SchoolRegistry.LIGHTNING.get();
     }
 
     private static boolean isWearingDecanter(Player caster) {

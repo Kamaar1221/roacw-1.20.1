@@ -7,8 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
-import net.acetheeldritchking.cataclysm_spellbooks.registries.CSSchoolRegistry;
-import net.acetheeldritchking.cataclysm_spellbooks.spells.CSSpellAnimations;
+import net.acetheeldritchking.aces_spell_utils.spells.ASSpellAnimations;
 import net.kamaarion.roacw.entity.summon.mini_plaguebringer.MiniPlaguebringerEntity;
 import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanterEvents;
 import net.kamaarion.roacw.registeries.ROACWEntityRegistry;
@@ -37,7 +36,7 @@ public class SummonMiniPlaguebringerSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
-            .setSchoolResource(CSSchoolRegistry.TECHNOMANCY_RESOURCE)
+            .setSchoolResource(SchoolRegistry.LIGHTNING_RESOURCE)
             .setMaxLevel(8)
             .setCooldownSeconds(180)
             .setAllowCrafting(false)
@@ -105,7 +104,7 @@ public class SummonMiniPlaguebringerSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return CSSpellAnimations.ANIMATION_CONSTRUCT_SUMMON;
+        return ASSpellAnimations.ANIMATION_CONSTRUCT_SUMMON;
     }
 
     @Override
