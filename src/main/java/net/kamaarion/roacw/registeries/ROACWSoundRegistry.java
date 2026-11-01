@@ -89,6 +89,18 @@ public class ROACWSoundRegistry {
 
     public static RegistryObject<SoundEvent> BASIC_SUMMON = registerSoundEvent("basic_summon");
 
+    public static RegistryObject<SoundEvent> ADRENALINE_READY = registerSoundEvent("adrenaline_ready");
+
+    public static RegistryObject<SoundEvent> ADRENALINE_ACTIVATE = registerSoundEvent("adrenaline_activate");
+
+    public static RegistryObject<SoundEvent> ADRENALINE_PENALTY = registerSoundEvent("adrenaline_penalty");
+
+    public static RegistryObject<SoundEvent> RAGE_READY = registerSoundEvent("rage_ready");
+
+    public static RegistryObject<SoundEvent> RAGE_ACTIVATE = registerSoundEvent("rage_activate");
+
+    public static RegistryObject<SoundEvent> RAGE_END = registerSoundEvent("rage_end");
+
     public static final RegistryObject<SoundEvent> REMNANTS_OF_A_CRUEL_WORLD_TITLE = registerSoundEvent("remnants_of_a_cruel_world_title");
 
     public static void register(IEventBus eventBus) {

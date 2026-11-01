@@ -1,6 +1,6 @@
 package net.kamaarion.roacw.network.misc;
 
-import net.kamaarion.roacw.items.curios.wings.FlightWingsHandler;
+import net.kamaarion.roacw.items.curios_additions.wings.FlightWingsHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;

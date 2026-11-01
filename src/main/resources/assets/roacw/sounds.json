@@ -265,6 +265,48 @@
       }
     ]
   },
+  "adrenaline_ready": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.adrenaline_ready",
+    "sounds": [
+      "roacw:adrenaline_ready"
+    ]
+  },
+  "adrenaline_activate": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.adrenaline_activate",
+    "sounds": [
+      "roacw:adrenaline_activate"
+    ]
+  },
+  "adrenaline_penalty": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.adrenaline_penalty",
+    "sounds": [
+      "roacw:adrenaline_penalty"
+    ]
+  },
+  "rage_ready": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.rage_ready",
+    "sounds": [
+      "roacw:rage_ready"
+    ]
+  },
+  "rage_activate": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.rage_activate",
+    "sounds": [
+      "roacw:rage_activate"
+    ]
+  },
+  "rage_end": {
+    "category": "player",
+    "subtitle": "subtitles.roacw.rage_end",
+    "sounds": [
+      "roacw:rage_end"
+    ]
+  },
   "roacw_title_intro": {
     "sounds": [
       {

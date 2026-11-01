@@ -1,6 +1,7 @@
 package net.kamaarion.roacw.items.weapons;
 
 import com.gametechbc.gtbcs_geomancy_plus.api.init.GGAttributes;
+import com.gametechbc.traveloptics.api.init.TravelopticsAttributes;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.item.weapons.IronsWeaponTier;
@@ -33,13 +34,16 @@ public class ROACWWeaponTiers extends StaffTier implements IronsWeaponTier {
     public static ROACWWeaponTiers PHASESLAYER = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.GOD_FORGED), 20F, -2.5F,
             new AttributeContainer(ROACWAttributeRegistry.EXO_MAGIC_POWER, .2, AttributeModifier.Operation.MULTIPLY_TOTAL),
             new AttributeContainer(AttributeRegistry.SPELL_POWER, .15, AttributeModifier.Operation.MULTIPLY_TOTAL)
-
     );
 
     public static ROACWWeaponTiers PHASEBLADE = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.GOD_FORGED), 10F, -2.0F,
             new AttributeContainer(ROACWAttributeRegistry.EXO_MAGIC_POWER, .2, AttributeModifier.Operation.MULTIPLY_TOTAL),
             new AttributeContainer(AttributeRegistry.SPELL_POWER, .15, AttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
 
+    public static ROACWWeaponTiers GEMINI_DECIMATOR = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.GOD_FORGED), 29F, -3.25F,
+            new AttributeContainer(ROACWAttributeRegistry.EXO_MAGIC_POWER, .2, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(GGAttributes.GEO_SPELL_POWER, .15, AttributeModifier.Operation.MULTIPLY_TOTAL)
     );
 
     public static ROACWWeaponTiers CORVID_HARBINGER = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.OTHERWORLDLY), 5F, -3.0F,
@@ -68,6 +72,21 @@ public class ROACWWeaponTiers extends StaffTier implements IronsWeaponTier {
             new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
             new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL)
 
+    );
+
+    public static ROACWWeaponTiers ENCHANTED_CONCH = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.OTHERWORLDLY), 5F, -3.0F,
+            new AttributeContainer(TravelopticsAttributes.AQUA_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.NATURE_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
+
+    public static ROACWWeaponTiers POLYP_LAUNCHER = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.OTHERWORLDLY), 5F, -3.0F,
+            new AttributeContainer(TravelopticsAttributes.AQUA_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL)
+    );
+
+    public static ROACWWeaponTiers COSMIC_KUNAI = new ROACWWeaponTiers(new Item.Properties().stacksTo(1).rarity(ROACWItemRegistry.OTHERWORLDLY), 9F, -2.0F,
+            new AttributeContainer(AttributeRegistry.ENDER_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, .1, AttributeModifier.Operation.MULTIPLY_TOTAL)
     );
 
     float damage;

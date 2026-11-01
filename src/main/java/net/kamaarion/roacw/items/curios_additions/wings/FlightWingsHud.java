@@ -1,4 +1,4 @@
-package net.kamaarion.roacw.items.curios.wings;
+package net.kamaarion.roacw.items.curios_additions.wings;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.kamaarion.roacw.ClientConfig;

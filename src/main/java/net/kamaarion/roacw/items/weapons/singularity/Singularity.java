@@ -89,7 +89,7 @@ public class Singularity extends StaffItem implements GeoItem, IPresetSpellConta
         var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
 
         spellContainer.addSpell(
-                SpellRegistry.BLACK_HOLE_SPELL.get(),
+                SpellRegistry.STARFALL_SPELL.get(),
                 5,
                 true
         );

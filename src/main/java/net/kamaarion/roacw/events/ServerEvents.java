@@ -9,7 +9,9 @@ import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShield;
 import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.kamaarion.roacw.registeries.ROACWSoundRegistry;
+import net.kamaarion.roacw.ripper.RipperManager;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -22,8 +24,12 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Vector3f;
 
@@ -285,6 +291,72 @@ public class ServerEvents {
         if (ElementalMixEffect != null) {
             int effectLevel = ElementalMixEffect.getAmplifier();
             event.setAmount((float) (event.getAmount() * (1 - effectLevel * 0.3)));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRipperPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || event.side != LogicalSide.SERVER) {
+            return;
+        }
+        if (event.player instanceof ServerPlayer player) {
+            RipperManager.tick(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRipperLivingHurt(LivingHurtEvent event) {
+        float amount = event.getAmount();
+        LivingEntity victim = event.getEntity();
+        if (event.getSource().getEntity() instanceof ServerPlayer attacker) {
+            amount = RipperManager.onPlayerAttack(attacker, victim, event.getSource(), amount);
+        }
+        if (victim instanceof ServerPlayer player) {
+            amount = RipperManager.onPlayerHurt(player, event.getSource(), amount);
+        }
+        event.setAmount(amount);
+    }
+
+    @SubscribeEvent
+    public static void onRipperKnockBack(LivingKnockBackEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && RipperManager.isRageActive(player)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onRipperDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            RipperManager.remove(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRipperLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            RipperManager.remove(player);
+            RipperManager.sync(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRipperLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            RipperManager.remove(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRipperRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            RipperManager.sync(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRipperChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            RipperManager.sync(player);
         }
     }
 }

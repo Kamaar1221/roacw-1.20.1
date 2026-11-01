@@ -1,6 +1,6 @@
 package net.kamaarion.roacw;
 
-import net.kamaarion.roacw.items.curios.wings.FlightWings;
+import net.kamaarion.roacw.items.curios_additions.wings.FlightWings;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +20,12 @@ public class Config {
 
     public static final ForgeConfigSpec.BooleanValue ENABLE_MARS_FLIGHT;
     public static final ForgeConfigSpec.BooleanValue ENABLE_MARS_CANNONS;
+
+    public static final ForgeConfigSpec.BooleanValue ENABLE_SHRIMP_SET_BONUS;
+    public static final ForgeConfigSpec.BooleanValue ENABLE_SHRIMP_TIDAL_SURGE;
+
+    public static final ForgeConfigSpec.BooleanValue ENABLE_ADRENALINE;
+    public static final ForgeConfigSpec.BooleanValue ENABLE_RAGE;
 
     public static final ForgeConfigSpec.EnumValue<FlightWings.FallMode> WINGS_FALL_MODE;
 
@@ -46,6 +52,23 @@ public class Config {
         SERVER_BUILDER.push("Plaguebringer Armor Abilities");
         ENABLE_PLAGUEBRINGER_JET_BOOST = SERVER_BUILDER.comment("Enables/disables Plaguebringer Jet Boost.")
                 .define("enablePlaguebringerJetBoost", true);
+        SERVER_BUILDER.pop();
+
+        SERVER_BUILDER.push("Shrimp Armor Abilities");
+        ENABLE_SHRIMP_SET_BONUS = SERVER_BUILDER.comment("Enables/disables Shrimp Armor Set Bonus.")
+                .define("enableShrimpSetBonus", true);
+        ENABLE_SHRIMP_TIDAL_SURGE = SERVER_BUILDER.comment("Enables/disables Shrimp Tidal Surge.")
+                .define("enableShrimpTidalSurge", true);
+        SERVER_BUILDER.pop();
+
+        SERVER_BUILDER.push("Adrenaline Meter");
+        ENABLE_ADRENALINE = SERVER_BUILDER.comment("Enables/disables the Adrenaline Meter and Adrenaline Mode.")
+                .define("enableAdrenaline", true);
+        SERVER_BUILDER.pop();
+
+        SERVER_BUILDER.push("Rage Meter");
+        ENABLE_RAGE = SERVER_BUILDER.comment("Enables/disables the Rage Meter and Rage Mode.")
+                .define("enableRage", true);
         SERVER_BUILDER.pop();
 
         SERVER_BUILDER.push("Flight Wings");

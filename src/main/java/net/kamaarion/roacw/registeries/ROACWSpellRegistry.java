@@ -3,6 +3,7 @@ package net.kamaarion.roacw.registeries;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.kamaarion.roacw.ROACW;
+import net.kamaarion.roacw.spells.brimstone.BrimstoneLacerationSpell;
 import net.kamaarion.roacw.spells.exo.FinalRendSpell;
 import net.kamaarion.roacw.spells.exo.QuickStrikeSpell;
 import net.kamaarion.roacw.spells.fire.BurningMeteorSpell;
@@ -48,6 +49,8 @@ public class ROACWSpellRegistry {
     public static final RegistryObject<AbstractSpell> SUMMON_MINI_PLAGUEBRINGER = registerSpell(new SummonMiniPlaguebringerSpell());
 
     public static final RegistryObject<AbstractSpell> SUMMON_VIRILI = registerSpell(new SummonViriliSpell());
+
+    public static final RegistryObject<AbstractSpell> BRIMSTONE_LACERATION = registerSpell(new BrimstoneLacerationSpell());
 
     //public static final RegistryObject<AbstractSpell> DREAD = registerSpell(new DreadSpell());
 

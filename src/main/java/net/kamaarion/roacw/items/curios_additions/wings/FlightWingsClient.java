@@ -1,4 +1,4 @@
-package net.kamaarion.roacw.items.curios.wings;
+package net.kamaarion.roacw.items.curios_additions.wings;
 
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.network.ModMessages;

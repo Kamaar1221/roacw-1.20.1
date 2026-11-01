@@ -1,5 +1,7 @@
 package net.kamaarion.roacw.registeries;
 
+import com.gametechbc.traveloptics.init.TravelopticsItems;
+import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.client.others.UntintedSpawnEggItem;
 import net.kamaarion.roacw.items.LootBagItem;
@@ -10,6 +12,7 @@ import net.kamaarion.roacw.items.armor.earthenpaladinset.EarthenPaladinArmorItem
 import net.kamaarion.roacw.items.armor.fearmongerarmorset.FearmongerArmorItem;
 import net.kamaarion.roacw.items.armor.marsarmorset.MarsArmorItem;
 import net.kamaarion.roacw.items.armor.plaguebringerarmorset.PlaguebringerArmorItem;
+import net.kamaarion.roacw.items.armor.shrimparmorset.ShrimpArmorItem;
 import net.kamaarion.roacw.items.curios.alchemical_decanter.AlchemicalDecanter;
 import net.kamaarion.roacw.items.curios.auric_codex.AuricCodex;
 import net.kamaarion.roacw.items.curios.burst_sheath.BurstSheath;
@@ -25,13 +28,17 @@ import net.kamaarion.roacw.items.curios.stasis_curse.StatisCurse;
 import net.kamaarion.roacw.items.curios.wings_of_rebirth.WingsOfRebirth;
 import net.kamaarion.roacw.items.weapons.belladonna_spirit_staff.BelladonnaStaff;
 import net.kamaarion.roacw.items.weapons.corvid_harbinger_staff.CorvidHarbinger;
+import net.kamaarion.roacw.items.weapons.cosmic_kunai.CosmicKunai;
 import net.kamaarion.roacw.items.weapons.defiled_greatsword.DefiledGreatsword;
 import net.kamaarion.roacw.items.weapons.earth_splitter.EarthSplitter;
+import net.kamaarion.roacw.items.weapons.enchanted_conch.EnchantedConch;
 import net.kamaarion.roacw.items.weapons.endo_hydra_staff.EndoHydraStaff;
+import net.kamaarion.roacw.items.weapons.gemini_decimator.GeminiDecimator;
 import net.kamaarion.roacw.items.weapons.high_ruler_sword.HighRulerSword;
 import net.kamaarion.roacw.items.weapons.murasama_blade.MurasamaBlade;
 import net.kamaarion.roacw.items.weapons.phaseblade.Phaseblade;
 import net.kamaarion.roacw.items.weapons.phaseslayer.Phaseslayer;
+import net.kamaarion.roacw.items.weapons.polyp_launcher.PolypLauncher;
 import net.kamaarion.roacw.items.weapons.singularity.Singularity;
 import net.kamaarion.roacw.items.weapons.the_burning_sky.BurningSky;
 import net.kamaarion.roacw.items.weapons.the_hive.TheHive;
@@ -93,6 +100,11 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> DISTORTED_ENVOY_LEGGINGS = ITEMS.register("distorted_envoy_leggings", () -> new DistortedEnvoyArmorItem(ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY).fireResistant()));
     public static final RegistryObject<Item> DISTORTED_ENVOY_SANDALS = ITEMS.register("distorted_envoy_sandals", () -> new DistortedEnvoyArmorItem(ArmorItem.Type.BOOTS, new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY).fireResistant()));
 
+    public static final RegistryObject<Item> SHRIMP_HELM = ITEMS.register("shrimp_helm", () -> new ShrimpArmorItem(ArmorItem.Type.HELMET, new Item.Properties().rarity(TravelopticsItems.RARITY_AQUATIC).fireResistant()));
+    public static final RegistryObject<Item> SHRIMP_CHESTPLATE = ITEMS.register("shrimp_chestplate", () -> new ShrimpArmorItem(ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(TravelopticsItems.RARITY_AQUATIC).fireResistant()));
+    public static final RegistryObject<Item> SHRIMP_LEGGINGS = ITEMS.register("shrimp_leggings", () -> new ShrimpArmorItem(ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(TravelopticsItems.RARITY_AQUATIC).fireResistant()));
+    public static final RegistryObject<Item> SHRIMP_BOOTS = ITEMS.register("shrimp_boots", () -> new ShrimpArmorItem(ArmorItem.Type.BOOTS, new Item.Properties().rarity(TravelopticsItems.RARITY_AQUATIC).fireResistant()));
+
     // Basic Materials
     public static final RegistryObject<Item> RAW_AURIC_CHUNK = ITEMS.register("raw_auric_chunk", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
     public static final RegistryObject<Item> AURIC_INGOT = ITEMS.register("auric_ingot", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
@@ -113,6 +125,9 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> EXO_UPGRADE_ORB = ITEMS.register("exo_upgrade_orb", () -> new io.redspace.ironsspellbooks.item.UpgradeOrbItem(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED), ROACWUpgradeOrbTypeRegistry.EXO_SPELL_POWER));
     public static final RegistryObject<Item> BRIMSTONE_RUNE = ITEMS.register("brimstone_rune", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.CALAMITOUS)));
     public static final RegistryObject<Item> BRIMSTONE_UPGRADE_ORB = ITEMS.register("brimstone_upgrade_orb", () -> new io.redspace.ironsspellbooks.item.UpgradeOrbItem(new Item.Properties().rarity(ROACWItemRegistry.CALAMITOUS), ROACWUpgradeOrbTypeRegistry.BRIMSTONE_SPELL_POWER));
+    public static final RegistryObject<Item> ABYSSAL_ENERGY = ITEMS.register("abyssal_energy", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> BITTERFROST_SOUL = ITEMS.register("bitterfrost_soul", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> IGNITED_FRAGMENT = ITEMS.register("ignited_fragment", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
 
     public static final RegistryObject<Item> DEVOURER_LOOT_BAG = ModList.get().isLoaded("dog")
             ? ITEMS.register("devourer_loot_bag", () -> new LootBagItem(new Item.Properties().stacksTo(16).rarity(ROACWItemRegistry.OTHERWORLDLY), ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "loot_bags/devourer")))
@@ -140,12 +155,16 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> THE_HIVE = ITEMS.register("the_hive", () -> new TheHive(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> HIGH_RULER_SWORD = ITEMS.register("high_ruler_sword", () -> new HighRulerSword(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> PHASESLAYER = ITEMS.register("phaseslayer", () -> new Phaseslayer(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
-    public static final RegistryObject<Item> PHASEBLADE = ITEMS.register("phaseblade", () -> new Phaseblade(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> PHASEBLADE = ITEMS.register("phaseblade", () -> new Phaseblade(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED)));
     public static final RegistryObject<Item> CORVID_HARBINGER_STAFF = ITEMS.register("corvid_harbinger_staff", () -> new CorvidHarbinger(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> ENDO_HYDRA_STAFF = ITEMS.register("endo_hydra_staff", () -> new EndoHydraStaff(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> BELLADONNA_SPIRIT_STAFF = ITEMS.register("belladonna_spirit_staff", () -> new BelladonnaStaff(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> DEFILED_GREATSWORD = ITEMS.register("defiled_greatsword", () -> new DefiledGreatsword(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
     public static final RegistryObject<Item> SINGULARITY = ITEMS.register("singularity", () -> new Singularity(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    public static final RegistryObject<Item> GEMINI_DECIMATOR = ITEMS.register("gemini_decimator", () -> new GeminiDecimator(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED)));
+    public static final RegistryObject<Item> ENCHANTED_CONCH = ITEMS.register("enchanted_conch", () -> new EnchantedConch(new Item.Properties().rarity(TravelopticsItems.RARITY_AQUATIC)));
+    public static final RegistryObject<Item> POLYP_LAUNCHER = ITEMS.register("polyp_launcher", () -> new PolypLauncher(new Item.Properties().rarity(TravelopticsItems.RARITY_AQUATIC)));
+    public static final RegistryObject<Item> COSMIC_KUNAI = ITEMS.register("cosmic_kunai", () -> new CosmicKunai(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
 
     // Spellbooks
     public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("nightmare_tome", () -> new NightmareTome(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));

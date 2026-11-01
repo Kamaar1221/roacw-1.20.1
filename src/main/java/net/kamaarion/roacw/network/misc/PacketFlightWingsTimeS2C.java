@@ -1,7 +1,7 @@
 package net.kamaarion.roacw.network.misc;
 
-import net.kamaarion.roacw.items.curios.wings.FlightWings;
-import net.kamaarion.roacw.items.curios.wings.FlightWingsClient;
+import net.kamaarion.roacw.items.curios_additions.wings.FlightWings;
+import net.kamaarion.roacw.items.curios_additions.wings.FlightWingsClient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;

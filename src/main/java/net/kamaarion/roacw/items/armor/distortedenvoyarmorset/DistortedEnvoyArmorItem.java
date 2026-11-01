@@ -1,22 +1,41 @@
 package net.kamaarion.roacw.items.armor.distortedenvoyarmorset;
 
-import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.ImbuableChestplateArmorItem;
 import net.kamaarion.roacw.items.armor.ROACWArmorMaterials;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class DistortedEnvoyArmorItem extends ImbuableChestplateArmorItem {
+
+    public static final String VARIANT_TAG = "EnvoyVariant";
+    public static final String VARIANT_TIME_TAG = "EnvoyVariantTime";
+    public static final int MAW_TRANSITION_TICKS = 26;
+    public static final int VARIANT_EYES = 0;
+    public static final int VARIANT_TEETH = 1;
+    public static final int VARIANT_MAW = 2;
+
+    private static final RawAnimation EYES_VARIANT = RawAnimation.begin().thenLoop("EyesVariant");
+    private static final RawAnimation TEETH_VARIANT = RawAnimation.begin().thenLoop("TeethVariant");
+    private static final RawAnimation MAW_TRANSITION = RawAnimation.begin().thenPlayAndHold("MawTransition");
+    private static final RawAnimation MAW_IDLE = RawAnimation.begin().thenLoop("MawVariantIdle");
 
     private static final Style DISTORTED_PURPLE = Style.EMPTY
             .withColor(TextColor.parseColor("#CE84FF"));
@@ -28,6 +47,50 @@ public class DistortedEnvoyArmorItem extends ImbuableChestplateArmorItem {
                 settings,
                 withManaAndSpellPowerAttribute(200, 0.05)
         );
+    }
+
+    public static int getVariant(ItemStack stack) {
+        if (stack.isEmpty() || !stack.hasTag()) {
+            return VARIANT_EYES;
+        }
+        int variant = stack.getTag().getInt(VARIANT_TAG);
+        return variant < VARIANT_EYES || variant > VARIANT_MAW ? VARIANT_EYES : variant;
+    }
+
+    public static void setVariant(ItemStack stack, int variant, long gameTime) {
+        stack.getOrCreateTag().putInt(VARIANT_TAG, Math.max(VARIANT_EYES, Math.min(VARIANT_MAW, variant)));
+        stack.getOrCreateTag().putLong(VARIANT_TIME_TAG, gameTime);
+    }
+
+    private static boolean isMawTransitioning(ItemStack stack, Entity entity) {
+        if (stack == null || entity == null || !stack.hasTag() || !stack.getTag().contains(VARIANT_TIME_TAG)) {
+            return false;
+        }
+
+        long elapsed = entity.level().getGameTime() - stack.getTag().getLong(VARIANT_TIME_TAG);
+        return elapsed >= 0 && elapsed < MAW_TRANSITION_TICKS;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "variant_controller", 0, this::variantPredicate));
+    }
+
+    private PlayState variantPredicate(AnimationState<GeoAnimatable> state) {
+        ItemStack stack = state.getData(DataTickets.ITEMSTACK);
+        int variant = stack == null ? VARIANT_EYES : getVariant(stack);
+
+        switch (variant) {
+            case VARIANT_TEETH:
+                return state.setAndContinue(TEETH_VARIANT);
+            case VARIANT_MAW:
+                if (isMawTransitioning(stack, state.getData(DataTickets.ENTITY))) {
+                    return state.setAndContinue(MAW_TRANSITION);
+                }
+                return state.setAndContinue(MAW_IDLE);
+            default:
+                return state.setAndContinue(EYES_VARIANT);
+        }
     }
 
     @Override

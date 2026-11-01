@@ -1,6 +1,7 @@
 package net.kamaarion.roacw;
 
-import net.kamaarion.roacw.items.curios.wings.FlightWings;
+import net.kamaarion.roacw.client.ripper.RipperMeterAnchor;
+import net.kamaarion.roacw.items.curios_additions.wings.FlightWings;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +18,16 @@ public class ClientConfig {
     public static final ForgeConfigSpec.IntValue WINGS_METER_OFFSET_X;
     public static final ForgeConfigSpec.IntValue WINGS_METER_OFFSET_Y;
 
+    public static final ForgeConfigSpec.EnumValue<FlightWings.MeterDisplay> ADRENALINE_METER_DISPLAY;
+    public static final ForgeConfigSpec.EnumValue<RipperMeterAnchor> ADRENALINE_METER_ANCHOR;
+    public static final ForgeConfigSpec.IntValue ADRENALINE_METER_OFFSET_X;
+    public static final ForgeConfigSpec.IntValue ADRENALINE_METER_OFFSET_Y;
+
+    public static final ForgeConfigSpec.EnumValue<FlightWings.MeterDisplay> RAGE_METER_DISPLAY;
+    public static final ForgeConfigSpec.EnumValue<RipperMeterAnchor> RAGE_METER_ANCHOR;
+    public static final ForgeConfigSpec.IntValue RAGE_METER_OFFSET_X;
+    public static final ForgeConfigSpec.IntValue RAGE_METER_OFFSET_Y;
+
     static {
         BUILDER.push("Visual Settings");
         REMOVE_CAPE = BUILDER.comment("Set to true to hide the Auric Tesla cape on your client screen.")
@@ -32,6 +43,28 @@ public class ClientConfig {
                 .defineInRange("wingMeterOffsetX", 0, -4000, 4000);
         WINGS_METER_OFFSET_Y = BUILDER.comment("Vertical offset of the wing flight meter. Positive moves it down, negative moves it up.")
                 .defineInRange("wingMeterOffsetY", 0, -4000, 4000);
+        BUILDER.pop();
+
+        BUILDER.push("Adrenaline Meter HUD");
+        ADRENALINE_METER_DISPLAY = BUILDER.comment("When to show the adrenaline meter. NEVER hides it. ALWAYS shows it at all times. CONTEXTUAL shows it only while adrenaline is above zero or Adrenaline Mode is active.")
+                .defineEnum("adrenalineMeterDisplay", FlightWings.MeterDisplay.CONTEXTUAL);
+        ADRENALINE_METER_ANCHOR = BUILDER.comment("Which part of the screen the adrenaline meter is positioned from.")
+                .defineEnum("adrenalineMeterAnchor", RipperMeterAnchor.ABOVE_HOTBAR_RIGHT);
+        ADRENALINE_METER_OFFSET_X = BUILDER.comment("Horizontal offset of the adrenaline meter. Positive moves it right, negative moves it left.")
+                .defineInRange("adrenalineMeterOffsetX", 0, -4000, 4000);
+        ADRENALINE_METER_OFFSET_Y = BUILDER.comment("Vertical offset of the adrenaline meter. Positive moves it down, negative moves it up.")
+                .defineInRange("adrenalineMeterOffsetY", 0, -4000, 4000);
+        BUILDER.pop();
+
+        BUILDER.push("Rage Meter HUD");
+        RAGE_METER_DISPLAY = BUILDER.comment("When to show the rage meter. NEVER hides it. ALWAYS shows it at all times. CONTEXTUAL shows it only while rage is above zero or Rage Mode is active.")
+                .defineEnum("rageMeterDisplay", FlightWings.MeterDisplay.CONTEXTUAL);
+        RAGE_METER_ANCHOR = BUILDER.comment("Which part of the screen the rage meter is positioned from.")
+                .defineEnum("rageMeterAnchor", RipperMeterAnchor.ABOVE_HOTBAR_LEFT);
+        RAGE_METER_OFFSET_X = BUILDER.comment("Horizontal offset of the rage meter. Positive moves it right, negative moves it left.")
+                .defineInRange("rageMeterOffsetX", 0, -4000, 4000);
+        RAGE_METER_OFFSET_Y = BUILDER.comment("Vertical offset of the rage meter. Positive moves it down, negative moves it up.")
+                .defineInRange("rageMeterOffsetY", 0, -4000, 4000);
         BUILDER.pop();
     }
 

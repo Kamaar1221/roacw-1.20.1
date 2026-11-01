@@ -2,19 +2,26 @@ package net.kamaarion.roacw.client.others;
 
 import net.kamaarion.roacw.Config;
 import net.kamaarion.roacw.ROACW;
+import net.kamaarion.roacw.client.ripper.ClientRipperData;
+import net.kamaarion.roacw.items.armor.distortedenvoyarmorset.DistortedEnvoyArmorItem;
 import net.kamaarion.roacw.items.armor.marsarmorset.MarsArmorFlightHandler;
 import net.kamaarion.roacw.items.armor.marsarmorset.MarsArmorParticleHandler;
+import net.kamaarion.roacw.items.armor.shrimparmorset.ShrimpArmorSetBonusHandler;
 import net.kamaarion.roacw.network.ModMessages;
 import net.kamaarion.roacw.network.armorset_abilities.MarsCannonsSummonC2S;
+import net.kamaarion.roacw.network.armorset_abilities.PacketDistortedEnvoyFaceC2S;
 import net.kamaarion.roacw.network.armorset_abilities.PacketAuricTeslaDashC2S;
 import net.kamaarion.roacw.network.armorset_abilities.PacketEarthenPaladinPulseC2S;
 import net.kamaarion.roacw.network.armorset_abilities.PacketEvasionScarfDashC2S;
 import net.kamaarion.roacw.network.armorset_abilities.PacketPlaguebringerJetBoostC2S;
+import net.kamaarion.roacw.network.armorset_abilities.PacketShrimpTidalSurgeC2S;
+import net.kamaarion.roacw.network.misc.PacketActivateRipperC2S;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -35,6 +42,31 @@ public class ClientInputHandler {
 
         if (player == null) {
             return;
+        }
+
+        if (ModKeyMappings.RAGE_KEY.consumeClick()) {
+            if (ClientRipperData.isRageReady()) {
+                ModMessages.sendToServer(new PacketActivateRipperC2S(false));
+            }
+        }
+
+        if (ModKeyMappings.ADRENALINE_KEY.consumeClick()) {
+            if (ClientRipperData.isAdrenalineReady()) {
+                ModMessages.sendToServer(new PacketActivateRipperC2S(true));
+            }
+        }
+
+        if (ModKeyMappings.DISTORTED_ENVOY_FACE_KEY.consumeClick()) {
+            if (isWearingDistortedEnvoy(player)) {
+                ModMessages.sendToServer(new PacketDistortedEnvoyFaceC2S());
+            }
+        }
+
+        if (ModKeyMappings.SHRIMP_TIDAL_SURGE_KEY.consumeClick()) {
+            if (Config.ENABLE_SHRIMP_TIDAL_SURGE.get()
+                    && ShrimpArmorSetBonusHandler.hasFullSet(player)) {
+                ModMessages.sendToServer(new PacketShrimpTidalSurgeC2S());
+            }
         }
 
         if (ModKeyMappings.DASH_KEY.consumeClick()) {
@@ -94,6 +126,16 @@ public class ClientInputHandler {
 
             ModMessages.sendToServer(new MarsCannonsSummonC2S(corePosition));
         }
+    }
+
+    private static boolean isWearingDistortedEnvoy(LocalPlayer player) {
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (stack.getItem() instanceof DistortedEnvoyArmorItem) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static Vec3 fallbackCorePosition(LocalPlayer player) {

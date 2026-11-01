@@ -4,8 +4,10 @@ import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.client.firevisuals.SyncMobEffectPacket;
 import net.kamaarion.roacw.network.armorset_abilities.*;
 import net.kamaarion.roacw.network.bonespawn.PacketViriliMissileSpawnC2S;
+import net.kamaarion.roacw.network.misc.PacketActivateRipperC2S;
 import net.kamaarion.roacw.network.misc.PacketFlightWingsThrustC2S;
 import net.kamaarion.roacw.network.misc.PacketFlightWingsTimeS2C;
+import net.kamaarion.roacw.network.misc.PacketRipperStateS2C;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -141,6 +143,46 @@ public class ModMessages {
                 .decoder(PacketFlightWingsTimeS2C::new)
                 .encoder(PacketFlightWingsTimeS2C::toBytes)
                 .consumerMainThread(PacketFlightWingsTimeS2C::handle)
+                .add();
+
+        net.messageBuilder(
+                        PacketShrimpTidalSurgeC2S.class,
+                        id(),
+                        NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(PacketShrimpTidalSurgeC2S::new)
+                .encoder(PacketShrimpTidalSurgeC2S::toBytes)
+                .consumerMainThread(PacketShrimpTidalSurgeC2S::handle)
+                .add();
+
+        net.messageBuilder(
+                        PacketDistortedEnvoyFaceC2S.class,
+                        id(),
+                        NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(PacketDistortedEnvoyFaceC2S::new)
+                .encoder(PacketDistortedEnvoyFaceC2S::toBytes)
+                .consumerMainThread(PacketDistortedEnvoyFaceC2S::handle)
+                .add();
+
+        net.messageBuilder(
+                        PacketRipperStateS2C.class,
+                        id(),
+                        NetworkDirection.PLAY_TO_CLIENT
+                )
+                .decoder(PacketRipperStateS2C::new)
+                .encoder(PacketRipperStateS2C::toBytes)
+                .consumerMainThread(PacketRipperStateS2C::handle)
+                .add();
+
+        net.messageBuilder(
+                        PacketActivateRipperC2S.class,
+                        id(),
+                        NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(PacketActivateRipperC2S::new)
+                .encoder(PacketActivateRipperC2S::toBytes)
+                .consumerMainThread(PacketActivateRipperC2S::handle)
                 .add();
     }
 

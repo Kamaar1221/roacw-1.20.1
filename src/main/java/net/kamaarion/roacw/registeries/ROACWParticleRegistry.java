@@ -1,6 +1,8 @@
 package net.kamaarion.roacw.registeries;
 
+import com.mojang.serialization.Codec;
 import net.kamaarion.roacw.ROACW;
+import net.kamaarion.roacw.particle.BrimstoneSlashParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -36,6 +38,19 @@ public class ROACWParticleRegistry {
     public static final RegistryObject<SimpleParticleType> BOOSTER_EXHAUST =
             PARTICLE_TYPES.register("booster_exhaust",
                     () -> new SimpleParticleType(true));
+
+    public static final RegistryObject<ParticleType<BrimstoneSlashParticleOptions>> BRIMSTONE_SLASH =
+            PARTICLE_TYPES.register("brimstone_slash", () ->
+                    new ParticleType<BrimstoneSlashParticleOptions>(
+                            true,
+                            BrimstoneSlashParticleOptions.DESERIALIZER
+                    ) {
+                        @Override
+                        public Codec<BrimstoneSlashParticleOptions> codec() {
+                            return BrimstoneSlashParticleOptions.CODEC;
+                        }
+                    }
+            );
 
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);

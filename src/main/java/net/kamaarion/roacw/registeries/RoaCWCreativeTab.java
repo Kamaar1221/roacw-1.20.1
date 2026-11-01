@@ -52,6 +52,7 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.THE_HIVE.get());
                         output.accept(ROACWItemRegistry.BURNING_SKY.get());
                         output.accept(ROACWItemRegistry.DEFILED_GREATSWORD.get());
+                        output.accept(ROACWItemRegistry.GEMINI_DECIMATOR.get());
                         output.accept(ROACWItemRegistry.CORVID_HARBINGER_STAFF.get());
                         output.accept(ROACWItemRegistry.ENDO_HYDRA_STAFF.get());
                         output.accept(ROACWItemRegistry.BELLADONNA_SPIRIT_STAFF.get());
@@ -96,6 +97,9 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.YHARON_SOUL_FRAGMENT.get());
                         output.accept(ROACWItemRegistry.YHARON_BONE.get());
                         output.accept(ROACWItemRegistry.YHARON_FEATHER.get());
+                        output.accept(ROACWItemRegistry.ABYSSAL_ENERGY.get());
+                        output.accept(ROACWItemRegistry.BITTERFROST_SOUL.get());
+                        output.accept(ROACWItemRegistry.IGNITED_FRAGMENT.get());
                         output.accept(ROACWItemRegistry.EXO_RUNE.get());
                         output.accept(ROACWItemRegistry.EXO_UPGRADE_ORB.get());
                         output.accept(ROACWItemRegistry.BRIMSTONE_RUNE.get());
@@ -110,16 +114,23 @@ public class RoaCWCreativeTab {
                     .icon(() -> new ItemStack(ROACWItemRegistry.MURASAMA_BLADE.get()))
                     .title(Component.translatable("creativetab.roacw.wip"))
                     .displayItems((itemDisplayParameters, output) -> {
-                        output.accept(ROACWItemRegistry.MURASAMA_BLADE.get());
                         output.accept(ROACWItemRegistry.BURST_SHEATH.get());
                         output.accept(ROACWItemRegistry.PHASESLAYER.get());
                         output.accept(ROACWItemRegistry.PHASEBLADE.get());
+                        output.accept(ROACWItemRegistry.POLYP_LAUNCHER.get());
+                        output.accept(ROACWItemRegistry.ENCHANTED_CONCH.get());
                         output.accept(ROACWItemRegistry.ARSENAL_VISOR.get());
                         output.accept(ROACWItemRegistry.ARSENAL_CLOAK.get());
                         output.accept(ROACWItemRegistry.ARSENAL_PANTS.get());
                         output.accept(ROACWItemRegistry.ARSENAL_BOOTS.get());
-
-
+                        output.accept(ROACWItemRegistry.DISTORTED_ENVOY_COWL.get());
+                        output.accept(ROACWItemRegistry.DISTORTED_ENVOY_ROBES.get());
+                        output.accept(ROACWItemRegistry.DISTORTED_ENVOY_LEGGINGS.get());
+                        output.accept(ROACWItemRegistry.DISTORTED_ENVOY_SANDALS.get());
+                        output.accept(ROACWItemRegistry.SHRIMP_HELM.get());
+                        output.accept(ROACWItemRegistry.SHRIMP_CHESTPLATE.get());
+                        output.accept(ROACWItemRegistry.SHRIMP_LEGGINGS.get());
+                        output.accept(ROACWItemRegistry.SHRIMP_BOOTS.get());
 
                     })
                     .build());

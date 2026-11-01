@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wither",
+    "minecraft:ender_dragon",
+    "cataclysm:ender_guardian",
+    "cataclysm:netherite_monstrosity",
+    "cataclysm:ignis",
+    "cataclysm:the_harbinger",
+    "cataclysm:the_leviathan",
+    "cataclysm:ancient_remnant",
+    "cataclysm:maledictus",
+    "cataclysm:scylla",
+    "irons_spellbooks:fire_boss",
+    "irons_spellbooks:dead_king",
+    "dummmmmmy:target_dummy"
+  ]
+}

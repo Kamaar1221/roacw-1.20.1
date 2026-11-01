@@ -1,8 +1,8 @@
 package net.kamaarion.roacw.items.curios.wings_of_rebirth;
 
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import net.kamaarion.roacw.items.curios.wings.FlightWings;
-import net.kamaarion.roacw.items.curios.wings.FlightWingsHandler;
+import net.kamaarion.roacw.items.curios_additions.wings.FlightWings;
+import net.kamaarion.roacw.items.curios_additions.wings.FlightWingsHandler;
 import net.kamaarion.roacw.registeries.ROACWItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;

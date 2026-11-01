@@ -59,6 +59,38 @@ public class ModKeyMappings {
                     KEY_CATEGORY_ROACW
             );
 
+    public static final KeyMapping SHRIMP_TIDAL_SURGE_KEY =
+            new KeyMapping(
+                    "key.roacw.shrimp_tidal_surge",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_X,
+                    KEY_CATEGORY_ROACW
+            );
+
+    public static final KeyMapping DISTORTED_ENVOY_FACE_KEY =
+            new KeyMapping(
+                    "key.roacw.distorted_envoy_face",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_B,
+                    KEY_CATEGORY_ROACW
+            );
+
+    public static final KeyMapping RAGE_KEY =
+            new KeyMapping(
+                    "key.roacw.rage_mode",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_Z,
+                    KEY_CATEGORY_ROACW
+            );
+
+    public static final KeyMapping ADRENALINE_KEY =
+            new KeyMapping(
+                    "key.roacw.adrenaline_mode",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_C,
+                    KEY_CATEGORY_ROACW
+            );
+
     @SubscribeEvent
     public static void onKeyRegister(RegisterKeyMappingsEvent event) {
         event.register(DASH_KEY);
@@ -66,5 +98,9 @@ public class ModKeyMappings {
         event.register(ARMOR_PULSE_KEY);
         event.register(PLAGUEBRINGER_JET_BOOST_KEY);
         event.register(MARS_CANNONS_KEY);
+        event.register(SHRIMP_TIDAL_SURGE_KEY);
+        event.register(DISTORTED_ENVOY_FACE_KEY);
+        event.register(RAGE_KEY);
+        event.register(ADRENALINE_KEY);
     }
 }
