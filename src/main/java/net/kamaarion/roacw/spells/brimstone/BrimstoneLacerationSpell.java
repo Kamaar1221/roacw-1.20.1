@@ -16,12 +16,14 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.kamaarion.roacw.ROACW;
 import net.kamaarion.roacw.particle.BrimstoneSlashParticleOptions;
+import net.kamaarion.roacw.registeries.ROACWEffectRegistry;
 import net.kamaarion.roacw.registeries.ROACWSchoolRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -42,6 +44,8 @@ public class BrimstoneLacerationSpell extends AbstractSpell {
     private static final float RADIUS = 3.25F;
     private static final float DISTANCE = 1.9F;
     private static final float PARTICLE_SCALE = 1.0F;
+    private static final int BRIMSTONE_FLAMES_DURATION = 60;
+    private static final int BRIMSTONE_FLAMES_AMPLIFIER = 0;
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
@@ -53,7 +57,7 @@ public class BrimstoneLacerationSpell extends AbstractSpell {
     public BrimstoneLacerationSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
-        this.spellPowerPerLevel = 2;
+        this.spellPowerPerLevel = 5;
         this.castTime = 10;
         this.baseManaCost = 30;
     }
@@ -125,7 +129,7 @@ public class BrimstoneLacerationSpell extends AbstractSpell {
                     RADIUS * 2
             );
 
-            var damageSource = this.getDamageSource(entity).setFireTicks(60);
+            var damageSource = this.getDamageSource(entity);
 
             for (Entity target : level.getEntities(entity, hitbox)) {
                 if (!(target instanceof LivingEntity livingTarget)) {
@@ -158,6 +162,7 @@ public class BrimstoneLacerationSpell extends AbstractSpell {
                 }
 
                 float damage = getDamage(spellLevel, entity);
+                boolean wasOnFire = livingTarget.isOnFire();
 
                 if (DamageSources.applyDamage(livingTarget, damage, damageSource)) {
                     MagicManager.spawnParticles(
@@ -174,9 +179,22 @@ public class BrimstoneLacerationSpell extends AbstractSpell {
                             false
                     );
 
+                    livingTarget.addEffect(
+                            new MobEffectInstance(
+                                    ROACWEffectRegistry.BRIMSTONE_FLAMES.get(),
+                                    BRIMSTONE_FLAMES_DURATION,
+                                    BRIMSTONE_FLAMES_AMPLIFIER
+                            ),
+                            entity
+                    );
+
                     if (level instanceof ServerLevel) {
                         EnchantmentHelper.doPostHurtEffects(livingTarget, entity);
                         EnchantmentHelper.doPostDamageEffects(entity, livingTarget);
+
+                        if (!wasOnFire) {
+                            livingTarget.clearFire();
+                        }
                     }
                 }
             }
@@ -224,9 +242,7 @@ public class BrimstoneLacerationSpell extends AbstractSpell {
     }
 
     private float getAdditionalDamage(LivingEntity entity) {
-        float weaponDamage = Utils.getWeaponDamage(entity, MobType.UNDEFINED);
-        weaponDamage += EnchantmentHelper.getFireAspect(entity);
-        return weaponDamage;
+        return Utils.getWeaponDamage(entity, MobType.UNDEFINED);
     }
 
     private String getDamageText(int spellLevel, LivingEntity entity) {

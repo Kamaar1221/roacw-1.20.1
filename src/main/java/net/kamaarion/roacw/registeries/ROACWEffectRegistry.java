@@ -31,7 +31,7 @@ public class ROACWEffectRegistry {
     public static final RegistryObject<MobEffect> HORRIFIED = MOB_EFFECTS.register("horrified", HorrifiedEffect::new);
     public static final RegistryObject<MobEffect> AURIC_REBUKE = MOB_EFFECTS.register("auric_rebuke", AuricRebukeEffect::new);
     public static final RegistryObject<MobEffect> INDULGENCE = MOB_EFFECTS.register("indulgence", IndulgenceEffect::new);
-    //public static final RegistryObject<MobEffect> BRIMSTONE_FLAMES = MOB_EFFECTS.register("brimstone_flames", IndulgenceEffect::new);
+    public static final RegistryObject<MobEffect> BRIMSTONE_FLAMES = MOB_EFFECTS.register("brimstone_flames", BrimstoneFlamesEffect::new);
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

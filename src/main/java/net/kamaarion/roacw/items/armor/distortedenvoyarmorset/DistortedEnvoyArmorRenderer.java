@@ -9,6 +9,8 @@ public class DistortedEnvoyArmorRenderer extends GeoArmorRenderer<DistortedEnvoy
 
     public DistortedEnvoyArmorRenderer(DistortedEnvoyArmorModel model) {
         super(model);
+
+        this.addRenderLayer(new DistortedEnvoyArmorLayer(this));
     }
 
     @Override

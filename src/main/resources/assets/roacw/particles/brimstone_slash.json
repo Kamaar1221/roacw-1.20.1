@@ -1,8 +1,16 @@
 {
   "textures": [
-    "roacw:brimstone_slash_frame_1",
-    "roacw:brimstone_slash_frame_2",
-    "roacw:brimstone_slash_frame_3",
-    "roacw:brimstone_slash_frame_4"
+    "roacw:brimstone_slash_0",
+    "roacw:brimstone_slash_1",
+    "roacw:brimstone_slash_2",
+    "roacw:brimstone_slash_3",
+    "roacw:brimstone_slash_4",
+    "roacw:brimstone_slash_5",
+    "roacw:brimstone_slash_w_skull_0",
+    "roacw:brimstone_slash_w_skull_1",
+    "roacw:brimstone_slash_w_skull_2",
+    "roacw:brimstone_slash_w_skull_3",
+    "roacw:brimstone_slash_w_skull_4",
+    "roacw:brimstone_slash_w_skull_5"
   ]
 }

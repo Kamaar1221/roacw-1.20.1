@@ -17,12 +17,14 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public class BrimstoneSlashParticle extends TextureSheetParticle {
-    private static final int FRAME_COUNT = 4;
-    private static final int LIFETIME_TICKS = 8;
+    private static final int FRAME_COUNT = 6;
+    private static final int VARIANT_COUNT = 2;
+    private static final int LIFETIME_TICKS = 6;
     private final SpriteSet sprites;
     private final Vec3 forward;
     private final boolean mirror;
     private final boolean vertical;
+    private final int variant;
     private final Vector3f[] localVertices;
 
     BrimstoneSlashParticle(
@@ -47,10 +49,17 @@ public class BrimstoneSlashParticle extends TextureSheetParticle {
         this.quadSize = options.scale * 3.75f;
         this.forward = new Vec3(options.xf, options.yf, options.zf).normalize();
         this.mirror = options.mirror;
+        this.variant = this.random.nextInt(VARIANT_COUNT);
         this.vertical = options.vertical;
         this.localVertices = calculateVertices();
         this.friction = 1;
         this.hasPhysics = false;
+        this.setFrame(0);
+    }
+
+    private void setFrame(int frame) {
+        int index = this.variant * FRAME_COUNT + frame;
+        this.setSprite(this.sprites.get(index, FRAME_COUNT * VARIANT_COUNT - 1));
     }
 
     private Vector3f[] calculateVertices() {
@@ -110,7 +119,7 @@ public class BrimstoneSlashParticle extends TextureSheetParticle {
         }
 
         int frame = Math.min(this.age * FRAME_COUNT / this.lifetime, FRAME_COUNT - 1);
-        this.setSprite(this.sprites.get(frame, FRAME_COUNT - 1));
+        this.setFrame(frame);
     }
 
     @Override
@@ -201,7 +210,6 @@ public class BrimstoneSlashParticle extends TextureSheetParticle {
                     options
             );
 
-            particle.setSpriteFromAge(sprites);
             particle.setAlpha(1.0F);
 
             return particle;

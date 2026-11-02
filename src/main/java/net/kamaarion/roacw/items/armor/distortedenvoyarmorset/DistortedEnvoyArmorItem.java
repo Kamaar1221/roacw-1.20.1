@@ -27,15 +27,19 @@ public class DistortedEnvoyArmorItem extends ImbuableChestplateArmorItem {
 
     public static final String VARIANT_TAG = "EnvoyVariant";
     public static final String VARIANT_TIME_TAG = "EnvoyVariantTime";
+    public static final int EYES_TO_TEETH_TICKS = 15;
     public static final int MAW_TRANSITION_TICKS = 26;
+    public static final int MAW_BACK_TICKS = 23;
     public static final int VARIANT_EYES = 0;
     public static final int VARIANT_TEETH = 1;
     public static final int VARIANT_MAW = 2;
 
     private static final RawAnimation EYES_VARIANT = RawAnimation.begin().thenLoop("EyesVariant");
     private static final RawAnimation TEETH_VARIANT = RawAnimation.begin().thenLoop("TeethVariant");
-    private static final RawAnimation MAW_TRANSITION = RawAnimation.begin().thenPlayAndHold("MawTransition");
     private static final RawAnimation MAW_IDLE = RawAnimation.begin().thenLoop("MawVariantIdle");
+    private static final RawAnimation EYES_TO_TEETH = RawAnimation.begin().thenPlayAndHold("EyesToTeethTransition");
+    private static final RawAnimation MAW_TRANSITION = RawAnimation.begin().thenPlayAndHold("MawTransition");
+    private static final RawAnimation MAW_BACK = RawAnimation.begin().thenPlayAndHold("MawBackTransition");
 
     private static final Style DISTORTED_PURPLE = Style.EMPTY
             .withColor(TextColor.parseColor("#CE84FF"));
@@ -62,13 +66,13 @@ public class DistortedEnvoyArmorItem extends ImbuableChestplateArmorItem {
         stack.getOrCreateTag().putLong(VARIANT_TIME_TAG, gameTime);
     }
 
-    private static boolean isMawTransitioning(ItemStack stack, Entity entity) {
+    private static boolean isTransitioning(ItemStack stack, Entity entity, int durationTicks) {
         if (stack == null || entity == null || !stack.hasTag() || !stack.getTag().contains(VARIANT_TIME_TAG)) {
             return false;
         }
 
         long elapsed = entity.level().getGameTime() - stack.getTag().getLong(VARIANT_TIME_TAG);
-        return elapsed >= 0 && elapsed < MAW_TRANSITION_TICKS;
+        return elapsed >= 0 && elapsed < durationTicks;
     }
 
     @Override
@@ -78,17 +82,24 @@ public class DistortedEnvoyArmorItem extends ImbuableChestplateArmorItem {
 
     private PlayState variantPredicate(AnimationState<GeoAnimatable> state) {
         ItemStack stack = state.getData(DataTickets.ITEMSTACK);
+        Entity entity = state.getData(DataTickets.ENTITY);
         int variant = stack == null ? VARIANT_EYES : getVariant(stack);
 
         switch (variant) {
             case VARIANT_TEETH:
+                if (isTransitioning(stack, entity, EYES_TO_TEETH_TICKS)) {
+                    return state.setAndContinue(EYES_TO_TEETH);
+                }
                 return state.setAndContinue(TEETH_VARIANT);
             case VARIANT_MAW:
-                if (isMawTransitioning(stack, state.getData(DataTickets.ENTITY))) {
+                if (isTransitioning(stack, entity, MAW_TRANSITION_TICKS)) {
                     return state.setAndContinue(MAW_TRANSITION);
                 }
                 return state.setAndContinue(MAW_IDLE);
             default:
+                if (isTransitioning(stack, entity, MAW_BACK_TICKS)) {
+                    return state.setAndContinue(MAW_BACK);
+                }
                 return state.setAndContinue(EYES_VARIANT);
         }
     }
