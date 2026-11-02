@@ -11,6 +11,12 @@
     "roacw:geomancer_basic_storage",
     "roacw:geomancer_treasure_storage",
     "roacw:pyromancer_basic_storage",
-    "roacw:pyromancer_supplies"
+    "roacw:pyromancer_supplies",
+    "roacw:ignited_berserker_loot",
+    "roacw:ignited_revenant_loot",
+    "roacw:aptrgangr_loot",
+    "roacw:deepling_priest_loot",
+    "roacw:deepling_brute_loot",
+    "roacw:deepling_warlock_loot"
   ]
 }

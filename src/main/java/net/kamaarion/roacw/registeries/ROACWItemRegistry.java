@@ -113,6 +113,9 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> EXO_UPGRADE_ORB = ITEMS.register("exo_upgrade_orb", () -> new io.redspace.ironsspellbooks.item.UpgradeOrbItem(new Item.Properties().rarity(ROACWItemRegistry.EXO_ENGINEERED), ROACWUpgradeOrbTypeRegistry.EXO_SPELL_POWER));
     public static final RegistryObject<Item> BRIMSTONE_RUNE = ITEMS.register("brimstone_rune", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.CALAMITOUS)));
     public static final RegistryObject<Item> BRIMSTONE_UPGRADE_ORB = ITEMS.register("brimstone_upgrade_orb", () -> new io.redspace.ironsspellbooks.item.UpgradeOrbItem(new Item.Properties().rarity(ROACWItemRegistry.CALAMITOUS), ROACWUpgradeOrbTypeRegistry.BRIMSTONE_SPELL_POWER));
+    public static final RegistryObject<Item> ABYSSAL_ENERGY = ITEMS.register("abyssal_energy", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> BITTERFROST_SOUL = ITEMS.register("bitterfrost_soul", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
+    public static final RegistryObject<Item> IGNITED_FRAGMENT = ITEMS.register("ignited_fragment", () -> new Item(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
 
     public static final RegistryObject<Item> DEVOURER_LOOT_BAG = ModList.get().isLoaded("dog")
             ? ITEMS.register("devourer_loot_bag", () -> new LootBagItem(new Item.Properties().stacksTo(16).rarity(ROACWItemRegistry.OTHERWORLDLY), ResourceLocation.fromNamespaceAndPath(ROACW.MODID, "loot_bags/devourer")))
@@ -145,7 +148,7 @@ public class ROACWItemRegistry {
     public static final RegistryObject<Item> ENDO_HYDRA_STAFF = ITEMS.register("endo_hydra_staff", () -> new EndoHydraStaff(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));
     public static final RegistryObject<Item> BELLADONNA_SPIRIT_STAFF = ITEMS.register("belladonna_spirit_staff", () -> new BelladonnaStaff(new Item.Properties().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> DEFILED_GREATSWORD = ITEMS.register("defiled_greatsword", () -> new DefiledGreatsword(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
-    public static final RegistryObject<Item> SINGULARITY = ITEMS.register("singularity", () -> new Singularity(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
+    // public static final RegistryObject<Item> SINGULARITY = ITEMS.register("singularity", () -> new Singularity(new Item.Properties().rarity(ROACWItemRegistry.GOD_FORGED)));
 
     // Spellbooks
     public static final RegistryObject<Item> NIGHTMARE_TOME = ITEMS.register("nightmare_tome", () -> new NightmareTome(new Item.Properties().rarity(ROACWItemRegistry.OTHERWORLDLY)));

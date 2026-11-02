@@ -19,6 +19,7 @@ import net.kamaarion.roacw.items.curios.evasion_scarf.EvasionScarfCurioRenderer;
 import net.kamaarion.roacw.items.curios.high_ruler_shield.HighRulerShieldCurioRenderer;
 import net.kamaarion.roacw.items.curios.stasis_curse.StatisCurseCurioRenderer;
 import net.kamaarion.roacw.items.curios.wings_of_rebirth.WingsOfRebirthCurioRenderer;
+import net.kamaarion.roacw.loot.ROACWLootConditions;
 import net.kamaarion.roacw.loot.ROACWLootModifiers;
 import net.kamaarion.roacw.network.ModMessages;
 import net.kamaarion.roacw.registeries.*;
@@ -72,6 +73,7 @@ public class ROACW {
         ROACWRecipeRegistry.register(modEventBus);
         ROACWScrollModelEvents.register(modEventBus);
         ROACWLootModifiers.register(modEventBus);
+        ROACWLootConditions.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::entityAttributes);

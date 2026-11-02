@@ -1,4 +1,4 @@
-package net.kamaarion.roacw.spells.technomancy;
+package net.kamaarion.roacw.spells.lightning;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;

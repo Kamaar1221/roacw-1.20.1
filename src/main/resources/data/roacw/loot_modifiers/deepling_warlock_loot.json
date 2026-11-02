@@ -1,0 +1,22 @@
+{
+  "type": "roacw:roacw_miniboss_loot",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "cataclysm:entities/deepling_warlock"
+    },
+    {
+      "condition": "roacw:boss_killed",
+      "boss": "cataclysm:the_leviathan"
+    }
+  ],
+  "loot_table": "cataclysm:entities/deepling_warlock",
+  "entries": [
+    {
+      "item": "roacw:abyssal_energy",
+      "chance": 1.0,
+      "min_count": 1,
+      "max_count": 2
+    }
+  ]
+}

@@ -3,13 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "traveloptics:abyssal_tentacle"
+      "item": "roacw:abyssal_energy"
     },
     {
-      "item": "traveloptics:echo_winglet"
+      "item": "roacw:bitterfrost_soul"
     },
     {
-      "item": "traveloptics:flame_tempered_handguard"
+      "item": "roacw:ignited_fragment"
     }
   ],
   "result": {

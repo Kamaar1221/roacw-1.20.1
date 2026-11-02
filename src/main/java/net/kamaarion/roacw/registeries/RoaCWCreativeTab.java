@@ -96,6 +96,9 @@ public class RoaCWCreativeTab {
                         output.accept(ROACWItemRegistry.YHARON_SOUL_FRAGMENT.get());
                         output.accept(ROACWItemRegistry.YHARON_BONE.get());
                         output.accept(ROACWItemRegistry.YHARON_FEATHER.get());
+                        output.accept(ROACWItemRegistry.ABYSSAL_ENERGY.get());
+                        output.accept(ROACWItemRegistry.BITTERFROST_SOUL.get());
+                        output.accept(ROACWItemRegistry.IGNITED_FRAGMENT.get());
                         output.accept(ROACWItemRegistry.EXO_RUNE.get());
                         output.accept(ROACWItemRegistry.EXO_UPGRADE_ORB.get());
                         output.accept(ROACWItemRegistry.BRIMSTONE_RUNE.get());
