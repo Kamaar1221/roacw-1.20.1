@@ -253,10 +253,6 @@ public class EarthenPaladinEntity extends AbstractSpellCastingMob implements Ene
             return false;
         }
 
-        if (!BossGateData.hasKilled(level, EntityType.WITHER)) {
-            return false;
-        }
-
         if (pos.getY() >= MAX_SPAWN_Y) {
             return false;
         }

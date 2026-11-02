@@ -1,0 +1,7 @@
+{
+  "boss": "cataclysm:the_harbinger",
+  "entities": [
+    "roacw:plague_charger"
+  ],
+  "spawn_types": ["NATURAL", "CHUNK_GENERATION", "SPAWNER"]
+}

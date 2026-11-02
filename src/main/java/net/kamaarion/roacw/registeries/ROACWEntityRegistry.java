@@ -320,9 +320,6 @@ public class ROACWEntityRegistry {
         eventBus.addListener(ROACWEntityRegistry::registerSpawnPlacements);
     }
 
-    private static final ResourceLocation HARBINGER_ID =
-            ResourceLocation.fromNamespaceAndPath("cataclysm", "the_harbinger");
-
     private static void registerSpawnPlacements(SpawnPlacementRegisterEvent event) {
         event.register(
                 PLAGUE_CHARGER.get(),
@@ -330,7 +327,6 @@ public class ROACWEntityRegistry {
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (type, level, spawnType, pos, random) ->
                         level.getDifficulty() != Difficulty.PEACEFUL
-                                && BossGateData.hasKilled(level, HARBINGER_ID)
                                 && Mob.checkMobSpawnRules(type, level, spawnType, pos, random),
                 SpawnPlacementRegisterEvent.Operation.AND
         );

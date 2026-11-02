@@ -1,0 +1,7 @@
+{
+  "boss": "minecraft:wither",
+  "entities": [
+    "roacw:earthen_paladin_knight"
+  ],
+  "spawn_types": ["NATURAL", "CHUNK_GENERATION", "SPAWNER"]
+}
